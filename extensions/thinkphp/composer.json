@@ -1,0 +1,16 @@
+{
+    "name": "erikwang/consul-php-thinkphp",
+    "description": "ThinkPHP integration for erikwang/consul-php",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "erikwang/consul-php": "*",
+        "topthink/framework": "^6.0|^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Erikwang\\Consul\\Thinkphp\\": "src/"
+        }
+    }
+}

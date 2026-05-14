@@ -1,0 +1,16 @@
+{
+    "name": "erikwang/consul-php-webman",
+    "description": "webman integration for erikwang/consul-php",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "erikwang/consul-php": "*",
+        "workerman/webman-framework": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Erikwang\\Consul\\Webman\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "name": "erikwang/consul-php-hyperf",
+    "description": "Hyperf integration for erikwang/consul-php",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "erikwang/consul-php": "*",
+        "hyperf/framework": "^3.0|^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Erikwang\\Consul\\Hyperf\\": "src/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "Erikwang\\Consul\\Hyperf\\ConfigProvider"
+        }
+    }
+}
