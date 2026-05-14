@@ -23,8 +23,7 @@ class Kv
     public function all(string $prefix = '', array $options = []): array
     {
         $query = $this->buildQuery($options);
-        return $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['recurse' => 'true']))
-            ?? [];
+        return $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['recurse' => 'true']));
     }
 
     public function put(string $key, string $value, array $options = []): bool
@@ -45,8 +44,7 @@ class Kv
         if ($separator !== '') {
             $query['separator'] = $separator;
         }
-        $result = $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['keys' => 'true']));
-        return $result ?? [];
+        return $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['keys' => 'true']));
     }
 
     private function buildQuery(array $options): array

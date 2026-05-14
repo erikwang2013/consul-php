@@ -69,13 +69,19 @@ class Discovery
     {
         $index = $options['index'] ?? 0;
 
-        while (true) {
-            $result = $this->healthyInstances($service, [
-                'index' => $index,
-                'wait'  => $options['wait'] ?? '30s',
-            ]);
+        $watching = true;
 
-            $callback($result);
+        while ($watching) {
+            try {
+                $result = $this->healthyInstances($service, [
+                    'index' => $index,
+                    'wait'  => $options['wait'] ?? '30s',
+                ]);
+
+                $callback($result);
+            } catch (\Throwable $e) {
+                $watching = false;
+            }
         }
     }
 }

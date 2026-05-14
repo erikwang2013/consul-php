@@ -78,9 +78,7 @@ class Watcher
                     }
                 }
             } catch (\Throwable $e) {
-                if ($this->running) {
-                    sleep(1);
-                }
+                sleep(1);
             }
         }
     }
