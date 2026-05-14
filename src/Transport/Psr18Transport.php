@@ -66,6 +66,9 @@ class Psr18Transport implements TransportInterface
 
         if (!empty($body)) {
             $json = json_encode($body);
+            if ($json === false) {
+                throw new ConsulRequestException('Failed to encode request body: ' . json_last_error_msg());
+            }
             $stream = $this->streamFactory->createStream($json);
             $request = $request->withBody($stream)
                 ->withHeader('Content-Type', 'application/json');
@@ -80,7 +83,12 @@ class Psr18Transport implements TransportInterface
         }
 
         $statusCode = $response->getStatusCode();
-        $contents = (string) $response->getBody();
+
+        try {
+            $contents = (string) $response->getBody();
+        } catch (\RuntimeException $e) {
+            throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
+        }
 
         if ($statusCode >= 500) {
             throw new ServerException("Consul server error [$statusCode]: $contents", $statusCode);
@@ -99,6 +107,9 @@ class Psr18Transport implements TransportInterface
         }
 
         $decoded = json_decode($contents, true);
+        if ($contents !== '' && json_last_error() !== JSON_ERROR_NONE) {
+            throw new ClientException("Failed to decode Consul response: " . json_last_error_msg());
+        }
         return $decoded ?? [];
     }
 }
