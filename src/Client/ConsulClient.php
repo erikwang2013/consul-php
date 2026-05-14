@@ -24,6 +24,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 
 class ConsulClient
 {
@@ -94,7 +95,7 @@ class ConsulClient
             'coordinate' => $this->coordinate ??= new Coordinate($this->transport),
             'operator'  => $this->operator ??= new Operator($this->transport),
             'snapshot'  => $this->snapshot ??= new Snapshot($this->transport),
-            default     => throw new \RuntimeException("Unknown API module: {$name}"),
+            default     => throw new RuntimeException("Unknown API module: {$name}"),
         };
     }
 
@@ -120,27 +121,30 @@ class ConsulClient
 
     private function discoverHttpClient(): ClientInterface
     {
-        if (class_exists(\Http\Discovery\Psr18ClientDiscovery::class)) {
-            return \Http\Discovery\Psr18ClientDiscovery::find();
+        $class = 'Http\Discovery\Psr18ClientDiscovery';
+        if (class_exists($class)) {
+            return $class::find();
         }
-        throw new \RuntimeException(
+        throw new RuntimeException(
             'No PSR-18 HTTP client found. Require php-http/discovery and guzzlehttp/guzzle, or inject manually.'
         );
     }
 
     private function discoverRequestFactory(): RequestFactoryInterface
     {
-        if (class_exists(\Http\Discovery\Psr17FactoryDiscovery::class)) {
-            return \Http\Discovery\Psr17FactoryDiscovery::findRequestFactory();
+        $class = 'Http\Discovery\Psr17FactoryDiscovery';
+        if (class_exists($class)) {
+            return $class::findRequestFactory();
         }
-        throw new \RuntimeException('No PSR-17 request factory found.');
+        throw new RuntimeException('No PSR-17 request factory found.');
     }
 
     private function discoverStreamFactory(): StreamFactoryInterface
     {
-        if (class_exists(\Http\Discovery\Psr17FactoryDiscovery::class)) {
-            return \Http\Discovery\Psr17FactoryDiscovery::findStreamFactory();
+        $class = 'Http\Discovery\Psr17FactoryDiscovery';
+        if (class_exists($class)) {
+            return $class::findStreamFactory();
         }
-        throw new \RuntimeException('No PSR-17 stream factory found.');
+        throw new RuntimeException('No PSR-17 stream factory found.');
     }
 }

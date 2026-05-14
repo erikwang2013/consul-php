@@ -4,6 +4,7 @@ namespace Erikwang\Consul\Config;
 
 use Erikwang\Consul\Api\Kv;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class Watcher
 {
@@ -66,7 +67,7 @@ class Watcher
                             'index' => $index,
                             'wait'  => "{$this->blockingWait}s",
                         ]);
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         $usePolling = true;
                         continue;
                     }
@@ -77,7 +78,7 @@ class Watcher
                         $this->notify($snapshot);
                     }
                 }
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 sleep(1);
             }
         }

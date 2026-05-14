@@ -12,6 +12,8 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use RuntimeException;
+use Throwable;
 
 class Psr18Transport implements TransportInterface
 {
@@ -78,7 +80,7 @@ class Psr18Transport implements TransportInterface
 
         try {
             $response = $this->httpClient->sendRequest($request);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new ClientException("HTTP transport error: " . $e->getMessage(), 0, $e);
         }
 
@@ -86,7 +88,7 @@ class Psr18Transport implements TransportInterface
 
         try {
             $contents = (string) $response->getBody();
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
         }
 

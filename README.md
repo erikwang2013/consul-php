@@ -6,6 +6,19 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
 ---
 
+## 文档导航
+
+| 文档 | 链接 |
+|------|------|
+| **文档总目录** | [docs/README.md](docs/README.md) |
+| **Laravel 集成** | [extensions/laravel/README.md](extensions/laravel/README.md) |
+| **Hyperf 集成** | [extensions/hyperf/README.md](extensions/hyperf/README.md) |
+| **webman 集成** | [extensions/webman/README.md](extensions/webman/README.md) |
+| **ThinkPHP 集成** | [extensions/thinkphp/README.md](extensions/thinkphp/README.md) |
+| **设计文档** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](docs/superpowers/specs/2026-05-14-consul-php-design.md) |
+
+---
+
 ## 框架集成一览
 
 | | Laravel | Hyperf | webman | ThinkPHP |

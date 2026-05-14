@@ -6,6 +6,7 @@ use Erikwang\Consul\Api\Health;
 use Erikwang\Consul\Service\LoadBalancer\LoadBalancerInterface;
 use Erikwang\Consul\Service\LoadBalancer\RoundRobin;
 use Psr\SimpleCache\CacheInterface;
+use Throwable;
 
 class Discovery
 {
@@ -79,7 +80,7 @@ class Discovery
                 ]);
 
                 $callback($result);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $watching = false;
             }
         }

@@ -2,6 +2,8 @@
 
 namespace Erikwang\Consul\Client;
 
+use Throwable;
+
 class Promise
 {
     private $executor;
@@ -44,7 +46,7 @@ class Promise
             try {
                 $this->value = ($this->executor)();
                 $this->exception = null;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->exception = $e;
             }
             $this->resolved = true;
