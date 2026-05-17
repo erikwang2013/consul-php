@@ -43,7 +43,10 @@ class ConfigCenter
         }
 
         $decoded = base64_decode($result['Value'] ?? '', true);
-        $value = $decoded !== false ? $decoded : ($result['Value'] ?? $default);
+        if ($decoded === false) {
+            return $default;
+        }
+        $value = $decoded;
 
         if ($this->cache) {
             $this->cache->set($cacheKey, $value, $this->cacheTtl);
@@ -69,8 +72,7 @@ class ConfigCenter
         foreach ($result as $item) {
             $key = $item['Key'] ?? '';
             $decoded = base64_decode($item['Value'] ?? '', true);
-            $value = $decoded !== false ? $decoded : ($item['Value'] ?? '');
-            $config[$key] = $value;
+            $config[$key] = $decoded !== false ? $decoded : ($item['Value'] ?? '');
         }
 
         if ($this->cache) {

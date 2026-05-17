@@ -20,8 +20,12 @@ class ConsulServiceProvider extends ServiceProvider
                 $app->make(\Psr\Http\Message\RequestFactoryInterface::class),
                 $app->make(\Psr\Http\Message\StreamFactoryInterface::class),
                 $app->make(\Psr\Log\LoggerInterface::class),
-                $config['cache']['enable'] ? $app->make(\Psr\SimpleCache\CacheInterface::class) : null,
-                $app->make(\Psr\EventDispatcher\EventDispatcherInterface::class)
+                ($config['cache']['enable'] ?? false) && $app->bound(\Psr\SimpleCache\CacheInterface::class)
+                    ? $app->make(\Psr\SimpleCache\CacheInterface::class)
+                    : null,
+                $app->bound(\Psr\EventDispatcher\EventDispatcherInterface::class)
+                    ? $app->make(\Psr\EventDispatcher\EventDispatcherInterface::class)
+                    : null
             );
         });
     }

@@ -235,4 +235,32 @@ class Psr18TransportTest extends TestCase
 
         $this->assertSame([], $result);
     }
+
+    public function testTokenHeaderIsSetWhenTokenConfigured(): void
+    {
+        $transport = new Psr18Transport(
+            $this->httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            'http://127.0.0.1:8500',
+            'test-token'
+        );
+
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('getBody')->willReturn($this->createStreamWithContent('[]'));
+
+        $request->expects($this->once())
+            ->method('withHeader')
+            ->with('X-Consul-Token', 'test-token')
+            ->willReturn($request);
+
+        $this->requestFactory->method('createRequest')->willReturn($request);
+        $this->httpClient->method('sendRequest')->willReturn($response);
+
+        $result = $transport->get('/v1/kv/test');
+
+        $this->assertSame([], $result);
+    }
 }

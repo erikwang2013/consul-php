@@ -42,8 +42,8 @@ class SnapshotTest extends TestCase
     public function testRestore(): void
     {
         $this->transport->expects($this->once())
-            ->method('put')
-            ->with('/v1/snapshot', ['body' => 'snapshot-data'], []);
+            ->method('putRaw')
+            ->with('/v1/snapshot', 'snapshot-data', []);
 
         $this->snapshot->restore('snapshot-data');
     }
@@ -51,8 +51,8 @@ class SnapshotTest extends TestCase
     public function testRestoreWithDc(): void
     {
         $this->transport->expects($this->once())
-            ->method('put')
-            ->with('/v1/snapshot', ['body' => 'snapshot-data'], ['dc' => 'dc1']);
+            ->method('putRaw')
+            ->with('/v1/snapshot', 'snapshot-data', ['dc' => 'dc1']);
 
         $this->snapshot->restore('snapshot-data', ['dc' => 'dc1']);
     }

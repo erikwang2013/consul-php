@@ -62,6 +62,16 @@ class Psr18Transport implements TransportInterface
 
     public function getRaw(string $path, array $query = []): string
     {
+        return $this->sendRaw('GET', $path, '', $query);
+    }
+
+    public function putRaw(string $path, string $body, array $query = []): array
+    {
+        return $this->sendRaw('PUT', $path, $body, $query, true);
+    }
+
+    public function getWithHeaders(string $path, array $query = []): array
+    {
         $uri = $this->baseUri . $path;
         if (!empty($query)) {
             $uri .= '?' . http_build_query($query);
@@ -73,7 +83,7 @@ class Psr18Transport implements TransportInterface
             $request = $request->withHeader('X-Consul-Token', $this->token);
         }
 
-        $this->logger->debug("Consul raw request: GET $uri");
+        $this->logger->debug("Consul request with headers: GET $uri");
 
         try {
             $response = $this->httpClient->sendRequest($request);
@@ -89,6 +99,62 @@ class Psr18Transport implements TransportInterface
             throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
         }
 
+        $this->checkStatus($statusCode, $contents);
+
+        $headers = [];
+        foreach ($response->getHeaders() as $name => $values) {
+            $headers[$name] = $values[0] ?? '';
+        }
+
+        $body = $this->decodeBody($contents);
+        return ['headers' => $headers, 'body' => $body];
+    }
+
+    private function sendRaw(string $method, string $path, string $body, array $query = [], bool $decodeJson = false): array|string
+    {
+        $uri = $this->baseUri . $path;
+        if (!empty($query)) {
+            $uri .= '?' . http_build_query($query);
+        }
+
+        $request = $this->requestFactory->createRequest($method, $uri);
+
+        if ($this->token !== null) {
+            $request = $request->withHeader('X-Consul-Token', $this->token);
+        }
+
+        if ($body !== '') {
+            $stream = $this->streamFactory->createStream($body);
+            $request = $request->withBody($stream)
+                ->withHeader('Content-Type', 'application/octet-stream');
+        }
+
+        $this->logger->debug("Consul raw request: $method $uri");
+
+        try {
+            $response = $this->httpClient->sendRequest($request);
+        } catch (Throwable $e) {
+            throw new ClientException("HTTP transport error: " . $e->getMessage(), 0, $e);
+        }
+
+        $statusCode = $response->getStatusCode();
+
+        try {
+            $contents = (string) $response->getBody();
+        } catch (RuntimeException $e) {
+            throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
+        }
+
+        $this->checkStatus($statusCode, $contents);
+
+        if ($decodeJson) {
+            return $this->decodeBody($contents);
+        }
+        return $contents;
+    }
+
+    private function checkStatus(int $statusCode, string $contents): void
+    {
         if ($statusCode >= 500) {
             throw new ServerException("Consul server error [$statusCode]: $contents", $statusCode);
         }
@@ -104,8 +170,22 @@ class Psr18Transport implements TransportInterface
         if ($statusCode >= 400) {
             throw new ConsulRequestException("Consul request error [$statusCode]: $contents", $statusCode);
         }
+    }
 
-        return $contents;
+    private function decodeBody(string $contents): array
+    {
+        if ($contents === '') {
+            return [];
+        }
+
+        $decoded = json_decode($contents, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ClientException("Failed to decode Consul response: " . json_last_error_msg());
+        }
+        if (!is_array($decoded)) {
+            return ['body' => $decoded];
+        }
+        return $decoded;
     }
 
     private function request(string $method, string $path, array $body = [], array $query = []): array
@@ -147,33 +227,8 @@ class Psr18Transport implements TransportInterface
             throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
         }
 
-        if ($statusCode >= 500) {
-            throw new ServerException("Consul server error [$statusCode]: $contents", $statusCode);
-        }
+        $this->checkStatus($statusCode, $contents);
 
-        if ($statusCode === 404) {
-            throw new NotFoundException("Not found: $contents", $statusCode);
-        }
-
-        if ($statusCode === 403) {
-            throw new AccessDeniedException("Access denied: $contents", $statusCode);
-        }
-
-        if ($statusCode >= 400) {
-            throw new ConsulRequestException("Consul request error [$statusCode]: $contents", $statusCode);
-        }
-
-        if ($contents === '') {
-            return [];
-        }
-
-        $decoded = json_decode($contents, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ClientException("Failed to decode Consul response: " . json_last_error_msg());
-        }
-        if (!is_array($decoded)) {
-            return ['body' => $decoded];
-        }
-        return $decoded;
+        return $this->decodeBody($contents);
     }
 }

@@ -13,6 +13,11 @@ class Kv
         $this->transport = $transport;
     }
 
+    public function getTransport(): TransportInterface
+    {
+        return $this->transport;
+    }
+
     public function get(string $key, array $options = []): ?array
     {
         $query = $this->buildQuery($options);
@@ -29,7 +34,7 @@ class Kv
     public function put(string $key, string $value, array $options = []): bool
     {
         $response = $this->transport->put("/v1/kv/{$key}", ['value' => base64_encode($value)], $options);
-        return ($response['body'] ?? null) === true || $response === ['body' => true];
+        return ($response['body'] ?? null) === true;
     }
 
     public function delete(string $key, array $options = []): bool

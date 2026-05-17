@@ -12,9 +12,10 @@ class RoundRobin implements LoadBalancerInterface
             return null;
         }
 
+        $instances = array_values($instances);
         $index = $this->count % count($instances);
         $this->count++;
 
-        return array_values($instances)[$index];
+        return $instances[$index];
     }
 }

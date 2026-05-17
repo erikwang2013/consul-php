@@ -26,6 +26,19 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 
+/**
+ * @property Kv $kv
+ * @property Agent $agent
+ * @property Catalog $catalog
+ * @property Health $health
+ * @property Session $session
+ * @property Acl $acl
+ * @property Event $event
+ * @property Status $status
+ * @property Coordinate $coordinate
+ * @property Operator $operator
+ * @property Snapshot $snapshot
+ */
 class ConsulClient
 {
     private TransportInterface $transport;

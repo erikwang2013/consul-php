@@ -5,27 +5,35 @@ namespace Erikwang2013\Consul\Service;
 use Erikwang2013\Consul\Api\Health;
 use Erikwang2013\Consul\Service\LoadBalancer\LoadBalancerInterface;
 use Erikwang2013\Consul\Service\LoadBalancer\RoundRobin;
+use Erikwang2013\Consul\Transport\TransportInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
 class Discovery
 {
     private Health $health;
+    private TransportInterface $transport;
     private ?CacheInterface $cache;
     private ?int $cacheTtl;
     private LoadBalancerInterface $loadBalancer;
+    private LoggerInterface $logger;
     private bool $running = false;
 
     public function __construct(
         Health $health,
         ?CacheInterface $cache = null,
         ?int $cacheTtl = null,
-        ?LoadBalancerInterface $loadBalancer = null
+        ?LoadBalancerInterface $loadBalancer = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->health = $health;
+        $this->transport = $health->getTransport();
         $this->cache = $cache;
         $this->cacheTtl = $cacheTtl;
         $this->loadBalancer = $loadBalancer ?? new RoundRobin();
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function healthyInstances(string $service, array $options = []): array
@@ -75,13 +83,29 @@ class Discovery
         /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
         while ($this->running) {
             try {
-                $result = $this->healthyInstances($service, [
-                    'index' => $index,
-                    'wait'  => $options['wait'] ?? '30s',
+                $response = $this->transport->getWithHeaders("/v1/health/service/{$service}", [
+                    'passing' => 'true',
+                    'index'   => $index,
+                    'wait'    => $options['wait'] ?? '30s',
                 ]);
 
-                $callback($result);
+                $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
+
+                $instances = array_map(function ($entry) {
+                    return [
+                        'node'    => $entry['Node']['Node'] ?? '',
+                        'address' => $entry['Service']['Address'] ?: ($entry['Node']['Address'] ?? ''),
+                        'port'    => $entry['Service']['Port'] ?? 0,
+                        'service' => $entry['Service']['Service'] ?? '',
+                        'id'      => $entry['Service']['ID'] ?? '',
+                        'tags'    => $entry['Service']['Tags'] ?? [],
+                        'meta'    => $entry['Service']['Meta'] ?? [],
+                    ];
+                }, $response['body']);
+
+                $callback($instances);
             } catch (Throwable $e) {
+                $this->logger->warning("Discovery watch error for {$service}: " . $e->getMessage());
                 sleep(1);
             }
         }

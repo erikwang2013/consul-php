@@ -13,6 +13,11 @@ class Health
         $this->transport = $transport;
     }
 
+    public function getTransport(): TransportInterface
+    {
+        return $this->transport;
+    }
+
     public function node(string $node, array $options = []): array
     {
         return $this->transport->get("/v1/health/node/{$node}", $this->optionsQuery($options));

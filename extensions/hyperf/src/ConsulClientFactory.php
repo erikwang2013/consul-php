@@ -24,8 +24,12 @@ class ConsulClientFactory
             $container->get(\Psr\Http\Message\RequestFactoryInterface::class),
             $container->get(\Psr\Http\Message\StreamFactoryInterface::class),
             $container->get(LoggerInterface::class),
-            ($config['cache']['enable'] ?? false) ? $container->get(CacheInterface::class) : null,
-            $container->get(\Psr\EventDispatcher\EventDispatcherInterface::class)
+            ($config['cache']['enable'] ?? false) && $container->has(CacheInterface::class)
+                ? $container->get(CacheInterface::class)
+                : null,
+            $container->has(\Psr\EventDispatcher\EventDispatcherInterface::class)
+                ? $container->get(\Psr\EventDispatcher\EventDispatcherInterface::class)
+                : null
         );
     }
 }

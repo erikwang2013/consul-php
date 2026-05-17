@@ -3,14 +3,19 @@
 namespace Erikwang2013\Consul\Config;
 
 use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Throwable;
 
 class Watcher
 {
     private Kv $kv;
+    private TransportInterface $transport;
     private string $prefix;
     private ?EventDispatcherInterface $dispatcher;
+    private LoggerInterface $logger;
     private array $callbacks = [];
     private int $blockingWait = 30;
     private int $pollInterval = 10;
@@ -19,11 +24,14 @@ class Watcher
     public function __construct(
         Kv $kv,
         string $prefix,
-        ?EventDispatcherInterface $dispatcher = null
+        ?EventDispatcherInterface $dispatcher = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->kv = $kv;
+        $this->transport = $kv->getTransport();
         $this->prefix = $prefix;
         $this->dispatcher = $dispatcher;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function onChange(callable $callback): self
@@ -70,11 +78,15 @@ class Watcher
                     }
                 } else {
                     try {
-                        $result = $this->kv->all($this->prefix, [
-                            'index' => $index,
-                            'wait'  => "{$this->blockingWait}s",
+                        $response = $this->transport->getWithHeaders('/v1/kv/' . $this->prefix, [
+                            'recurse' => 'true',
+                            'index'   => $index,
+                            'wait'    => "{$this->blockingWait}s",
                         ]);
+                        $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
+                        $result = $response['body'];
                     } catch (Throwable $e) {
+                        $this->logger->warning("Watcher blocking query failed for {$this->prefix}, falling back to polling: " . $e->getMessage());
                         $usePolling = true;
                         $pollSuccesses = 0;
                         continue;
@@ -87,6 +99,7 @@ class Watcher
                     }
                 }
             } catch (Throwable $e) {
+                $this->logger->error("Watcher error for {$this->prefix}: " . $e->getMessage());
                 sleep(1);
             }
         }

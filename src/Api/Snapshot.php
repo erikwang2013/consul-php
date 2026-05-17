@@ -31,6 +31,6 @@ class Snapshot
         if (isset($options['dc'])) {
             $query['dc'] = $options['dc'];
         }
-        $this->transport->put('/v1/snapshot', ['body' => $snapshot], $query);
+        $this->transport->putRaw('/v1/snapshot', $snapshot, $query);
     }
 }

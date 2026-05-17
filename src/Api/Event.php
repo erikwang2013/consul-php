@@ -32,7 +32,7 @@ class Event
         if (isset($options['tag'])) {
             $query['tag'] = $options['tag'];
         }
-        return $this->transport->put('/v1/event/fire/' . $name, $body, $query);
+        return $this->transport->put('/v1/event/fire/' . rawurlencode($name), $body, $query);
     }
 
     public function list(array $options = []): array
