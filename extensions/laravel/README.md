@@ -42,7 +42,7 @@ CONSUL_TOKEN=your-acl-token
 ### 依赖注入
 
 ```php
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 
 class UserController extends Controller
 {
@@ -66,7 +66,7 @@ $config = Consul::configCenter()->get('app/debug');
 ### 服务注册（通常放在 AppServiceProvider::boot）
 
 ```php
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -116,7 +116,7 @@ Artisan::command('consul:watch', function (ConsulClient $consul) {
 
 ```php
 // EventServiceProvider.php
-use Erikwang\Consul\Config\ConfigChangedEvent;
+use Erikwang2013\Consul\Config\ConfigChangedEvent;
 
 protected $listen = [
     ConfigChangedEvent::class => [

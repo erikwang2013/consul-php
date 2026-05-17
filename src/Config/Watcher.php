@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
-use Erikwang\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Kv;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
@@ -50,6 +50,7 @@ class Watcher
         $index = 0;
         $lastSnapshot = null;
         $usePolling = false;
+        $pollSuccesses = 0;
 
         while ($this->running) {
             try {
@@ -61,6 +62,12 @@ class Watcher
                         $lastSnapshot = $snapshot;
                         $this->notify($snapshot);
                     }
+
+                    $pollSuccesses++;
+                    if ($pollSuccesses >= 5) {
+                        $usePolling = false;
+                        $pollSuccesses = 0;
+                    }
                 } else {
                     try {
                         $result = $this->kv->all($this->prefix, [
@@ -69,6 +76,7 @@ class Watcher
                         ]);
                     } catch (Throwable $e) {
                         $usePolling = true;
+                        $pollSuccesses = 0;
                         continue;
                     }
 
@@ -94,7 +102,8 @@ class Watcher
         $snap = [];
         foreach ($kvResult as $item) {
             $key = $item['Key'] ?? '';
-            $value = base64_decode($item['Value'] ?? '', true) ?: $item['Value'] ?? '';
+            $decoded = base64_decode($item['Value'] ?? '', true);
+            $value = $decoded !== false ? $decoded : ($item['Value'] ?? '');
             $snap[$key] = $value;
         }
         ksort($snap);

@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Erikwang\\Consul\\": "src/"
+            "Erikwang2013\\Consul\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Erikwang\\Consul\\Tests\\": "tests/"
+            "Erikwang2013\\Consul\\Tests\\": "tests/"
         }
     },
     "config": {

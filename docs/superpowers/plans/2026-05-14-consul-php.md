@@ -8,7 +8,7 @@
 
 **Tech Stack:** PHP 8.0+, PHPUnit 9+, PSR-18 HTTP Client, PSR-3 Logger, PSR-14 EventDispatcher, PSR-16 Cache, Composer
 
-**Namespace:** `Erikwang\Consul`
+**Namespace:** `Erikwang2013\Consul`
 
 ---
 
@@ -119,7 +119,7 @@ jobs:
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 use RuntimeException;
 
@@ -133,7 +133,7 @@ class ConsulException extends RuntimeException
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class ClientException extends ConsulException
 {
@@ -145,7 +145,7 @@ class ClientException extends ConsulException
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class ServerException extends ConsulException
 {
@@ -157,7 +157,7 @@ class ServerException extends ConsulException
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class ConsulRequestException extends ConsulException
 {
@@ -169,7 +169,7 @@ class ConsulRequestException extends ConsulException
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class NotFoundException extends ConsulRequestException
 {
@@ -181,7 +181,7 @@ class NotFoundException extends ConsulRequestException
 ```php
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class AccessDeniedException extends ConsulRequestException
 {
@@ -193,14 +193,14 @@ class AccessDeniedException extends ConsulRequestException
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Exception;
+namespace Erikwang2013\Consul\Tests\Exception;
 
-use Erikwang\Consul\Exception\AccessDeniedException;
-use Erikwang\Consul\Exception\ClientException;
-use Erikwang\Consul\Exception\ConsulException;
-use Erikwang\Consul\Exception\ConsulRequestException;
-use Erikwang\Consul\Exception\NotFoundException;
-use Erikwang\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Exception\AccessDeniedException;
+use Erikwang2013\Consul\Exception\ClientException;
+use Erikwang2013\Consul\Exception\ConsulException;
+use Erikwang2013\Consul\Exception\ConsulRequestException;
+use Erikwang2013\Consul\Exception\NotFoundException;
+use Erikwang2013\Consul\Exception\ServerException;
 use PHPUnit\Framework\TestCase;
 
 class ExceptionTest extends TestCase
@@ -248,7 +248,7 @@ The transport layer wraps PSR-18, adding base URI handling and response parsing 
 ```php
 <?php
 
-namespace Erikwang\Consul\Transport;
+namespace Erikwang2013\Consul\Transport;
 
 interface TransportInterface
 {
@@ -264,13 +264,13 @@ interface TransportInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Transport;
+namespace Erikwang2013\Consul\Transport;
 
-use Erikwang\Consul\Exception\AccessDeniedException;
-use Erikwang\Consul\Exception\ClientException;
-use Erikwang\Consul\Exception\NotFoundException;
-use Erikwang\Consul\Exception\ConsulRequestException;
-use Erikwang\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Exception\AccessDeniedException;
+use Erikwang2013\Consul\Exception\ClientException;
+use Erikwang2013\Consul\Exception\NotFoundException;
+use Erikwang2013\Consul\Exception\ConsulRequestException;
+use Erikwang2013\Consul\Exception\ServerException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -373,12 +373,12 @@ class Psr18Transport implements TransportInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Transport;
+namespace Erikwang2013\Consul\Tests\Transport;
 
-use Erikwang\Consul\Exception\ClientException;
-use Erikwang\Consul\Exception\NotFoundException;
-use Erikwang\Consul\Exception\ServerException;
-use Erikwang\Consul\Transport\Psr18Transport;
+use Erikwang2013\Consul\Exception\ClientException;
+use Erikwang2013\Consul\Exception\NotFoundException;
+use Erikwang2013\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Transport\Psr18Transport;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -524,9 +524,9 @@ The KV API wraps Consul's `/v1/kv/` endpoints. It depends on `TransportInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Kv
 {
@@ -593,10 +593,10 @@ class Kv
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class KvTest extends TestCase
@@ -710,9 +710,9 @@ git commit -m "feat: add KV store API module"
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Agent
 {
@@ -844,10 +844,10 @@ class Agent
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class AgentTest extends TestCase
@@ -956,9 +956,9 @@ git commit -m "feat: add Agent API module"
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Catalog
 {
@@ -1048,10 +1048,10 @@ class Catalog
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class CatalogTest extends TestCase
@@ -1162,9 +1162,9 @@ git commit -m "feat: add Catalog API module"
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Health
 {
@@ -1224,10 +1224,10 @@ class Health
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class HealthTest extends TestCase
@@ -1318,9 +1318,9 @@ git commit -m "feat: add Health API module"
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Session
 {
@@ -1368,10 +1368,10 @@ class Session
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class SessionTest extends TestCase
@@ -1479,9 +1479,9 @@ git commit -m "feat: add Session API module"
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Acl
 {
@@ -1629,9 +1629,9 @@ class Acl
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Event
 {
@@ -1671,9 +1671,9 @@ class Event
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Status
 {
@@ -1703,9 +1703,9 @@ class Status
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Coordinate
 {
@@ -1738,9 +1738,9 @@ class Coordinate
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Operator
 {
@@ -1803,9 +1803,9 @@ class Operator
 ```php
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Snapshot
 {
@@ -1841,10 +1841,10 @@ class Snapshot
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Acl;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Acl;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class AclTest extends TestCase
@@ -1914,10 +1914,10 @@ class AclTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Event;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Event;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
@@ -1958,10 +1958,10 @@ class EventTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Status;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class StatusTest extends TestCase
@@ -2002,10 +2002,10 @@ class StatusTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Coordinate;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Coordinate;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class CoordinateTest extends TestCase
@@ -2046,10 +2046,10 @@ class CoordinateTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Operator;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class OperatorTest extends TestCase
@@ -2090,10 +2090,10 @@ class OperatorTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Snapshot;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Snapshot;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
@@ -2156,9 +2156,9 @@ The Registry provides high-level service registration with health check TTL hear
 ```php
 <?php
 
-namespace Erikwang\Consul\Service;
+namespace Erikwang2013\Consul\Service;
 
-use Erikwang\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Agent;
 
 class Registry
 {
@@ -2261,10 +2261,10 @@ class Registry
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Service;
+namespace Erikwang2013\Consul\Tests\Service;
 
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Service\Registry;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Service\Registry;
 use PHPUnit\Framework\TestCase;
 
 class RegistryTest extends TestCase
@@ -2374,7 +2374,7 @@ git commit -m "feat: add service registry with TTL heartbeat"
 ```php
 <?php
 
-namespace Erikwang\Consul\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Service\LoadBalancer;
 
 interface LoadBalancerInterface
 {
@@ -2387,7 +2387,7 @@ interface LoadBalancerInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Service\LoadBalancer;
 
 class RoundRobin implements LoadBalancerInterface
 {
@@ -2412,7 +2412,7 @@ class RoundRobin implements LoadBalancerInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Service\LoadBalancer;
 
 class Random implements LoadBalancerInterface
 {
@@ -2432,11 +2432,11 @@ class Random implements LoadBalancerInterface
 ```php
 <?php
 
-namespace Erikwang\Consul\Service;
+namespace Erikwang2013\Consul\Service;
 
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Service\LoadBalancer\LoadBalancerInterface;
-use Erikwang\Consul\Service\LoadBalancer\RoundRobin;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Service\LoadBalancer\LoadBalancerInterface;
+use Erikwang2013\Consul\Service\LoadBalancer\RoundRobin;
 use Psr\SimpleCache\CacheInterface;
 
 class Discovery
@@ -2531,9 +2531,9 @@ class Discovery
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Tests\Service\LoadBalancer;
 
-use Erikwang\Consul\Service\LoadBalancer\RoundRobin;
+use Erikwang2013\Consul\Service\LoadBalancer\RoundRobin;
 use PHPUnit\Framework\TestCase;
 
 class RoundRobinTest extends TestCase
@@ -2566,9 +2566,9 @@ class RoundRobinTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Tests\Service\LoadBalancer;
 
-use Erikwang\Consul\Service\LoadBalancer\Random;
+use Erikwang2013\Consul\Service\LoadBalancer\Random;
 use PHPUnit\Framework\TestCase;
 
 class RandomTest extends TestCase
@@ -2600,10 +2600,10 @@ class RandomTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Service;
+namespace Erikwang2013\Consul\Tests\Service;
 
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Service\Discovery;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Service\Discovery;
 use PHPUnit\Framework\TestCase;
 
 class DiscoveryTest extends TestCase
@@ -2710,9 +2710,9 @@ git commit -m "feat: add service discovery with load balancing"
 ```php
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
-use Erikwang\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Kv;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -2829,9 +2829,9 @@ class ConfigCenter
 ```php
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
-use Erikwang\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Kv;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Watcher
@@ -2956,7 +2956,7 @@ class Watcher
 ```php
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
 class ConfigChangedEvent
 {
@@ -2986,10 +2986,10 @@ class ConfigChangedEvent
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Config;
+namespace Erikwang2013\Consul\Tests\Config;
 
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Config\ConfigCenter;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCenterTest extends TestCase
@@ -3055,7 +3055,7 @@ class ConfigCenterTest extends TestCase
     {
         $watcher = $this->config->watch('app/');
 
-        $this->assertInstanceOf(\Erikwang\Consul\Config\Watcher::class, $watcher);
+        $this->assertInstanceOf(\Erikwang2013\Consul\Config\Watcher::class, $watcher);
     }
 }
 ```
@@ -3065,10 +3065,10 @@ class ConfigCenterTest extends TestCase
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Config;
+namespace Erikwang2013\Consul\Tests\Config;
 
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Config\Watcher;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Config\Watcher;
 use PHPUnit\Framework\TestCase;
 
 class WatcherTest extends TestCase
@@ -3136,24 +3136,24 @@ The sync `ConsulClient` wires together Transport + API modules + Service + Confi
 ```php
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
-use Erikwang\Consul\Api\Acl;
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Api\Coordinate;
-use Erikwang\Consul\Api\Event;
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Api\Operator;
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Api\Snapshot;
-use Erikwang\Consul\Api\Status;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
-use Erikwang\Consul\Transport\Psr18Transport;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Acl;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\Coordinate;
+use Erikwang2013\Consul\Api\Event;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Api\Snapshot;
+use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
+use Erikwang2013\Consul\Transport\Psr18Transport;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -3297,17 +3297,17 @@ class ConsulClient
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Client;
+namespace Erikwang2013\Consul\Tests\Client;
 
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Client\ConsulClient;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -3447,7 +3447,7 @@ git commit -m "feat: add sync ConsulClient"
 ```php
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
 class Promise
 {
@@ -3520,24 +3520,24 @@ class Promise
 ```php
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
-use Erikwang\Consul\Api\Acl;
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Api\Coordinate;
-use Erikwang\Consul\Api\Event;
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Api\Operator;
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Api\Snapshot;
-use Erikwang\Consul\Api\Status;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
-use Erikwang\Consul\Transport\Psr18Transport;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Acl;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\Coordinate;
+use Erikwang2013\Consul\Api\Event;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Api\Snapshot;
+use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
+use Erikwang2013\Consul\Transport\Psr18Transport;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -3602,10 +3602,10 @@ class ConsulAsyncClient
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Client;
+namespace Erikwang2013\Consul\Tests\Client;
 
-use Erikwang\Consul\Client\ConsulAsyncClient;
-use Erikwang\Consul\Client\Promise;
+use Erikwang2013\Consul\Client\ConsulAsyncClient;
+use Erikwang2013\Consul\Client\Promise;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -3680,17 +3680,17 @@ class ConsulAsyncClientTest extends TestCase
 
     public function testServiceRegistry(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Service\Registry::class, $this->client->serviceRegistry());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Service\Registry::class, $this->client->serviceRegistry());
     }
 
     public function testServiceDiscovery(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Service\Discovery::class, $this->client->serviceDiscovery());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Service\Discovery::class, $this->client->serviceDiscovery());
     }
 
     public function testConfigCenter(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Config\ConfigCenter::class, $this->client->configCenter());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Config\ConfigCenter::class, $this->client->configCenter());
     }
 }
 ```
@@ -3769,9 +3769,9 @@ return [
 ```php
 <?php
 
-namespace Erikwang\Consul\Laravel;
+namespace Erikwang2013\Consul\Laravel;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Illuminate\Support\ServiceProvider;
 
 class ConsulServiceProvider extends ServiceProvider
@@ -3809,7 +3809,7 @@ class ConsulServiceProvider extends ServiceProvider
 ```php
 <?php
 
-namespace Erikwang\Consul\Laravel\Facades;
+namespace Erikwang2013\Consul\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -3817,7 +3817,7 @@ class Consul extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Erikwang\Consul\Client\ConsulClient::class;
+        return \Erikwang2013\Consul\Client\ConsulClient::class;
     }
 }
 ```
@@ -3888,7 +3888,7 @@ return [
 
 declare(strict_types=1);
 
-namespace Erikwang\Consul\Hyperf;
+namespace Erikwang2013\Consul\Hyperf;
 
 class ConfigProvider
 {
@@ -3896,7 +3896,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                \Erikwang\Consul\Client\ConsulClient::class => ConsulClientFactory::class,
+                \Erikwang2013\Consul\Client\ConsulClient::class => ConsulClientFactory::class,
             ],
             'publish' => [
                 [
@@ -3918,9 +3918,9 @@ class ConfigProvider
 
 declare(strict_types=1);
 
-namespace Erikwang\Consul\Hyperf;
+namespace Erikwang2013\Consul\Hyperf;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -3991,7 +3991,7 @@ git commit -m "feat: add Hyperf extension with coroutine HTTP support"
 ```php
 <?php
 
-namespace Erikwang\Consul\Webman;
+namespace Erikwang2013\Consul\Webman;
 
 class Install
 {
@@ -4093,9 +4093,9 @@ return [
 ```php
 <?php
 
-namespace Erikwang\Consul\Thinkphp;
+namespace Erikwang2013\Consul\Thinkphp;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use think\Service;
 
 class ConsulService extends Service
@@ -4140,9 +4140,9 @@ git commit -m "feat: add ThinkPHP extension"
 ```php
 <?php
 
-namespace Erikwang\Consul\Tests\Integration;
+namespace Erikwang2013\Consul\Tests\Integration;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

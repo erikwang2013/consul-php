@@ -10,12 +10,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Erikwang\\Consul\\Hyperf\\": "src/"
+            "Erikwang2013\\Consul\\Hyperf\\": "src/"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "Erikwang\\Consul\\Hyperf\\ConfigProvider"
+            "config": "Erikwang2013\\Consul\\Hyperf\\ConfigProvider"
         }
     }
 }

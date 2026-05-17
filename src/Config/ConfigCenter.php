@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
-use Erikwang\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Kv;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -25,7 +25,7 @@ class ConfigCenter
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null): mixed
     {
         $cacheKey = "consul:config:{$key}";
 
@@ -42,7 +42,8 @@ class ConfigCenter
             return $default;
         }
 
-        $value = base64_decode($result['Value'] ?? '', true) ?: $result['Value'] ?? $default;
+        $decoded = base64_decode($result['Value'] ?? '', true);
+        $value = $decoded !== false ? $decoded : ($result['Value'] ?? $default);
 
         if ($this->cache) {
             $this->cache->set($cacheKey, $value, $this->cacheTtl);
@@ -67,7 +68,8 @@ class ConfigCenter
 
         foreach ($result as $item) {
             $key = $item['Key'] ?? '';
-            $value = base64_decode($item['Value'] ?? '', true) ?: $item['Value'] ?? '';
+            $decoded = base64_decode($item['Value'] ?? '', true);
+            $value = $decoded !== false ? $decoded : ($item['Value'] ?? '');
             $config[$key] = $value;
         }
 

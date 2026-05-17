@@ -34,7 +34,7 @@ return [
 ### 依赖注入
 
 ```php
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Hyperf\Di\Annotation\Inject;
 
 class UserController extends AbstractController
@@ -53,7 +53,7 @@ class UserController extends AbstractController
 ### 通过容器获取
 
 ```php
-$consul = $this->container->get(\Erikwang\Consul\Client\ConsulClient::class);
+$consul = $this->container->get(\Erikwang2013\Consul\Client\ConsulClient::class);
 $consul->kv->put('key', 'value');
 ```
 

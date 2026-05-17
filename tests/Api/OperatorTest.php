@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Operator;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class OperatorTest extends TestCase

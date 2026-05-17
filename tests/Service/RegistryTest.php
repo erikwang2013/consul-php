@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Service;
+namespace Erikwang2013\Consul\Tests\Service;
 
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Service\Registry;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Service\Registry;
 use PHPUnit\Framework\TestCase;
 
 class RegistryTest extends TestCase

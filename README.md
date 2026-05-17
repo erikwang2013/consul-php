@@ -105,7 +105,7 @@ composer require erikwang/consul-php-thinkphp
 ## 快速开始（通用）
 
 ```php
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 
 $client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
 ```
@@ -173,7 +173,7 @@ $instances = $discovery->healthyInstances('user-service');
 $instance = $discovery->selectInstance('user-service');
 
 // 自定义负载均衡策略
-use Erikwang\Consul\Service\LoadBalancer\Random;
+use Erikwang2013\Consul\Service\LoadBalancer\Random;
 $discovery = new Discovery($health, loadBalancer: new Random());
 
 // 监听服务实例变更
@@ -281,7 +281,7 @@ $acl->logout();
 ### 异步客户端
 
 ```php
-use Erikwang\Consul\Client\ConsulAsyncClient;
+use Erikwang2013\Consul\Client\ConsulAsyncClient;
 
 $client = new ConsulAsyncClient(['base_uri' => 'http://127.0.0.1:8500']);
 
@@ -311,7 +311,7 @@ php artisan vendor:publish --tag=consul-config
 
 ```php
 // 依赖注入
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 public function show(ConsulClient $consul) { ... }
 
 // Facade

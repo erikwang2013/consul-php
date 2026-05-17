@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Snapshot
 {
@@ -22,8 +22,7 @@ class Snapshot
         if (isset($options['stale'])) {
             $query['stale'] = 'true';
         }
-        $result = $this->transport->get('/v1/snapshot', $query);
-        return $result['body'] ?? json_encode($result);
+        return $this->transport->getRaw('/v1/snapshot', $query);
     }
 
     public function restore(string $snapshot, array $options = []): void

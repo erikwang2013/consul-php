@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Erikwang\\Consul\\Thinkphp\\": "src/"
+            "Erikwang2013\\Consul\\Thinkphp\\": "src/"
         }
     }
 }

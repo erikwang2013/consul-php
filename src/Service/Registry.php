@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Service;
+namespace Erikwang2013\Consul\Service;
 
-use Erikwang\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Agent;
 
 class Registry
 {

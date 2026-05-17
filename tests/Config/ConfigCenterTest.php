@@ -1,10 +1,10 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Config;
+namespace Erikwang2013\Consul\Tests\Config;
 
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Config\Watcher;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Config\Watcher;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCenterTest extends TestCase

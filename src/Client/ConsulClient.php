@@ -1,23 +1,23 @@
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
-use Erikwang\Consul\Api\Acl;
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Api\Coordinate;
-use Erikwang\Consul\Api\Event;
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Api\Operator;
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Api\Snapshot;
-use Erikwang\Consul\Api\Status;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
-use Erikwang\Consul\Transport\Psr18Transport;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Acl;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\Coordinate;
+use Erikwang2013\Consul\Api\Event;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Api\Snapshot;
+use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
+use Erikwang2013\Consul\Transport\Psr18Transport;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -58,6 +58,7 @@ class ConsulClient
         ?EventDispatcherInterface $eventDispatcher = null
     ) {
         $baseUri = $config['base_uri'] ?? 'http://127.0.0.1:8500';
+        $token = $config['token'] ?? null;
 
         if ($httpClient === null) {
             $httpClient = $this->discoverHttpClient();
@@ -74,6 +75,7 @@ class ConsulClient
             $requestFactory,
             $streamFactory,
             $baseUri,
+            $token,
             $logger
         );
 
@@ -81,7 +83,7 @@ class ConsulClient
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return match ($name) {
             'kv'        => $this->kv ??= new Kv($this->transport),

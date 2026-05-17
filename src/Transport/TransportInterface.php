@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Transport;
+namespace Erikwang2013\Consul\Transport;
 
 interface TransportInterface
 {
@@ -8,4 +8,5 @@ interface TransportInterface
     public function put(string $path, array $body = [], array $query = []): array;
     public function post(string $path, array $body = [], array $query = []): array;
     public function delete(string $path, array $query = []): array;
+    public function getRaw(string $path, array $query = []): string;
 }

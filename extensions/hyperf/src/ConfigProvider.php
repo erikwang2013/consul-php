@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Erikwang\Consul\Hyperf;
+namespace Erikwang2013\Consul\Hyperf;
 
 class ConfigProvider
 {
@@ -10,7 +10,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                \Erikwang\Consul\Client\ConsulClient::class => ConsulClientFactory::class,
+                \Erikwang2013\Consul\Client\ConsulClient::class => ConsulClientFactory::class,
             ],
             'publish' => [
                 [

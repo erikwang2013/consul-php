@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Integration;
+namespace Erikwang2013\Consul\Tests\Integration;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

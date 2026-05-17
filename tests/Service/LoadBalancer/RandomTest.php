@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Tests\Service\LoadBalancer;
 
-use Erikwang\Consul\Service\LoadBalancer\Random;
+use Erikwang2013\Consul\Service\LoadBalancer\Random;
 use PHPUnit\Framework\TestCase;
 
 class RandomTest extends TestCase

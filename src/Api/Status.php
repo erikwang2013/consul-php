@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Status
 {
@@ -16,12 +16,11 @@ class Status
     public function leader(): string
     {
         $result = $this->transport->get('/v1/status/leader');
-        return $result['body'] ?? '';
+        return (string)($result['body'] ?? '');
     }
 
     public function peers(): array
     {
-        $result = $this->transport->get('/v1/status/peers');
-        return $result['body'] ?? $result;
+        return $this->transport->get('/v1/status/peers');
     }
 }

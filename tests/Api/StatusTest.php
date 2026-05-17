@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Status;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class StatusTest extends TestCase
@@ -43,22 +43,11 @@ class StatusTest extends TestCase
     {
         $this->transport->method('get')
             ->with('/v1/status/peers')
-            ->willReturn(['body' => ['10.0.0.1:8300', '10.0.0.2:8300']]);
+            ->willReturn(['10.0.0.1:8300', '10.0.0.2:8300']);
 
         $result = $this->status->peers();
 
         $this->assertCount(2, $result);
-        $this->assertSame('10.0.0.1:8300', $result[0]);
-    }
-
-    public function testPeersFallback(): void
-    {
-        $this->transport->method('get')
-            ->with('/v1/status/peers')
-            ->willReturn(['10.0.0.1:8300']);
-
-        $result = $this->status->peers();
-
         $this->assertSame('10.0.0.1:8300', $result[0]);
     }
 }

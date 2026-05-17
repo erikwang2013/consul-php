@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Acl
 {

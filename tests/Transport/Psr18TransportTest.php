@@ -1,13 +1,13 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Transport;
+namespace Erikwang2013\Consul\Tests\Transport;
 
-use Erikwang\Consul\Exception\AccessDeniedException;
-use Erikwang\Consul\Exception\ClientException;
-use Erikwang\Consul\Exception\ConsulRequestException;
-use Erikwang\Consul\Exception\NotFoundException;
-use Erikwang\Consul\Exception\ServerException;
-use Erikwang\Consul\Transport\Psr18Transport;
+use Erikwang2013\Consul\Exception\AccessDeniedException;
+use Erikwang2013\Consul\Exception\ClientException;
+use Erikwang2013\Consul\Exception\ConsulRequestException;
+use Erikwang2013\Consul\Exception\NotFoundException;
+use Erikwang2013\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Transport\Psr18Transport;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

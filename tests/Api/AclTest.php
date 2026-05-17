@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Acl;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Acl;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class AclTest extends TestCase

@@ -1,10 +1,10 @@
 <?php
 
-namespace Erikwang\Consul\Service;
+namespace Erikwang2013\Consul\Service;
 
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Service\LoadBalancer\LoadBalancerInterface;
-use Erikwang\Consul\Service\LoadBalancer\RoundRobin;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Service\LoadBalancer\LoadBalancerInterface;
+use Erikwang2013\Consul\Service\LoadBalancer\RoundRobin;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
@@ -14,6 +14,7 @@ class Discovery
     private ?CacheInterface $cache;
     private ?int $cacheTtl;
     private LoadBalancerInterface $loadBalancer;
+    private bool $running = false;
 
     public function __construct(
         Health $health,
@@ -68,11 +69,11 @@ class Discovery
 
     public function watch(string $service, callable $callback, array $options = []): void
     {
+        $this->running = true;
         $index = $options['index'] ?? 0;
 
-        $watching = true;
-
-        while ($watching) {
+        /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+        while ($this->running) {
             try {
                 $result = $this->healthyInstances($service, [
                     'index' => $index,
@@ -81,8 +82,13 @@ class Discovery
 
                 $callback($result);
             } catch (Throwable $e) {
-                $watching = false;
+                sleep(1);
             }
         }
+    }
+
+    public function stop(): void
+    {
+        $this->running = false;
     }
 }

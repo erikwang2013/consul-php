@@ -1,10 +1,10 @@
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -56,7 +56,7 @@ class ConsulAsyncClient
         return $this->syncClient->configCenter();
     }
 
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return $this->syncClient->{$name};
     }

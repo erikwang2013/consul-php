@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Tests\Service\LoadBalancer;
 
-use Erikwang\Consul\Service\LoadBalancer\RoundRobin;
+use Erikwang2013\Consul\Service\LoadBalancer\RoundRobin;
 use PHPUnit\Framework\TestCase;
 
 class RoundRobinTest extends TestCase

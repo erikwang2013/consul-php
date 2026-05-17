@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Thinkphp;
+namespace Erikwang2013\Consul\Thinkphp;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use think\Service;
 
 class ConsulService extends Service

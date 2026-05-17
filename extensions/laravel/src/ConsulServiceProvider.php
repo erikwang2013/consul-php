@@ -1,8 +1,8 @@
 <?php
 
-namespace Erikwang\Consul\Laravel;
+namespace Erikwang2013\Consul\Laravel;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Illuminate\Support\ServiceProvider;
 
 class ConsulServiceProvider extends ServiceProvider

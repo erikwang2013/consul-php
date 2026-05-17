@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Service\LoadBalancer;
+namespace Erikwang2013\Consul\Service\LoadBalancer;
 
 class Random implements LoadBalancerInterface
 {

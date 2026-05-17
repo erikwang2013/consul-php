@@ -10,16 +10,16 @@
     },
     "autoload": {
         "psr-4": {
-            "Erikwang\\Consul\\Laravel\\": "src/"
+            "Erikwang2013\\Consul\\Laravel\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Erikwang\\Consul\\Laravel\\ConsulServiceProvider"
+                "Erikwang2013\\Consul\\Laravel\\ConsulServiceProvider"
             ],
             "aliases": {
-                "Consul": "Erikwang\\Consul\\Laravel\\Facades\\Consul"
+                "Consul": "Erikwang2013\\Consul\\Laravel\\Facades\\Consul"
             }
         }
     }

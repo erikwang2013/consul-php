@@ -41,7 +41,7 @@ CONSUL_TOKEN=your-acl-token
 // app\service\ConsulService.php
 namespace app\service;
 
-use Erikwang\Consul\Thinkphp\ConsulService as BaseConsulService;
+use Erikwang2013\Consul\Thinkphp\ConsulService as BaseConsulService;
 
 class ConsulService extends BaseConsulService
 {
@@ -54,7 +54,7 @@ class ConsulService extends BaseConsulService
 namespace app;
 
 use think\Service as BaseService;
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 
 class AppService extends BaseService
 {
@@ -75,7 +75,7 @@ class AppService extends BaseService
 ```php
 namespace app\controller;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use think\facade\App;
 
 class UserController
@@ -99,7 +99,7 @@ class UserController
 // app/common.php
 use think\facade\App;
 
-function consul(): \Erikwang\Consul\Client\ConsulClient
+function consul(): \Erikwang2013\Consul\Client\ConsulClient
 {
     return App::get('consul');
 }
@@ -120,7 +120,7 @@ class ConsulRegister
 {
     public function handle(): void
     {
-        /** @var \Erikwang\Consul\Client\ConsulClient $consul */
+        /** @var \Erikwang2013\Consul\Client\ConsulClient $consul */
         $consul = App::get('consul');
 
         $consul->serviceRegistry()->register(

@@ -1,11 +1,16 @@
 <?php
 
-namespace Erikwang\Consul\Api;
+namespace Erikwang2013\Consul\Api;
 
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Operator
 {
+    public const KEYRING_LIST = 'list';
+    public const KEYRING_INSTALL = 'install';
+    public const KEYRING_USE = 'use';
+    public const KEYRING_REMOVE = 'remove';
+
     private TransportInterface $transport;
 
     public function __construct(TransportInterface $transport)

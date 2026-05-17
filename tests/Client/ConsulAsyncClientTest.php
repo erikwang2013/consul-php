@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Client;
+namespace Erikwang2013\Consul\Tests\Client;
 
-use Erikwang\Consul\Client\ConsulAsyncClient;
-use Erikwang\Consul\Client\Promise;
+use Erikwang2013\Consul\Client\ConsulAsyncClient;
+use Erikwang2013\Consul\Client\Promise;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -78,16 +78,16 @@ class ConsulAsyncClientTest extends TestCase
 
     public function testServiceRegistry(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Service\Registry::class, $this->client->serviceRegistry());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Service\Registry::class, $this->client->serviceRegistry());
     }
 
     public function testServiceDiscovery(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Service\Discovery::class, $this->client->serviceDiscovery());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Service\Discovery::class, $this->client->serviceDiscovery());
     }
 
     public function testConfigCenter(): void
     {
-        $this->assertInstanceOf(\Erikwang\Consul\Config\ConfigCenter::class, $this->client->configCenter());
+        $this->assertInstanceOf(\Erikwang2013\Consul\Config\ConfigCenter::class, $this->client->configCenter());
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Erikwang\Consul\Hyperf;
+namespace Erikwang2013\Consul\Hyperf;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

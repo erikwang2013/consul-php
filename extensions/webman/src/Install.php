@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Webman;
+namespace Erikwang2013\Consul\Webman;
 
 class Install
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Exception;
+namespace Erikwang2013\Consul\Exception;
 
 class ServerException extends ConsulException
 {

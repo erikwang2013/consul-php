@@ -1,17 +1,18 @@
 <?php
 
-namespace Erikwang\Consul\Client;
+namespace Erikwang2013\Consul\Client;
 
 use Throwable;
 
 class Promise
 {
+    /** @var callable */
     private $executor;
     private array $thenCallbacks = [];
     private array $catchCallbacks = [];
     private bool $resolved = false;
-    private $value;
-    private $exception;
+    private mixed $value = null;
+    private ?Throwable $exception = null;
 
     public function __construct(callable $executor)
     {
@@ -40,7 +41,7 @@ class Promise
         return $this;
     }
 
-    public function wait()
+    public function wait(): mixed
     {
         if (!$this->resolved) {
             try {

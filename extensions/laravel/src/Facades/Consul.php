@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Laravel\Facades;
+namespace Erikwang2013\Consul\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -8,6 +8,6 @@ class Consul extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Erikwang\Consul\Client\ConsulClient::class;
+        return \Erikwang2013\Consul\Client\ConsulClient::class;
     }
 }

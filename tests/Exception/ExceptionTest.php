@@ -1,13 +1,13 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Exception;
+namespace Erikwang2013\Consul\Tests\Exception;
 
-use Erikwang\Consul\Exception\AccessDeniedException;
-use Erikwang\Consul\Exception\ClientException;
-use Erikwang\Consul\Exception\ConsulException;
-use Erikwang\Consul\Exception\ConsulRequestException;
-use Erikwang\Consul\Exception\NotFoundException;
-use Erikwang\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Exception\AccessDeniedException;
+use Erikwang2013\Consul\Exception\ClientException;
+use Erikwang2013\Consul\Exception\ConsulException;
+use Erikwang2013\Consul\Exception\ConsulRequestException;
+use Erikwang2013\Consul\Exception\NotFoundException;
+use Erikwang2013\Consul\Exception\ServerException;
 use PHPUnit\Framework\TestCase;
 
 class ExceptionTest extends TestCase

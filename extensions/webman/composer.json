@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Erikwang\\Consul\\Webman\\": "src/"
+            "Erikwang2013\\Consul\\Webman\\": "src/"
         }
     }
 }

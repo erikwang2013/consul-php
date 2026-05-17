@@ -1,16 +1,16 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Client;
+namespace Erikwang2013\Consul\Tests\Client;
 
-use Erikwang\Consul\Api\Agent;
-use Erikwang\Consul\Api\Catalog;
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Api\Kv;
-use Erikwang\Consul\Api\Session;
-use Erikwang\Consul\Client\ConsulClient;
-use Erikwang\Consul\Config\ConfigCenter;
-use Erikwang\Consul\Service\Discovery;
-use Erikwang\Consul\Service\Registry;
+use Erikwang2013\Consul\Api\Agent;
+use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Session;
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Service\Registry;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;

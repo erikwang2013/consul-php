@@ -1,6 +1,6 @@
 <?php
 
-namespace Erikwang\Consul\Config;
+namespace Erikwang2013\Consul\Config;
 
 class ConfigChangedEvent
 {

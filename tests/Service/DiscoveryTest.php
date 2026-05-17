@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Service;
+namespace Erikwang2013\Consul\Tests\Service;
 
-use Erikwang\Consul\Api\Health;
-use Erikwang\Consul\Service\Discovery;
+use Erikwang2013\Consul\Api\Health;
+use Erikwang2013\Consul\Service\Discovery;
 use PHPUnit\Framework\TestCase;
 
 class DiscoveryTest extends TestCase

@@ -1,9 +1,9 @@
 <?php
 
-namespace Erikwang\Consul\Tests\Api;
+namespace Erikwang2013\Consul\Tests\Api;
 
-use Erikwang\Consul\Api\Snapshot;
-use Erikwang\Consul\Transport\TransportInterface;
+use Erikwang2013\Consul\Api\Snapshot;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotTest extends TestCase
@@ -19,35 +19,24 @@ class SnapshotTest extends TestCase
 
     public function testSave(): void
     {
-        $this->transport->method('get')
+        $this->transport->method('getRaw')
             ->with('/v1/snapshot', [])
-            ->willReturn(['body' => 'snapshot-data']);
+            ->willReturn('snapshot-binary-data');
 
         $result = $this->snapshot->save();
 
-        $this->assertSame('snapshot-data', $result);
+        $this->assertSame('snapshot-binary-data', $result);
     }
 
     public function testSaveWithOptions(): void
     {
-        $this->transport->method('get')
+        $this->transport->method('getRaw')
             ->with('/v1/snapshot', ['dc' => 'dc1', 'stale' => 'true'])
-            ->willReturn(['body' => 'snapshot-data']);
+            ->willReturn('snapshot-binary-data');
 
         $result = $this->snapshot->save(['dc' => 'dc1', 'stale' => true]);
 
-        $this->assertSame('snapshot-data', $result);
-    }
-
-    public function testSaveJsonFallback(): void
-    {
-        $this->transport->method('get')
-            ->with('/v1/snapshot', [])
-            ->willReturn(['key' => 'value']);
-
-        $result = $this->snapshot->save();
-
-        $this->assertSame('{"key":"value"}', $result);
+        $this->assertSame('snapshot-binary-data', $result);
     }
 
     public function testRestore(): void

@@ -32,7 +32,7 @@ return [
 ### 手动创建客户端
 
 ```php
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 
 $consul = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
 ```
@@ -43,7 +43,7 @@ $consul = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
 // process/ConsulRegister.php
 namespace process;
 
-use Erikwang\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Client\ConsulClient;
 use Workerman\Worker;
 
 class ConsulRegister
