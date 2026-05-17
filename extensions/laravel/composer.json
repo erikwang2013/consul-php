@@ -1,11 +1,11 @@
 {
-    "name": "erikwang/consul-php-laravel",
-    "description": "Laravel integration for erikwang/consul-php",
+    "name": "erikwang2013/consul-php-laravel",
+    "description": "Laravel integration for erikwang2013/consul-php",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "erikwang/consul-php": "*",
+        "erikwang2013/consul-php": "*",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0"
     },
     "autoload": {

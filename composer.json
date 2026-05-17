@@ -1,5 +1,5 @@
 {
-    "name": "erikwang/consul-php",
+    "name": "erikwang2013/consul-php",
     "description": "PHP Consul client with full API v1 coverage, service discovery, and config center",
     "type": "library",
     "license": "MIT",

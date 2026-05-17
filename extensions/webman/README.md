@@ -1,19 +1,19 @@
-# erikwang/consul-php-webman
+# erikwang2013/consul-php-webman
 
 webman 插件包，通过 webman 插件系统自动化安装。
 
 ## 安装
 
 ```bash
-composer require erikwang/consul-php-webman
+composer require erikwang2013/consul-php-webman
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter
 ```
 
-安装后自动复制配置文件到 `config/plugin/erikwang/consul-php/app.php`。
+安装后自动复制配置文件到 `config/plugin/erikwang2013/consul-php/app.php`。
 
 ## 配置
 
-`config/plugin/erikwang/consul-php/app.php`：
+`config/plugin/erikwang2013/consul-php/app.php`：
 
 ```php
 return [
@@ -116,7 +116,7 @@ $discovery = $consul->serviceDiscovery($health, $psr16Cache, 300);
 ## 卸载
 
 ```bash
-composer remove erikwang/consul-php-webman
+composer remove erikwang2013/consul-php-webman
 ```
 
 ## 最低要求

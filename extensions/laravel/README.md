@@ -1,11 +1,11 @@
-# erikwang/consul-php-laravel
+# erikwang2013/consul-php-laravel
 
 Laravel 集成包，自动注册 `ConsulClient` 到容器并提供 Facade。
 
 ## 安装
 
 ```bash
-composer require erikwang/consul-php-laravel
+composer require erikwang2013/consul-php-laravel
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter
 ```
 

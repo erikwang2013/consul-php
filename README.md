@@ -1,4 +1,4 @@
-# erikwang/consul-php
+# erikwang2013/consul-php
 
 PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，通过独立扩展包适配各框架。
 
@@ -26,7 +26,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | **扩展包** | `consul-php-laravel` | `consul-php-hyperf` | `consul-php-webman` | `consul-php-thinkphp` |
 | **注入方式** | 自动发现 + `ServiceProvider` | 自动发现 + `ConfigProvider` | 手动 `new` / 插件 | 手动 `bind` 到容器 |
 | **便捷访问** | `Consul` Facade | `#[Inject]` 注解 | — | `app('consul')` 助手 |
-| **配置位置** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang/consul-php/app.php` | `config/consul.php` |
+| **配置位置** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
 | **HTTP 客户端** | Guzzle (PSR-18) | Swoole 协程客户端 | Guzzle (PSR-18) | Guzzle (PSR-18) |
 | **缓存** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 自行注入 | 自行注入 |
 | **热更新运行** | Artisan 命令 | `AbstractProcess` 协程 | `Worker` 进程 | Timer / Swoole 进程 |
@@ -78,7 +78,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 
 ```bash
 # 核心包
-composer require erikwang/consul-php
+composer require erikwang2013/consul-php
 
 # PSR-18 实现（选其一）
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
@@ -88,16 +88,16 @@ composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 
 ```bash
 # Laravel
-composer require erikwang/consul-php-laravel
+composer require erikwang2013/consul-php-laravel
 
 # Hyperf
-composer require erikwang/consul-php-hyperf
+composer require erikwang2013/consul-php-hyperf
 
 # webman
-composer require erikwang/consul-php-webman
+composer require erikwang2013/consul-php-webman
 
 # ThinkPHP
-composer require erikwang/consul-php-thinkphp
+composer require erikwang2013/consul-php-thinkphp
 ```
 
 ---
@@ -107,8 +107,17 @@ composer require erikwang/consul-php-thinkphp
 ```php
 use Erikwang2013\Consul\Client\ConsulClient;
 
+// 基础用法
 $client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// 带 ACL Token
+$client = new ConsulClient([
+    'base_uri' => 'http://127.0.0.1:8500',
+    'token'    => 'your-consul-acl-token',
+]);
 ```
+
+Token 会自动通过 `X-Consul-Token` 请求头附加到所有请求中。
 
 ### 服务注册
 
@@ -180,6 +189,9 @@ $discovery = new Discovery($health, loadBalancer: new Random());
 $discovery->watch('user-service', function (array $instances) {
     // 实例上下线时回调
 });
+
+// 停止监听（在另一进程/协程中调用）
+$discovery->stop();
 ```
 
 ### 配置中心
@@ -207,9 +219,10 @@ $watcher
         // 配置变更回调
     });
 $watcher->start(); // 阻塞，放入独立进程/协程
+// $watcher->stop();  // 在另一进程/协程中调用以停止监听
 ```
 
-**热更新原理：** 优先 Consul blocking query（`index` 长轮询），网络异常时自动降级为定时轮询。回调 + PSR-14 EventDispatcher 双通道通知。
+**热更新原理：** 优先 Consul blocking query（`index` 长轮询），网络异常时自动降级为定时轮询，连接恢复后自动切回长轮询。回调 + PSR-14 EventDispatcher 双通道通知。
 
 **缓存策略：** 注入 PSR-16 缓存后，`get()` 和 `namespace()` 自动读写缓存。Watcher 始终读 Consul 实时数据，不走缓存。
 
@@ -303,7 +316,7 @@ $value = $promise->wait(); // 阻塞获取结果
 ### Laravel
 
 ```bash
-composer require erikwang/consul-php-laravel
+composer require erikwang2013/consul-php-laravel
 php artisan vendor:publish --tag=consul-config
 ```
 
@@ -325,7 +338,7 @@ $services = Consul::catalog->services();
 ### Hyperf
 
 ```bash
-composer require erikwang/consul-php-hyperf
+composer require erikwang2013/consul-php-hyperf
 php bin/hyperf.php vendor:publish consul
 ```
 
@@ -345,7 +358,7 @@ $consul->serviceRegistry()->register(...);
 ### webman
 
 ```bash
-composer require erikwang/consul-php-webman
+composer require erikwang2013/consul-php-webman
 ```
 
 webman 插件自动复制配置文件。由于 webman 是常驻内存架构，服务注册放在 `onWorkerStart` 回调中，全局只需注册一次。
@@ -363,7 +376,7 @@ class ConsulRegister {
 ### ThinkPHP
 
 ```bash
-composer require erikwang/consul-php-thinkphp
+composer require erikwang2013/consul-php-thinkphp
 ```
 
 复制配置文件到 `config/consul.php`。通过 `bind` 将 `ConsulClient` 注册到容器，之后用 `app('consul')` 获取。
@@ -385,7 +398,7 @@ function consul() { return app('consul'); }
 
 ```php
 $client = new ConsulClient(
-    config:          ['base_uri' => 'http://consul:8500'],
+    config:          ['base_uri' => 'http://consul:8500', 'token' => 'acl-token'],
     httpClient:      $myPsr18Client,        // 必填或自动发现
     requestFactory:  $myRequestFactory,      // 同上
     streamFactory:   $myStreamFactory,       // 同上
@@ -410,8 +423,8 @@ $client = new ConsulClient(
 | `$client->event` | `Api\Event` | `fire` `list` |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` |
-| `$client->snapshot` | `Api\Snapshot` | `save` `restore` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring`（常量：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`） |
+| `$client->snapshot` | `Api\Snapshot` | `save`（返回原始快照字节） `restore` |
 
 高层封装：
 

@@ -1,4 +1,4 @@
-# erikwang/consul-php Design Spec
+# erikwang2013/consul-php Design Spec
 
 ## Overview
 
@@ -18,7 +18,7 @@ PHP Consul client library targeting PHP 8.0+, providing full Consul HTTP API v1 
 ## Package Structure
 
 ```
-erikwang/consul-php/              # Core package (zero framework deps)
+erikwang2013/consul-php/              # Core package (zero framework deps)
 ├── src/
 │   ├── Client/                   # Sync + async client implementations
 │   ├── Api/                      # Consul API modules (Agent, Catalog, Health, KV, etc.)
@@ -29,10 +29,10 @@ erikwang/consul-php/              # Core package (zero framework deps)
 ├── tests/
 └── composer.json
 
-erikwang/consul-php-laravel/      # Laravel extension
-erikwang/consul-php-hyperf/       # Hyperf extension (coroutine HTTP client)
-erikwang/consul-php-webman/       # webman extension
-erikwang/consul-php-thinkphp/     # ThinkPHP extension
+erikwang2013/consul-php-laravel/      # Laravel extension
+erikwang2013/consul-php-hyperf/       # Hyperf extension (coroutine HTTP client)
+erikwang2013/consul-php-webman/       # webman extension
+erikwang2013/consul-php-thinkphp/     # ThinkPHP extension
 ```
 
 ## Dependencies (core package)
@@ -168,23 +168,23 @@ Each framework extension provides:
 - Framework logger/event/cache bridge
 - Facade or helper function (where idiomatic for the framework)
 
-### Laravel (`erikwang/consul-php-laravel`)
+### Laravel (`erikwang2013/consul-php-laravel`)
 - ServiceProvider auto-registers `ConsulClient` into the container
 - Facade `Consul` for static access
 - Config published via `vendor:publish`
 - Default HTTP: Guzzle via PSR-18
 
-### Hyperf (`erikwang/consul-php-hyperf`)
+### Hyperf (`erikwang2013/consul-php-hyperf`)
 - ConfigProvider with auto-discovery
 - Inject Swoole coroutine HTTP client for async support
 - Compatible with Hyperf's coroutine context and dependency injection
 
-### webman (`erikwang/consul-php-webman`)
+### webman (`erikwang2013/consul-php-webman`)
 - Plugin-based install via webman plugin system
-- Config file under `plugin/erikwang/consul-php/`
+- Config file under `plugin/erikwang2013/consul-php/`
 - Default HTTP: Guzzle via PSR-18
 
-### ThinkPHP (`erikwang/consul-php-thinkphp`)
+### ThinkPHP (`erikwang2013/consul-php-thinkphp`)
 - Service class registered in container
 - Config file under `config/consul.php`
 - Default HTTP: Guzzle via PSR-18

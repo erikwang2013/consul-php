@@ -1,11 +1,11 @@
-# erikwang/consul-php-hyperf
+# erikwang2013/consul-php-hyperf
 
 Hyperf 集成包，自动注册 `ConsulClient` 到依赖注入容器，支持 Swoole 协程。
 
 ## 安装
 
 ```bash
-composer require erikwang/consul-php-hyperf
+composer require erikwang2013/consul-php-hyperf
 ```
 
 ## 配置

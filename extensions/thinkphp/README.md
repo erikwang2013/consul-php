@@ -1,11 +1,11 @@
-# erikwang/consul-php-thinkphp
+# erikwang2013/consul-php-thinkphp
 
 ThinkPHP 集成包，通过 Service 类的 `bind` 机制注册到容器。
 
 ## 安装
 
 ```bash
-composer require erikwang/consul-php-thinkphp
+composer require erikwang2013/consul-php-thinkphp
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter
 ```
 

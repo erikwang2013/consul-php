@@ -1,10 +1,10 @@
-# erikwang/consul-php Implementation Plan
+# erikwang2013/consul-php Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a PHP 8.0+ Consul client library with full API v1 coverage, service registry/discovery, config center with hot-reload, sync+async APIs, and framework extensions for Laravel/Hyperf/webman/ThinkPHP.
 
-**Architecture:** Core package (`erikwang/consul-php`) has zero framework deps, using only PSR-18/PSR-3/PSR-14/PSR-16. HTTP transport is abstracted behind PSR-18. Each API module is written once; client base class handles sync/async dispatch. Framework extensions inject appropriate HTTP clients (Swoole coroutine for Hyperf, Guzzle for others).
+**Architecture:** Core package (`erikwang2013/consul-php`) has zero framework deps, using only PSR-18/PSR-3/PSR-14/PSR-16. HTTP transport is abstracted behind PSR-18. Each API module is written once; client base class handles sync/async dispatch. Framework extensions inject appropriate HTTP clients (Swoole coroutine for Hyperf, Guzzle for others).
 
 **Tech Stack:** PHP 8.0+, PHPUnit 9+, PSR-18 HTTP Client, PSR-3 Logger, PSR-14 EventDispatcher, PSR-16 Cache, Composer
 
@@ -30,7 +30,7 @@
 
 ```json
 {
-    "name": "erikwang/consul-php",
+    "name": "erikwang2013/consul-php",
     "description": "PHP Consul client with full API v1 coverage, service discovery, and config center",
     "type": "library",
     "license": "MIT",
@@ -3722,13 +3722,13 @@ git commit -m "feat: add async ConsulAsyncClient with Promise"
 
 ```json
 {
-    "name": "erikwang/consul-php-laravel",
-    "description": "Laravel integration for erikwang/consul-php",
+    "name": "erikwang2013/consul-php-laravel",
+    "description": "Laravel integration for erikwang2013/consul-php",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "erikwang/consul-php": "*",
+        "erikwang2013/consul-php": "*",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0"
     },
     "autoload": {
@@ -3842,13 +3842,13 @@ git commit -m "feat: add Laravel extension"
 
 ```json
 {
-    "name": "erikwang/consul-php-hyperf",
-    "description": "Hyperf integration for erikwang/consul-php",
+    "name": "erikwang2013/consul-php-hyperf",
+    "description": "Hyperf integration for erikwang2013/consul-php",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "erikwang/consul-php": "*",
+        "erikwang2013/consul-php": "*",
         "hyperf/framework": "^3.0|^2.0"
     },
     "autoload": {
@@ -3963,19 +3963,19 @@ git commit -m "feat: add Hyperf extension with coroutine HTTP support"
 **Files:**
 - Create: `extensions/webman/composer.json`
 - Create: `extensions/webman/src/Install.php`
-- Create: `extensions/webman/src/config/plugin/erikwang/consul-php/app.php`
+- Create: `extensions/webman/src/config/plugin/erikwang2013/consul-php/app.php`
 
 - [ ] **Step 1: Create extensions/webman/composer.json**
 
 ```json
 {
-    "name": "erikwang/consul-php-webman",
-    "description": "webman integration for erikwang/consul-php",
+    "name": "erikwang2013/consul-php-webman",
+    "description": "webman integration for erikwang2013/consul-php",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "erikwang/consul-php": "*",
+        "erikwang2013/consul-php": "*",
         "workerman/webman-framework": "^1.0"
     },
     "autoload": {
@@ -3999,20 +3999,20 @@ class Install
 
     public static function install(): void
     {
-        $configDir = config_path() . '/plugin/erikwang/consul-php';
+        $configDir = config_path() . '/plugin/erikwang2013/consul-php';
         if (!is_dir($configDir)) {
             mkdir($configDir, 0755, true);
         }
 
         $configPath = $configDir . '/app.php';
         if (!file_exists($configPath)) {
-            copy(__DIR__ . '/config/plugin/erikwang/consul-php/app.php', $configPath);
+            copy(__DIR__ . '/config/plugin/erikwang2013/consul-php/app.php', $configPath);
         }
     }
 
     public static function uninstall(): void
     {
-        $configPath = config_path() . '/plugin/erikwang/consul-php/app.php';
+        $configPath = config_path() . '/plugin/erikwang2013/consul-php/app.php';
         if (file_exists($configPath)) {
             unlink($configPath);
         }
@@ -4020,7 +4020,7 @@ class Install
 }
 ```
 
-- [ ] **Step 3: Create extensions/webman/src/config/plugin/erikwang/consul-php/app.php**
+- [ ] **Step 3: Create extensions/webman/src/config/plugin/erikwang2013/consul-php/app.php**
 
 ```php
 <?php
@@ -4056,13 +4056,13 @@ git commit -m "feat: add webman extension"
 
 ```json
 {
-    "name": "erikwang/consul-php-thinkphp",
-    "description": "ThinkPHP integration for erikwang/consul-php",
+    "name": "erikwang2013/consul-php-thinkphp",
+    "description": "ThinkPHP integration for erikwang2013/consul-php",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "erikwang/consul-php": "*",
+        "erikwang2013/consul-php": "*",
         "topthink/framework": "^6.0|^8.0"
     },
     "autoload": {
