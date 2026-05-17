@@ -37,33 +37,64 @@ erikwang2013/consul-php-thinkphp/     # ThinkPHP extension
 
 ## Dependencies (core package)
 
+**Runtime:**
+- **php** >=8.0.0
 - **psr/http-client** ^1.0 — HTTP client abstraction
 - **psr/http-message** ^1.0|^2.0 — Request/Response messages
+- **psr/http-factory** ^1.0 — Request/Stream factories
 - **psr/log** ^1.0|^2.0|^3.0 — Logger
 - **psr/event-dispatcher** ^1.0 — Event dispatcher
 - **psr/simple-cache** ^1.0|^2.0|^3.0 — Cache
 - **psr/cache** ^1.0|^2.0|^3.0 — Cache pool
-- **php** >=8.0.0
+- **php-http/discovery** ^1.0 — PSR-18/PSR-17 auto-discovery
 
-No other runtime dependencies. Framework integration dependencies are in each extension package.
+**Suggested (for auto-discovery):**
+- `guzzlehttp/guzzle` — PSR-18 HTTP client
+- `php-http/guzzle7-adapter` — PSR-18 adapter for Guzzle 7
+
+Framework integration dependencies are in each extension package.
 
 ## Client Architecture
 
-The client layer provides both sync and async APIs sharing the same underlying transport:
+The client layer provides both sync and deferred-execution APIs sharing the same underlying transport:
 
 ```php
-// Sync client
-$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+// Sync client — with optional ACL token
+$client = new ConsulClient([
+    'base_uri' => 'http://127.0.0.1:8500',
+    'token'    => 'your-consul-acl-token',
+]);
 $services = $client->catalog->services();
 
-// Async client
+// Deferred-execution client (Promise-based, not truly async I/O)
 $client = new ConsulAsyncClient(['base_uri' => 'http://127.0.0.1:8500']);
-$client->catalog->services()->then(function ($services) { ... });
+$client->wrap(fn() => $client->kv->get('key'))
+    ->then(fn($result) => handle($result))
+    ->catch(fn($e) => log_error($e));
 ```
 
-`HttpClientInterface` abstracts the actual HTTP transport. By default the sync client binds a PSR-18 implementation, and the async client wraps it with a promise adapter. Framework extensions inject the appropriate transport (Swoole coroutine client for Hyperf, Guzzle async handler for Laravel/webman/ThinkPHP).
+`ConsulAsyncClient` provides deferred/lazy execution via `Promise`, not true non-blocking I/O. For Swoole coroutine concurrency, use Hyperf's native coroutine HTTP client via the Hyperf extension.
 
-Each Consul API module is written once. The client base class handles the sync/async dispatch so modules don't duplicate logic.
+The transport layer (`Psr18Transport`) adds `X-Consul-Token` header to every request when a token is configured. API modules access Consul via magic properties on `ConsulClient` (e.g., `$client->kv`, `$client->health`).
+
+### TransportInterface
+
+```
+TransportInterface
+├── get(path, query) → array           // JSON-decoded response body
+├── put(path, body, query) → array     // JSON-encoded request, decoded response
+├── post(path, body, query) → array    // JSON-encoded request, decoded response
+├── delete(path, query) → array        // JSON-decoded response body
+├── getRaw(path, query) → string       // Raw response body (for binary endpoints like snapshot save)
+├── putRaw(path, body, query) → array  // Raw request body with octet-stream content type
+└── getWithHeaders(path, query) → array // Returns ['headers' => [...], 'body' => array]
+```
+
+`getWithHeaders()` enables blocking queries by exposing `X-Consul-Index` and other Consul response headers. `getRaw()` and `putRaw()` handle binary endpoints (snapshot save/restore) that are incompatible with JSON encoding.
+
+### Token Authentication
+
+Token is passed via `$config['token']` to `ConsulClient`, forwarded to `Psr18Transport`, and attached as `X-Consul-Token` header on every HTTP request. This works transparently across all API modules.
 
 ## Consul API Modules
 
@@ -80,8 +111,8 @@ All v1 API endpoints organized into modules:
 | Event | fire, list |
 | Status | leader, peers |
 | Coordinate | datacenters, nodes |
-| Operator | raft config/peers, autopilot, keyring |
-| Snapshot | snapshot save/restore |
+| Operator | raft config/peers, autopilot, keyring (constants: KEYRING_LIST/INSTALL/USE/REMOVE) |
+| Snapshot | snapshot save (binary via getRaw) / restore (binary via putRaw) |
 
 ## Service Registry & Discovery
 
@@ -111,16 +142,26 @@ $discovery = $client->serviceDiscovery();
 
 $instances = $discovery->healthyInstances('user-service');
 
-$discovery->watch('user-service', function ($instances) {
+// Select a single instance via load balancing
+$instance = $discovery->selectInstance('user-service');
+
+// Watch for changes (blocking — run in a separate process/coroutine)
+$discovery->watch('user-service', function (array $instances) {
     // Triggered when instance list changes
 });
+
+// Stop watching (called from another process/coroutine)
+$discovery->stop();
+
+// Inject a logger for error visibility
+$discovery = new Discovery($health, logger: $myLogger);
 ```
 
-`healthyInstances` queries `/health/service/:name` with `passing` filter. Returns a typed collection of service instances.
+`healthyInstances` queries `/health/service/:name` with `passing` filter. Returns normalized instance arrays with `address`, `port`, `service`, `id`, `tags`, `meta` keys.
 
-Load balancing strategies: round-robin (default), random, and an interface for custom strategies.
+Load balancing strategies: round-robin (default), random, and a `LoadBalancerInterface` for custom strategies.
 
-Service watch uses Consul blocking queries internally for near-real-time updates.
+`watch()` uses `getWithHeaders()` to propagate `X-Consul-Index` across blocking query iterations. Errors are logged via PSR-3 (falls back to `NullLogger`).
 
 ## Config Center
 
@@ -138,10 +179,13 @@ $watcher->stop();     // Stop
 
 ### Hot-reload Watcher
 
-- Primary: Consul KV blocking query with index tracking
-- Fallback: automatic degradation to periodic polling when blocking query errors or timeouts
-- Emits changes via PSR-14 EventDispatcher, bridging to framework event systems
-- Configurable poll interval for fallback mode
+- **Primary:** Consul KV blocking query with `X-Consul-Index` tracking via `getWithHeaders()`
+- **Fallback:** Automatic degradation to periodic polling when blocking query errors. After 5 consecutive successful polls, automatically recovers back to blocking queries
+- **Notification:** Callback + PSR-14 EventDispatcher (`ConfigChangedEvent`) dual-channel notification
+- **Snapshot comparison:** `ksort`-based deterministic config snapshots prevent false-change firing
+- **Logging:** PSR-3 logger support with `NullLogger` fallback; logs errors in both blocking and polling paths
+- Configurable blocking wait and poll interval via `setBlockingWait()` / `setPollInterval()`
+- `stop()` method for graceful shutdown from another process/coroutine
 
 ### Caching
 
@@ -150,13 +194,13 @@ $watcher->stop();     // Stop
 ## Exception Hierarchy
 
 ```
-ConsulException (base, extends RuntimeException)
-├── ClientException          — HTTP transport errors
-├── ServerException          — Consul 5xx errors
-├── ConsulRequestException   — Consul 4xx errors
-│   ├── NotFoundException
-│   └── AccessDeniedException
-└── ConsulException          — Other Consul-level errors
+\RuntimeException
+└── ConsulException (base)
+    ├── ClientException           — HTTP transport errors (connection, DNS, timeout)
+    ├── ServerException           — Consul 5xx errors
+    └── ConsulRequestException    — Consul 4xx errors
+        ├── NotFoundException     — 404
+        └── AccessDeniedException — 403
 ```
 
 ## Framework Extension Packages
@@ -165,7 +209,7 @@ Each framework extension provides:
 - Service provider / plugin registration
 - Framework-native config publishing (`config/consul.php`)
 - Injection of framework-appropriate HTTP client
-- Framework logger/event/cache bridge
+- Framework logger/event/cache bridge with safe `bound()`/`has()` checks — gracefully degrades to `null` when optional services (Cache, EventDispatcher) are not registered
 - Facade or helper function (where idiomatic for the framework)
 
 ### Laravel (`erikwang2013/consul-php-laravel`)
@@ -192,13 +236,15 @@ Each framework extension provides:
 ## Testing Strategy
 
 - PHPUnit 9+ (for PHP 8.0+)
-- Unit tests against HTTP mocks (PSR-18 mock client) for all API modules
-- Integration tests against a real Consul agent (optional, CI-gated)
-- Each framework extension has smoke tests ensuring container bindings resolve
+- 103 unit tests, 137 assertions covering all API modules, transport, exceptions, load balancers, and service classes
+- Token header injection regression test
+- Snapshot save (binary) and restore (raw body) tested with putRaw/getRaw
+- Framework extensions tested via mock container bindings
+- PHPStan level 5 compliance across all source files
 
 ## CI / Tooling
 
-- GitHub Actions: PHP 8.0, 8.1, 8.2, 8.3, 8.4 matrix
-- PHPStan level 6+
+- PHP 8.0–8.4 compatibility
+- PHPStan level 5 (clean, zero errors)
 - PHP CS Fixer (PSR-12)
 - Composer validate (lock file freshness)

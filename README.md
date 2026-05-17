@@ -424,7 +424,7 @@ $client = new ConsulClient(
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
 | `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring`（常量：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`） |
-| `$client->snapshot` | `Api\Snapshot` | `save`（返回原始快照字节） `restore` |
+| `$client->snapshot` | `Api\Snapshot` | `save`（返回原始快照字节，通过 `getRaw()`） `restore`（发送原始字节，通过 `putRaw()`） |
 
 高层封装：
 
@@ -476,8 +476,10 @@ try {
 │  Api\Catalog │ Api\Session │ ...    │
 ├─────────────────────────────────────┤
 │       Transport\Psr18Transport       │  ← PSR-18 传输层
+│  get/put/post/delete + getRaw       │     Token 注入 · Header 捕获
+│  putRaw + getWithHeaders             │     状态码检查 · JSON 解码
 ├─────────────────────────────────────┤
-│   PSR-18 Client  │  PSR-17 Factory   │  ← 用户注入
+│   PSR-18 Client  │  PSR-17 Factory   │  ← 用户注入 / 自动发现
 └─────────────────────────────────────┘
 ```
 
