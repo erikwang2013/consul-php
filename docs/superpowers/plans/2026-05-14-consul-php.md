@@ -35,7 +35,7 @@
     "type": "library",
     "license": "MIT",
     "authors": [
-        {"name": "erik", "email": "erikwang2013@example.com"}
+        {"name": "erik", "email": "erik@erik.xyz"}
     ],
     "require": {
         "php": ">=8.0",
