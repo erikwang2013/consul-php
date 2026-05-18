@@ -1,6 +1,6 @@
 # erikwang2013/consul-php
 
-PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，通过独立扩展包适配各框架。
+PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，内置 Laravel / Hyperf / webman / ThinkPHP 适配，一个 composer require 即可在任何框架下使用。
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
@@ -11,10 +11,10 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | 文档 | 链接 |
 |------|------|
 | **文档总目录** | [docs/README.md](docs/README.md) |
-| **Laravel 集成** | [extensions/laravel/README.md](extensions/laravel/README.md) |
-| **Hyperf 集成** | [extensions/hyperf/README.md](extensions/hyperf/README.md) |
-| **webman 集成** | [extensions/webman/README.md](extensions/webman/README.md) |
-| **ThinkPHP 集成** | [extensions/thinkphp/README.md](extensions/thinkphp/README.md) |
+| **Laravel 集成** | 见下方 [Laravel](#laravel) |
+| **Hyperf 集成** | 见下方 [Hyperf](#hyperf) |
+| **webman 集成** | 见下方 [webman](#webman) |
+| **ThinkPHP 集成** | 见下方 [ThinkPHP](#thinkphp) |
 | **设计文档** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](docs/superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -23,7 +23,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
 | | Laravel | Hyperf | webman | ThinkPHP |
 |---|---|---|---|---|
-| **扩展包** | `consul-php-laravel` | `consul-php-hyperf` | `consul-php-webman` | `consul-php-thinkphp` |
+| **扩展包** | 内置 | 内置 | 内置 | 内置 |
 | **注入方式** | 自动发现 + `ServiceProvider` | 自动发现 + `ConfigProvider` | 手动 `new` / 插件 | 手动 `bind` 到容器 |
 | **便捷访问** | `Consul` Facade | `#[Inject]` 注解 | — | `app('consul')` 助手 |
 | **配置位置** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
@@ -31,7 +31,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | **缓存** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 自行注入 | 自行注入 |
 | **热更新运行** | Artisan 命令 | `AbstractProcess` 协程 | `Worker` 进程 | Timer / Swoole 进程 |
 | **事件监听** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **文档** | [README](extensions/laravel/README.md) | [README](extensions/hyperf/README.md) | [README](extensions/webman/README.md) | [README](extensions/thinkphp/README.md) |
+| **文档** | [源码](src/Integration/Laravel/) | [源码](src/Integration/Hyperf/) | [源码](src/Integration/Webman/) | [源码](src/Integration/Thinkphp/) |
 
 ### 同一操作，不同写法
 
@@ -84,21 +84,14 @@ composer require erikwang2013/consul-php
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
-### 框架集成包
+### 框架集成
 
-```bash
-# Laravel
-composer require erikwang2013/consul-php-laravel
+框架适配已内置在核心包中，无需额外安装。安装核心包后，对应框架会自动发现并注册 Consul 服务：
 
-# Hyperf
-composer require erikwang2013/consul-php-hyperf
-
-# webman
-composer require erikwang2013/consul-php-webman
-
-# ThinkPHP
-composer require erikwang2013/consul-php-thinkphp
-```
+- **Laravel** — 自动发现 `ConsulServiceProvider`，提供 `Consul` Facade 和依赖注入
+- **Hyperf** — 自动发现 `ConfigProvider`，提供协程客户端工厂和 `#[Inject]` 注入
+- **webman** — 自动发现插件，`composer install` 时自动复制配置文件
+- **ThinkPHP** — 在 `app/service` 目录下创建 `ConsulService` 并注册到应用
 
 ---
 
@@ -315,8 +308,9 @@ $value = $promise->wait(); // 阻塞获取结果
 
 ### Laravel
 
+Laravel 自动发现 `ConsulServiceProvider`，无需手动注册。
+
 ```bash
-composer require erikwang2013/consul-php-laravel
 php artisan vendor:publish --tag=consul-config
 ```
 
@@ -337,8 +331,9 @@ $services = Consul::catalog->services();
 
 ### Hyperf
 
+Hyperf 自动发现 `ConfigProvider`，无需手动注册。
+
 ```bash
-composer require erikwang2013/consul-php-hyperf
 php bin/hyperf.php vendor:publish consul
 ```
 
@@ -357,11 +352,7 @@ $consul->serviceRegistry()->register(...);
 
 ### webman
 
-```bash
-composer require erikwang2013/consul-php-webman
-```
-
-webman 插件自动复制配置文件。由于 webman 是常驻内存架构，服务注册放在 `onWorkerStart` 回调中，全局只需注册一次。
+webman 自动发现插件，`composer install` 时自动复制配置文件到 `config/plugin/erikwang2013/consul-php/`。由于 webman 是常驻内存架构，服务注册放在 `onWorkerStart` 回调中，全局只需注册一次。
 
 ```php
 // process/ConsulRegister.php
@@ -375,14 +366,22 @@ class ConsulRegister {
 
 ### ThinkPHP
 
-```bash
-composer require erikwang2013/consul-php-thinkphp
-```
-
-复制配置文件到 `config/consul.php`。通过 `bind` 将 `ConsulClient` 注册到容器，之后用 `app('consul')` 获取。
+ThinkPHP 无自动发现机制，需手动注册 Service。将配置文件复制到 `config/consul.php`，然后在 `app/service` 目录下注册 `ConsulService`：
 
 ```php
-// app/AppService.php
+// app/service/ConsulService.php
+namespace app\service;
+
+use Erikwang2013\Consul\Integration\Thinkphp\ConsulService as BaseConsulService;
+
+class ConsulService extends BaseConsulService
+{
+}
+```
+
+或在 `app/AppService.php` 中直接绑定：
+
+```php
 $this->app->bind('consul', fn() => new ConsulClient(config('consul')));
 
 // 使用
