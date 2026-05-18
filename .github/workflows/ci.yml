@@ -14,4 +14,4 @@ jobs:
           coverage: none
       - run: composer install --no-progress
       - run: vendor/bin/phpunit
-      - run: vendor/bin/phpstan analyse src --level=5
+      - run: vendor/bin/phpstan analyse

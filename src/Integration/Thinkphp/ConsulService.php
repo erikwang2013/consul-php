@@ -18,7 +18,7 @@ class ConsulService extends Service
                 $this->app->make(\Psr\Http\Message\RequestFactoryInterface::class),
                 $this->app->make(\Psr\Http\Message\StreamFactoryInterface::class),
                 $this->app->make(\Psr\Log\LoggerInterface::class),
-                isset($config['cache']['enable']) && $config['cache']['enable'] && $this->app->bound(\Psr\SimpleCache\CacheInterface::class)
+                ($config['cache']['enable'] ?? false) && $this->app->bound(\Psr\SimpleCache\CacheInterface::class)
                     ? $this->app->make(\Psr\SimpleCache\CacheInterface::class)
                     : null,
                 $this->app->bound(\Psr\EventDispatcher\EventDispatcherInterface::class)
