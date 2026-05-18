@@ -1,6 +1,6 @@
 {
     "name": "erikwang2013/consul-php",
-    "description": "PHP Consul client with full API v1 coverage, service discovery, and config center",
+    "description": "PHP Consul client with full API v1 coverage, service discovery, and config center. Auto-integrates with Laravel, Hyperf, webman, and ThinkPHP.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -19,7 +19,11 @@
     },
     "suggest": {
         "guzzlehttp/guzzle": "PSR-18 HTTP client implementation",
-        "php-http/guzzle7-adapter": "PSR-18 adapter for Guzzle 7"
+        "php-http/guzzle7-adapter": "PSR-18 adapter for Guzzle 7",
+        "laravel/framework": "For Laravel auto-integration (ServiceProvider + Facade)",
+        "hyperf/framework": "For Hyperf auto-integration (ConfigProvider + coroutine client)",
+        "workerman/webman-framework": "For webman auto-integration (plugin auto-install)",
+        "topthink/framework": "For ThinkPHP integration (Service binding)"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -36,6 +40,19 @@
     "autoload-dev": {
         "psr-4": {
             "Erikwang2013\\Consul\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Erikwang2013\\Consul\\Integration\\Laravel\\ConsulServiceProvider"
+            ],
+            "aliases": {
+                "Consul": "Erikwang2013\\Consul\\Integration\\Laravel\\Facades\\Consul"
+            }
+        },
+        "hyperf": {
+            "config": "Erikwang2013\\Consul\\Integration\\Hyperf\\ConfigProvider"
         }
     },
     "config": {
