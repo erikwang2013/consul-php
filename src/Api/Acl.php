@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Api;
 
 use Erikwang2013\Consul\Transport\TransportInterface;
@@ -25,7 +27,7 @@ class Acl
 
     public function translate(string $accessorId): array
     {
-        return $this->transport->get("/v1/acl/rules/translate/{$accessorId}");
+        return $this->transport->get('/v1/acl/rules/translate/' . rawurlencode($accessorId));
     }
 
     public function tokenList(): array
@@ -40,41 +42,41 @@ class Acl
 
     public function tokenRead(string $accessorId): array
     {
-        return $this->transport->get("/v1/acl/token/{$accessorId}");
+        return $this->transport->get('/v1/acl/token/' . rawurlencode($accessorId));
     }
 
     public function tokenUpdate(string $accessorId, array $token): array
     {
-        return $this->transport->put("/v1/acl/token/{$accessorId}", $token);
+        return $this->transport->put('/v1/acl/token/' . rawurlencode($accessorId), $token);
     }
 
     public function tokenDelete(string $accessorId): void
     {
-        $this->transport->delete("/v1/acl/token/{$accessorId}");
+        $this->transport->delete('/v1/acl/token/' . rawurlencode($accessorId));
     }
 
     public function tokenClone(string $accessorId): array
     {
-        return $this->transport->put("/v1/acl/token/{$accessorId}/clone");
+        return $this->transport->put('/v1/acl/token/' . rawurlencode($accessorId) . '/clone');
     }
 
     public function roleList(): array { return $this->transport->get('/v1/acl/roles'); }
     public function roleCreate(array $role): array { return $this->transport->put('/v1/acl/role', $role); }
-    public function roleRead(string $roleId): array { return $this->transport->get("/v1/acl/role/{$roleId}"); }
-    public function roleUpdate(string $roleId, array $role): array { return $this->transport->put("/v1/acl/role/{$roleId}", $role); }
-    public function roleDelete(string $roleId): void { $this->transport->delete("/v1/acl/role/{$roleId}"); }
+    public function roleRead(string $roleId): array { return $this->transport->get('/v1/acl/role/' . rawurlencode($roleId)); }
+    public function roleUpdate(string $roleId, array $role): array { return $this->transport->put('/v1/acl/role/' . rawurlencode($roleId), $role); }
+    public function roleDelete(string $roleId): void { $this->transport->delete('/v1/acl/role/' . rawurlencode($roleId)); }
 
     public function policyList(): array { return $this->transport->get('/v1/acl/policies'); }
     public function policyCreate(array $policy): array { return $this->transport->put('/v1/acl/policy', $policy); }
-    public function policyRead(string $policyId): array { return $this->transport->get("/v1/acl/policy/{$policyId}"); }
-    public function policyUpdate(string $policyId, array $policy): array { return $this->transport->put("/v1/acl/policy/{$policyId}", $policy); }
-    public function policyDelete(string $policyId): void { $this->transport->delete("/v1/acl/policy/{$policyId}"); }
+    public function policyRead(string $policyId): array { return $this->transport->get('/v1/acl/policy/' . rawurlencode($policyId)); }
+    public function policyUpdate(string $policyId, array $policy): array { return $this->transport->put('/v1/acl/policy/' . rawurlencode($policyId), $policy); }
+    public function policyDelete(string $policyId): void { $this->transport->delete('/v1/acl/policy/' . rawurlencode($policyId)); }
 
     public function authMethodList(): array { return $this->transport->get('/v1/acl/auth-methods'); }
     public function authMethodCreate(array $method): array { return $this->transport->put('/v1/acl/auth-method', $method); }
-    public function authMethodRead(string $name): array { return $this->transport->get("/v1/acl/auth-method/{$name}"); }
-    public function authMethodUpdate(string $name, array $method): array { return $this->transport->put("/v1/acl/auth-method/{$name}", $method); }
-    public function authMethodDelete(string $name): void { $this->transport->delete("/v1/acl/auth-method/{$name}"); }
+    public function authMethodRead(string $name): array { return $this->transport->get('/v1/acl/auth-method/' . rawurlencode($name)); }
+    public function authMethodUpdate(string $name, array $method): array { return $this->transport->put('/v1/acl/auth-method/' . rawurlencode($name), $method); }
+    public function authMethodDelete(string $name): void { $this->transport->delete('/v1/acl/auth-method/' . rawurlencode($name)); }
 
     public function login(array $auth): array { return $this->transport->post('/v1/acl/login', $auth); }
     public function logout(): void { $this->transport->post('/v1/acl/logout'); }

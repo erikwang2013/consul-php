@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Service;
 
 use Erikwang2013\Consul\Api\Health;
@@ -106,6 +108,8 @@ class Discovery
                 $callback($instances);
             } catch (Throwable $e) {
                 $this->logger->warning("Discovery watch error for {$service}: " . $e->getMessage());
+                /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+                if (!$this->running) break;
                 sleep(1);
             }
         }

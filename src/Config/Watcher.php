@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Config;
 
 use Erikwang2013\Consul\Api\Kv;
@@ -64,6 +66,8 @@ class Watcher
             try {
                 if ($usePolling) {
                     sleep($this->pollInterval);
+                    /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+                    if (!$this->running) break;
                     $result = $this->kv->all($this->prefix);
                     $snapshot = $this->snapshot($result);
                     if ($snapshot !== $lastSnapshot) {
@@ -100,6 +104,8 @@ class Watcher
                 }
             } catch (Throwable $e) {
                 $this->logger->error("Watcher error for {$this->prefix}: " . $e->getMessage());
+                /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+                if (!$this->running) break;
                 sleep(1);
             }
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Config;
 
 use Erikwang2013\Consul\Api\Kv;

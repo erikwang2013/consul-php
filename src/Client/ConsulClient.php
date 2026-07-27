@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Client;
 
 use Erikwang2013\Consul\Api\Acl;
@@ -58,8 +60,8 @@ class ConsulClient
     private ?Discovery $serviceDiscovery = null;
     private ?ConfigCenter $configCenter = null;
 
-    private ?CacheInterface $cache;
-    private ?EventDispatcherInterface $eventDispatcher;
+    private ?CacheInterface $cache = null;
+    private ?EventDispatcherInterface $eventDispatcher = null;
 
     public function __construct(
         array $config = [],

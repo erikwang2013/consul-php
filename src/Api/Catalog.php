@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Api;
 
 use Erikwang2013\Consul\Transport\TransportInterface;
@@ -56,22 +58,22 @@ class Catalog
 
     public function service(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/catalog/service/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/catalog/service/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     public function connect(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/catalog/connect/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/catalog/connect/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     public function node(string $node, array $options = []): array
     {
-        return $this->transport->get("/v1/catalog/node/{$node}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/catalog/node/' . rawurlencode($node), $this->optionsQuery($options));
     }
 
     public function nodeServices(string $node, array $options = []): array
     {
-        return $this->transport->get("/v1/catalog/node-services/{$node}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/catalog/node-services/' . rawurlencode($node), $this->optionsQuery($options));
     }
 
     private function optionsQuery(array $options): array

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Api;
 
 use Erikwang2013\Consul\Transport\TransportInterface;
@@ -40,6 +42,6 @@ class Session
 
     public function renew(string $sessionId, array $options = []): array
     {
-        return $this->transport->put("/v1/session/renew/{$sessionId}", [], $options);
+        return $this->transport->put('/v1/session/renew/' . rawurlencode($sessionId), [], $options);
     }
 }

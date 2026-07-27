@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Erikwang2013\Consul\Api;
 
 use Erikwang2013\Consul\Transport\TransportInterface;
@@ -20,32 +22,32 @@ class Health
 
     public function node(string $node, array $options = []): array
     {
-        return $this->transport->get("/v1/health/node/{$node}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/node/' . rawurlencode($node), $this->optionsQuery($options));
     }
 
     public function checks(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/health/checks/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/checks/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     public function service(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/health/service/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/service/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     public function connect(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/health/connect/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/connect/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     public function state(string $state, array $options = []): array
     {
-        return $this->transport->get("/v1/health/state/{$state}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/state/' . rawurlencode($state), $this->optionsQuery($options));
     }
 
     public function ingress(string $service, array $options = []): array
     {
-        return $this->transport->get("/v1/health/ingress/{$service}", $this->optionsQuery($options));
+        return $this->transport->get('/v1/health/ingress/' . rawurlencode($service), $this->optionsQuery($options));
     }
 
     private function optionsQuery(array $options): array

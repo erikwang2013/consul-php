@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'enable'   => true,
     'base_uri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
