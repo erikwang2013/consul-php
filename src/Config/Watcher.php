@@ -65,7 +65,6 @@ class Watcher
         while ($this->running) {
             try {
                 if ($usePolling) {
-                    sleep($this->pollInterval);
                     /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
                     if (!$this->running) break;
                     $result = $this->kv->all($this->prefix);
@@ -76,7 +75,7 @@ class Watcher
                     }
 
                     $pollSuccesses++;
-                    if ($pollSuccesses >= 5) {
+                    if ($pollSuccesses >= $this->pollInterval) {
                         $usePolling = false;
                         $pollSuccesses = 0;
                     }
@@ -106,8 +105,7 @@ class Watcher
                 $this->logger->error("Watcher error for {$this->prefix}: " . $e->getMessage());
                 /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
                 if (!$this->running) break;
-                sleep(1);
-            }
+                }
         }
     }
 

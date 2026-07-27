@@ -110,8 +110,7 @@ class Discovery
                 $this->logger->warning("Discovery watch error for {$service}: " . $e->getMessage());
                 /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
                 if (!$this->running) break;
-                sleep(1);
-            }
+                }
         }
     }
 
