@@ -22,17 +22,17 @@ class Session
 
     public function destroy(string $sessionId, array $options = []): void
     {
-        $this->transport->put("/v1/session/destroy/{$sessionId}", [], $options);
+        $this->transport->put('/v1/session/destroy/' . rawurlencode($sessionId), [], $options);
     }
 
     public function info(string $sessionId, array $options = []): array
     {
-        return $this->transport->get("/v1/session/info/{$sessionId}", $options);
+        return $this->transport->get('/v1/session/info/' . rawurlencode($sessionId), $options);
     }
 
     public function node(string $node, array $options = []): array
     {
-        return $this->transport->get("/v1/session/node/{$node}", $options);
+        return $this->transport->get('/v1/session/node/' . rawurlencode($node), $options);
     }
 
     public function all(array $options = []): array

@@ -23,25 +23,25 @@ class Kv
     public function get(string $key, array $options = []): ?array
     {
         $query = $this->buildQuery($options);
-        $result = $this->transport->get("/v1/kv/{$key}", $query);
+        $result = $this->transport->get('/v1/kv/' . $this->encodeKey($key), $query);
         return !empty($result) ? $result[0] : null;
     }
 
     public function all(string $prefix = '', array $options = []): array
     {
         $query = $this->buildQuery($options);
-        return $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['recurse' => 'true']));
+        return $this->transport->get('/v1/kv/' . $this->encodeKey($prefix), array_merge($query, ['recurse' => 'true']));
     }
 
     public function put(string $key, string $value, array $options = []): bool
     {
-        $response = $this->transport->put("/v1/kv/{$key}", ['value' => base64_encode($value)], $options);
+        $response = $this->transport->put('/v1/kv/' . $this->encodeKey($key), ['value' => base64_encode($value)], $options);
         return ($response['body'] ?? null) === true;
     }
 
     public function delete(string $key, array $options = []): bool
     {
-        $this->transport->delete("/v1/kv/{$key}", $options);
+        $this->transport->delete('/v1/kv/' . $this->encodeKey($key), $options);
         return true;
     }
 
@@ -51,7 +51,12 @@ class Kv
         if ($separator !== '') {
             $query['separator'] = $separator;
         }
-        return $this->transport->get("/v1/kv/{$prefix}", array_merge($query, ['keys' => 'true']));
+        return $this->transport->get('/v1/kv/' . $this->encodeKey($prefix), array_merge($query, ['keys' => 'true']));
+    }
+
+    private function encodeKey(string $key): string
+    {
+        return str_replace('%2F', '/', rawurlencode($key));
     }
 
     private function buildQuery(array $options): array

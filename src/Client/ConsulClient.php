@@ -62,6 +62,7 @@ class ConsulClient
 
     private ?CacheInterface $cache = null;
     private ?EventDispatcherInterface $eventDispatcher = null;
+    private ?int $cacheTtl = null;
 
     public function __construct(
         array $config = [],
@@ -74,6 +75,7 @@ class ConsulClient
     ) {
         $baseUri = $config['base_uri'] ?? 'http://127.0.0.1:8500';
         $token = $config['token'] ?? null;
+        $this->cacheTtl = $config['cache']['ttl'] ?? null;
 
         if ($httpClient === null) {
             $httpClient = $this->discoverHttpClient();
@@ -123,7 +125,7 @@ class ConsulClient
 
     public function serviceDiscovery(): Discovery
     {
-        return $this->serviceDiscovery ??= new Discovery($this->__get('health'), $this->cache);
+        return $this->serviceDiscovery ??= new Discovery($this->__get('health'), $this->cache, $this->cacheTtl);
     }
 
     public function configCenter(): ConfigCenter
@@ -131,7 +133,7 @@ class ConsulClient
         return $this->configCenter ??= new ConfigCenter(
             $this->__get('kv'),
             $this->cache,
-            300,
+            $this->cacheTtl ?? 300,
             $this->eventDispatcher
         );
     }

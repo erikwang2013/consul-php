@@ -9,6 +9,7 @@ use Erikwang2013\Consul\Exception\ClientException;
 use Erikwang2013\Consul\Exception\NotFoundException;
 use Erikwang2013\Consul\Exception\ConsulRequestException;
 use Erikwang2013\Consul\Exception\ServerException;
+use Erikwang2013\Consul\Exception\UnauthorizedException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -161,12 +162,15 @@ class Psr18Transport implements TransportInterface
             throw new ServerException("Consul server error [$statusCode]: $contents", $statusCode);
         }
 
-        if ($statusCode === 404) {
-            throw new NotFoundException("Not found: $contents", $statusCode);
-        }
+        $class = match ($statusCode) {
+            401 => UnauthorizedException::class,
+            403 => AccessDeniedException::class,
+            404 => NotFoundException::class,
+            default => null,
+        };
 
-        if ($statusCode === 403) {
-            throw new AccessDeniedException("Access denied: $contents", $statusCode);
+        if ($class !== null) {
+            throw new $class("Consul request error [$statusCode]: $contents", $statusCode);
         }
 
         if ($statusCode >= 400) {
@@ -174,6 +178,11 @@ class Psr18Transport implements TransportInterface
         }
     }
 
+    /**
+     * Decode the response body, wrapping scalar JSON values in ['body' => $value]
+     * so callers can consistently access $result['body'] for top-level scalars
+     * (e.g. Kv::put() returns bool, Status::leader() returns string).
+     */
     private function decodeBody(string $contents): array
     {
         if ($contents === '') {
@@ -213,7 +222,7 @@ class Psr18Transport implements TransportInterface
                 ->withHeader('Content-Type', 'application/json');
         }
 
-        $this->logger->debug("Consul request: $method $uri", ['body' => $body]);
+        $this->logger->debug("Consul request: $method $uri");
 
         try {
             $response = $this->httpClient->sendRequest($request);

@@ -22,6 +22,7 @@ class Watcher
     private int $blockingWait = 30;
     private int $pollInterval = 10;
     private bool $running = false;
+    private int $blockingFailures = 0;
 
     public function __construct(
         Kv $kv,
@@ -65,7 +66,7 @@ class Watcher
         while ($this->running) {
             try {
                 if ($usePolling) {
-                    /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+                    /** @phpstan-ignore-next-line */
                     if (!$this->running) break;
                     $result = $this->kv->all($this->prefix);
                     $snapshot = $this->snapshot($result);
@@ -75,20 +76,25 @@ class Watcher
                     }
 
                     $pollSuccesses++;
-                    if ($pollSuccesses >= $this->pollInterval) {
+                    $minPollCycles = $this->blockingFailures > 0
+                        ? $this->pollInterval * min($this->blockingFailures, 5)
+                        : $this->pollInterval;
+                    if ($pollSuccesses >= $minPollCycles) {
                         $usePolling = false;
                         $pollSuccesses = 0;
                     }
                 } else {
                     try {
-                        $response = $this->transport->getWithHeaders('/v1/kv/' . $this->prefix, [
+                        $response = $this->transport->getWithHeaders('/v1/kv/' . rawurlencode($this->prefix), [
                             'recurse' => 'true',
                             'index'   => $index,
                             'wait'    => "{$this->blockingWait}s",
                         ]);
                         $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
                         $result = $response['body'];
+                        $this->blockingFailures = 0;
                     } catch (Throwable $e) {
+                        $this->blockingFailures++;
                         $this->logger->warning("Watcher blocking query failed for {$this->prefix}, falling back to polling: " . $e->getMessage());
                         $usePolling = true;
                         $pollSuccesses = 0;
@@ -103,7 +109,6 @@ class Watcher
                 }
             } catch (Throwable $e) {
                 $this->logger->error("Watcher error for {$this->prefix}: " . $e->getMessage());
-                /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
                 if (!$this->running) break;
                 }
         }

@@ -52,17 +52,7 @@ class Discovery
         $query = array_merge(['passing' => 'true'], $options);
         $result = $this->health->service($service, $query);
 
-        $instances = array_map(function ($entry) {
-            return [
-                'node'    => $entry['Node']['Node'] ?? '',
-                'address' => $entry['Service']['Address'] ?: ($entry['Node']['Address'] ?? ''),
-                'port'    => $entry['Service']['Port'] ?? 0,
-                'service' => $entry['Service']['Service'] ?? '',
-                'id'      => $entry['Service']['ID'] ?? '',
-                'tags'    => $entry['Service']['Tags'] ?? [],
-                'meta'    => $entry['Service']['Meta'] ?? [],
-            ];
-        }, $result);
+        $instances = $this->normalizeInstances($result);
 
         if ($this->cache && !isset($options['index']) && !isset($options['wait'])) {
             $this->cache->set($cacheKey, $instances, $this->cacheTtl);
@@ -82,7 +72,7 @@ class Discovery
         $this->running = true;
         $index = $options['index'] ?? 0;
 
-        /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+        /** @phpstan-ignore-next-line */
         while ($this->running) {
             try {
                 $response = $this->transport->getWithHeaders("/v1/health/service/{$service}", [
@@ -93,22 +83,12 @@ class Discovery
 
                 $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
 
-                $instances = array_map(function ($entry) {
-                    return [
-                        'node'    => $entry['Node']['Node'] ?? '',
-                        'address' => $entry['Service']['Address'] ?: ($entry['Node']['Address'] ?? ''),
-                        'port'    => $entry['Service']['Port'] ?? 0,
-                        'service' => $entry['Service']['Service'] ?? '',
-                        'id'      => $entry['Service']['ID'] ?? '',
-                        'tags'    => $entry['Service']['Tags'] ?? [],
-                        'meta'    => $entry['Service']['Meta'] ?? [],
-                    ];
-                }, $response['body']);
+                $instances = $this->normalizeInstances($response['body']);
 
                 $callback($instances);
             } catch (Throwable $e) {
                 $this->logger->warning("Discovery watch error for {$service}: " . $e->getMessage());
-                /* @phpstan-ignore-next-line running modified by stop() from another coroutine */
+                /** @phpstan-ignore-next-line */
                 if (!$this->running) break;
                 }
         }
@@ -117,5 +97,20 @@ class Discovery
     public function stop(): void
     {
         $this->running = false;
+    }
+
+    private function normalizeInstances(array $entries): array
+    {
+        return array_map(function ($entry) {
+            return [
+                'node'    => $entry['Node']['Node'] ?? '',
+                'address' => $entry['Service']['Address'] ?: ($entry['Node']['Address'] ?? ''),
+                'port'    => $entry['Service']['Port'] ?? 0,
+                'service' => $entry['Service']['Service'] ?? '',
+                'id'      => $entry['Service']['ID'] ?? '',
+                'tags'    => $entry['Service']['Tags'] ?? [],
+                'meta'    => $entry['Service']['Meta'] ?? [],
+            ];
+        }, $entries);
     }
 }

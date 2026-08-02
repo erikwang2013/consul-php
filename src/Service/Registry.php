@@ -34,12 +34,12 @@ class Registry
 
     public function heartbeat(string $serviceId, string $note = ''): void
     {
-        $this->agent->ttlCheckPass("service:{$serviceId}", $note);
+        $this->agent->checkPass("service:{$serviceId}", $note);
     }
 
     public function heartbeatFail(string $serviceId, string $note = ''): void
     {
-        $this->agent->ttlCheckFail("service:{$serviceId}", $note);
+        $this->agent->checkFail("service:{$serviceId}", $note);
     }
 
     public function deregister(string $serviceId): void

@@ -56,7 +56,7 @@ class RegistryTest extends TestCase
     public function testHeartbeat(): void
     {
         $this->agent->expects($this->once())
-            ->method('ttlCheckPass')
+            ->method('checkPass')
             ->with('service:web-1', '');
 
         $this->registry->heartbeat('web-1');
@@ -65,7 +65,7 @@ class RegistryTest extends TestCase
     public function testHeartbeatFail(): void
     {
         $this->agent->expects($this->once())
-            ->method('ttlCheckFail')
+            ->method('checkFail')
             ->with('service:web-1', 'manual fail');
 
         $this->registry->heartbeatFail('web-1', 'manual fail');

@@ -15,8 +15,13 @@ class RoundRobin implements LoadBalancerInterface
         }
 
         $instances = array_values($instances);
-        $index = $this->count % count($instances);
+        $n = count($instances);
+        $index = $this->count % $n;
         $this->count++;
+
+        if ($this->count > 1000000000) {
+            $this->count = 0;
+        }
 
         return $instances[$index];
     }

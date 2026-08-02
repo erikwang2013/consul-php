@@ -102,30 +102,21 @@ class Agent
         $this->transport->put('/v1/agent/check/deregister/' . rawurlencode($checkId));
     }
 
+    /** @deprecated Use checkPass() instead. */
     public function ttlCheckPass(string $checkId, string $note = ''): void
     {
-        $params = [];
-        if ($note !== '') {
-            $params['note'] = $note;
-        }
-        $this->transport->put('/v1/agent/check/pass/' . rawurlencode($checkId), $params);
+        $this->checkPass($checkId, $note);
     }
 
+    /** @deprecated Use checkFail() instead. */
     public function ttlCheckFail(string $checkId, string $note = ''): void
     {
-        $params = [];
-        if ($note !== '') {
-            $params['note'] = $note;
-        }
-        $this->transport->put('/v1/agent/check/fail/' . rawurlencode($checkId), $params);
+        $this->checkFail($checkId, $note);
     }
 
+    /** @deprecated Use checkWarn() instead. */
     public function ttlCheckWarn(string $checkId, string $note = ''): void
     {
-        $params = [];
-        if ($note !== '') {
-            $params['note'] = $note;
-        }
-        $this->transport->put('/v1/agent/check/warn/' . rawurlencode($checkId), $params);
+        $this->checkWarn($checkId, $note);
     }
 }

@@ -65,6 +65,7 @@ class Operator
         if ($method === 'use') {
             return $this->transport->put('/v1/operator/keyring', $body, $query);
         }
+        // Transport::delete() does not support request body; Key sent as query parameter
         return $this->transport->delete('/v1/operator/keyring', array_merge($query, $body));
     }
 }
