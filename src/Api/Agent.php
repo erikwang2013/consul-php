@@ -29,7 +29,11 @@ class Agent
 
     public function maintenance(bool $enable, string $reason = ''): void
     {
-        $this->transport->put('/v1/agent/maintenance', ['enable' => $enable, 'reason' => $reason]);
+        $query = ['enable' => $enable ? 'true' : 'false'];
+        if ($reason !== '') {
+            $query['reason'] = $reason;
+        }
+        $this->transport->put('/v1/agent/maintenance', [], $query);
     }
 
     public function join(string $address, bool $wan = false): void
@@ -65,31 +69,31 @@ class Agent
 
     public function enableMaintenance(string $serviceId, string $reason = ''): void
     {
-        $params = ['enable' => true];
+        $query = ['enable' => 'true'];
         if ($reason !== '') {
-            $params['reason'] = $reason;
+            $query['reason'] = $reason;
         }
-        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), $params);
+        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], $query);
     }
 
     public function disableMaintenance(string $serviceId): void
     {
-        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), ['enable' => false]);
+        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], ['enable' => 'false']);
     }
 
     public function checkPass(string $checkId, string $note = ''): void
     {
-        $this->transport->put('/v1/agent/check/pass/' . rawurlencode($checkId), ['note' => $note]);
+        $this->transport->putRaw('/v1/agent/check/pass/' . rawurlencode($checkId), $note);
     }
 
     public function checkFail(string $checkId, string $note = ''): void
     {
-        $this->transport->put('/v1/agent/check/fail/' . rawurlencode($checkId), ['note' => $note]);
+        $this->transport->putRaw('/v1/agent/check/fail/' . rawurlencode($checkId), $note);
     }
 
     public function checkWarn(string $checkId, string $note = ''): void
     {
-        $this->transport->put('/v1/agent/check/warn/' . rawurlencode($checkId), ['note' => $note]);
+        $this->transport->putRaw('/v1/agent/check/warn/' . rawurlencode($checkId), $note);
     }
 
     public function checkRegister(array $check): void

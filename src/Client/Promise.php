@@ -23,7 +23,10 @@ class Promise
 
     public function then(callable $onFulfilled): self
     {
-        if ($this->resolved && $this->exception === null) {
+        if ($this->resolved) {
+            if ($this->exception !== null) {
+                throw $this->exception;
+            }
             $onFulfilled($this->value);
             return $this;
         }
@@ -34,8 +37,10 @@ class Promise
 
     public function catch(callable $onRejected): self
     {
-        if ($this->resolved && $this->exception !== null) {
-            $onRejected($this->exception);
+        if ($this->resolved) {
+            if ($this->exception !== null) {
+                $onRejected($this->exception);
+            }
             return $this;
         }
 
@@ -45,6 +50,10 @@ class Promise
 
     public function wait(): mixed
     {
+        if ($this->resolved && $this->exception !== null) {
+            throw $this->exception;
+        }
+
         if (!$this->resolved) {
             try {
                 $this->value = ($this->executor)();

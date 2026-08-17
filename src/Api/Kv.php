@@ -22,6 +22,10 @@ class Kv
 
     public function get(string $key, array $options = []): ?array
     {
+        if (isset($options['raw'])) {
+            $raw = $this->transport->getRaw('/v1/kv/' . $this->encodeKey($key), $this->buildQuery($options));
+            return ['body' => $raw];
+        }
         $query = $this->buildQuery($options);
         $result = $this->transport->get('/v1/kv/' . $this->encodeKey($key), $query);
         return !empty($result) ? $result[0] : null;
@@ -35,7 +39,7 @@ class Kv
 
     public function put(string $key, string $value, array $options = []): bool
     {
-        $response = $this->transport->put('/v1/kv/' . $this->encodeKey($key), ['value' => base64_encode($value)], $options);
+        $response = $this->transport->putRaw('/v1/kv/' . $this->encodeKey($key), $value, $options);
         return ($response['body'] ?? null) === true;
     }
 
@@ -54,7 +58,10 @@ class Kv
         return $this->transport->get('/v1/kv/' . $this->encodeKey($prefix), array_merge($query, ['keys' => 'true']));
     }
 
-    private function encodeKey(string $key): string
+    /**
+     * URL-encode a Consul KV key, preserving path separators (public: used by Config\Watcher).
+     */
+    public function encodeKey(string $key): string
     {
         return str_replace('%2F', '/', rawurlencode($key));
     }

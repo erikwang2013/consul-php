@@ -23,7 +23,7 @@ class ConfigCenter
     ) {
         $this->kv = $kv;
         $this->cache = $cache;
-        $this->cacheTtl = $cacheTtl;
+        $this->cacheTtl = $cacheTtl ?? 300;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -86,12 +86,35 @@ class ConfigCenter
 
     public function set(string $key, string $value): bool
     {
-        return $this->kv->put($key, $value);
+        $ok = $this->kv->put($key, $value);
+        if ($ok) {
+            $this->invalidate($key);
+        }
+        return $ok;
     }
 
     public function delete(string $key): bool
     {
-        return $this->kv->delete($key);
+        $ok = $this->kv->delete($key);
+        if ($ok) {
+            $this->invalidate($key);
+        }
+        return $ok;
+    }
+
+    private function invalidate(string $key): void
+    {
+        if (!$this->cache) {
+            return;
+        }
+
+        $this->cache->delete("consul:config:{$key}");
+
+        $prefix = '';
+        foreach (explode('/', $key) as $part) {
+            $prefix = $prefix === '' ? $part : $prefix . '/' . $part;
+            $this->cache->delete("consul:config:ns:{$prefix}");
+        }
     }
 
     public function watch(string $prefix): Watcher

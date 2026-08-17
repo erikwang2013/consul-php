@@ -20,6 +20,8 @@ use Throwable;
 
 class Psr18Transport implements TransportInterface
 {
+    private const MAX_ERROR_BODY_LENGTH = 200;
+
     private ClientInterface $httpClient;
     private RequestFactoryInterface $requestFactory;
     private StreamFactoryInterface $streamFactory;
@@ -82,7 +84,7 @@ class Psr18Transport implements TransportInterface
 
         $request = $this->requestFactory->createRequest('GET', $uri);
 
-        if ($this->token !== null) {
+        if ($this->token !== null && $this->token !== '') {
             $request = $request->withHeader('X-Consul-Token', $this->token);
         }
 
@@ -91,7 +93,8 @@ class Psr18Transport implements TransportInterface
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (Throwable $e) {
-            throw new ClientException("HTTP transport error: " . $e->getMessage(), 0, $e);
+            $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
+            throw new ClientException('HTTP transport error', 0, $e);
         }
 
         $statusCode = $response->getStatusCode();
@@ -122,7 +125,7 @@ class Psr18Transport implements TransportInterface
 
         $request = $this->requestFactory->createRequest($method, $uri);
 
-        if ($this->token !== null) {
+        if ($this->token !== null && $this->token !== '') {
             $request = $request->withHeader('X-Consul-Token', $this->token);
         }
 
@@ -137,7 +140,8 @@ class Psr18Transport implements TransportInterface
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (Throwable $e) {
-            throw new ClientException("HTTP transport error: " . $e->getMessage(), 0, $e);
+            $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
+            throw new ClientException('HTTP transport error', 0, $e);
         }
 
         $statusCode = $response->getStatusCode();
@@ -158,8 +162,10 @@ class Psr18Transport implements TransportInterface
 
     private function checkStatus(int $statusCode, string $contents): void
     {
+        $body = $this->truncateErrorBody($contents);
+
         if ($statusCode >= 500) {
-            throw new ServerException("Consul server error [$statusCode]: $contents", $statusCode);
+            throw new ServerException("Consul server error [$statusCode]: $body", $statusCode);
         }
 
         $class = match ($statusCode) {
@@ -170,12 +176,20 @@ class Psr18Transport implements TransportInterface
         };
 
         if ($class !== null) {
-            throw new $class("Consul request error [$statusCode]: $contents", $statusCode);
+            throw new $class("Consul request error [$statusCode]: $body", $statusCode);
         }
 
         if ($statusCode >= 400) {
-            throw new ConsulRequestException("Consul request error [$statusCode]: $contents", $statusCode);
+            throw new ConsulRequestException("Consul request error [$statusCode]: $body", $statusCode);
         }
+    }
+
+    private function truncateErrorBody(string $contents): string
+    {
+        if (strlen($contents) <= self::MAX_ERROR_BODY_LENGTH) {
+            return $contents;
+        }
+        return substr($contents, 0, self::MAX_ERROR_BODY_LENGTH) . '...';
     }
 
     /**
@@ -208,7 +222,7 @@ class Psr18Transport implements TransportInterface
 
         $request = $this->requestFactory->createRequest($method, $uri);
 
-        if ($this->token !== null) {
+        if ($this->token !== null && $this->token !== '') {
             $request = $request->withHeader('X-Consul-Token', $this->token);
         }
 
@@ -227,7 +241,8 @@ class Psr18Transport implements TransportInterface
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (Throwable $e) {
-            throw new ClientException("HTTP transport error: " . $e->getMessage(), 0, $e);
+            $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
+            throw new ClientException('HTTP transport error', 0, $e);
         }
 
         $statusCode = $response->getStatusCode();

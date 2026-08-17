@@ -79,9 +79,11 @@ class Registry
                 'GRPC'     => $check['grpc'],
                 'Interval' => $check['interval'] ?? '10s',
             ];
+        } else {
+            throw new \InvalidArgumentException('Unsupported check type: must be one of ttl, http, tcp, grpc');
         }
 
-        if (isset($payload['Check'], $check['timeout'])) {
+        if (isset($check['timeout'])) {
             $payload['Check']['Timeout'] = $check['timeout'];
         }
 

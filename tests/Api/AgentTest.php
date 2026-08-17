@@ -81,4 +81,40 @@ class AgentTest extends TestCase
 
         $this->assertArrayHasKey('web', $result);
     }
+
+    public function testMaintenanceUsesQueryParameters(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/agent/maintenance', [], ['enable' => 'true', 'reason' => 'upgrade']);
+
+        $this->agent->maintenance(true, 'upgrade');
+    }
+
+    public function testMaintenanceDisableUsesQueryParameters(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/agent/maintenance', [], ['enable' => 'false']);
+
+        $this->agent->maintenance(false);
+    }
+
+    public function testEnableMaintenanceUsesQueryParameters(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/agent/service/maintenance/web-1', [], ['enable' => 'true', 'reason' => 'deploy']);
+
+        $this->agent->enableMaintenance('web-1', 'deploy');
+    }
+
+    public function testDisableMaintenanceUsesQueryParameters(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/agent/service/maintenance/web-1', [], ['enable' => 'false']);
+
+        $this->agent->disableMaintenance('web-1');
+    }
 }

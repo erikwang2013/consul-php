@@ -33,7 +33,7 @@ class Discovery
         $this->health = $health;
         $this->transport = $health->getTransport();
         $this->cache = $cache;
-        $this->cacheTtl = $cacheTtl;
+        $this->cacheTtl = $cacheTtl ?? 300;
         $this->loadBalancer = $loadBalancer ?? new RoundRobin();
         $this->logger = $logger ?? new NullLogger();
     }
@@ -41,6 +41,11 @@ class Discovery
     public function healthyInstances(string $service, array $options = []): array
     {
         $cacheKey = "consul:discovery:{$service}";
+        $opts = $options;
+        unset($opts['index'], $opts['wait']);
+        if (!empty($opts)) {
+            $cacheKey .= ':' . md5(json_encode($opts));
+        }
 
         if ($this->cache && !isset($options['index']) && !isset($options['wait'])) {
             $cached = $this->cache->get($cacheKey);
@@ -75,7 +80,7 @@ class Discovery
         /** @phpstan-ignore-next-line */
         while ($this->running) {
             try {
-                $response = $this->transport->getWithHeaders("/v1/health/service/{$service}", [
+                $response = $this->transport->getWithHeaders('/v1/health/service/' . rawurlencode($service), [
                     'passing' => 'true',
                     'index'   => $index,
                     'wait'    => $options['wait'] ?? '30s',
@@ -88,9 +93,8 @@ class Discovery
                 $callback($instances);
             } catch (Throwable $e) {
                 $this->logger->warning("Discovery watch error for {$service}: " . $e->getMessage());
-                /** @phpstan-ignore-next-line */
-                if (!$this->running) break;
-                }
+                sleep(1);
+            }
         }
     }
 

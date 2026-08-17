@@ -4,6 +4,7 @@ namespace Erikwang2013\Consul\Tests\Service;
 
 use Erikwang2013\Consul\Api\Health;
 use Erikwang2013\Consul\Service\Discovery;
+use Erikwang2013\Consul\Tests\Support\ArrayCache;
 use PHPUnit\Framework\TestCase;
 
 class DiscoveryTest extends TestCase
@@ -78,5 +79,49 @@ class DiscoveryTest extends TestCase
         $instance = $this->discovery->selectInstance('no-service');
 
         $this->assertNull($instance);
+    }
+
+    public function testCacheKeyDistinguishesDatacenter(): void
+    {
+        $cache = new ArrayCache();
+        $discovery = new Discovery($this->health, $cache, 60);
+        $this->health->method('service')->willReturn([
+            [
+                'Node'    => ['Node' => 'node1', 'Address' => '10.0.0.1'],
+                'Service' => ['Service' => 'user-service', 'Address' => '10.0.0.1', 'Port' => 8080, 'ID' => 'user-1', 'Tags' => [], 'Meta' => []],
+            ],
+        ]);
+
+        $discovery->healthyInstances('user-service', ['dc' => 'dc1']);
+        $discovery->healthyInstances('user-service', ['dc' => 'dc2']);
+
+        $this->assertSame(
+            ['consul:discovery:user-service:' . md5(json_encode(['dc' => 'dc1'])), 'consul:discovery:user-service:' . md5(json_encode(['dc' => 'dc2']))],
+            $cache->keys()
+        );
+        $this->assertFalse($cache->has('consul:discovery:user-service'));
+    }
+
+    public function testWithoutOptionsUsesPlainCacheKeyAndHits(): void
+    {
+        $cache = new ArrayCache();
+        $discovery = new Discovery($this->health, $cache, 60);
+
+        $calls = 0;
+        $this->health->method('service')->willReturnCallback(function () use (&$calls) {
+            $calls++;
+            return [
+                [
+                    'Node'    => ['Node' => 'node1', 'Address' => '10.0.0.1'],
+                    'Service' => ['Service' => 'user-service', 'Address' => '10.0.0.1', 'Port' => 8080, 'ID' => 'user-1', 'Tags' => [], 'Meta' => []],
+                ],
+            ];
+        });
+
+        $discovery->healthyInstances('user-service');
+        $discovery->healthyInstances('user-service');
+
+        $this->assertSame(1, $calls);
+        $this->assertSame(['consul:discovery:user-service'], $cache->keys());
     }
 }

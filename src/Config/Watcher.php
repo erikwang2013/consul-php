@@ -64,10 +64,8 @@ class Watcher
         $pollSuccesses = 0;
 
         while ($this->running) {
-            try {
-                if ($usePolling) {
-                    /** @phpstan-ignore-next-line */
-                    if (!$this->running) break;
+            if ($usePolling) {
+                try {
                     $result = $this->kv->all($this->prefix);
                     $snapshot = $this->snapshot($result);
                     if ($snapshot !== $lastSnapshot) {
@@ -83,34 +81,34 @@ class Watcher
                         $usePolling = false;
                         $pollSuccesses = 0;
                     }
-                } else {
-                    try {
-                        $response = $this->transport->getWithHeaders('/v1/kv/' . rawurlencode($this->prefix), [
-                            'recurse' => 'true',
-                            'index'   => $index,
-                            'wait'    => "{$this->blockingWait}s",
-                        ]);
-                        $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
-                        $result = $response['body'];
-                        $this->blockingFailures = 0;
-                    } catch (Throwable $e) {
-                        $this->blockingFailures++;
-                        $this->logger->warning("Watcher blocking query failed for {$this->prefix}, falling back to polling: " . $e->getMessage());
-                        $usePolling = true;
-                        $pollSuccesses = 0;
-                        continue;
-                    }
+                } catch (Throwable $e) {
+                    $this->logger->warning("Watcher polling failed for {$this->prefix}: " . $e->getMessage());
+                }
+                sleep($this->pollInterval);
+            } else {
+                try {
+                    $response = $this->transport->getWithHeaders('/v1/kv/' . $this->kv->encodeKey($this->prefix), [
+                        'recurse' => 'true',
+                        'index'   => $index,
+                        'wait'    => "{$this->blockingWait}s",
+                    ]);
+                    $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
+                    $result = $response['body'];
+                    $this->blockingFailures = 0;
+                } catch (Throwable $e) {
+                    $this->blockingFailures++;
+                    $this->logger->warning("Watcher blocking query failed for {$this->prefix}, falling back to polling: " . $e->getMessage());
+                    $usePolling = true;
+                    $pollSuccesses = 0;
+                    continue;
+                }
 
-                    $snapshot = $this->snapshot($result);
-                    if ($snapshot !== $lastSnapshot) {
-                        $lastSnapshot = $snapshot;
-                        $this->notify($snapshot);
-                    }
+                $snapshot = $this->snapshot($result);
+                if ($snapshot !== $lastSnapshot) {
+                    $lastSnapshot = $snapshot;
+                    $this->notify($snapshot);
                 }
-            } catch (Throwable $e) {
-                $this->logger->error("Watcher error for {$this->prefix}: " . $e->getMessage());
-                if (!$this->running) break;
-                }
+            }
         }
     }
 
@@ -135,7 +133,11 @@ class Watcher
     private function notify(array $snapshot): void
     {
         foreach ($this->callbacks as $cb) {
-            $cb($snapshot);
+            try {
+                $cb($snapshot);
+            } catch (Throwable $e) {
+                $this->logger->error("Watcher callback error: " . $e->getMessage());
+            }
         }
 
         if ($this->dispatcher) {

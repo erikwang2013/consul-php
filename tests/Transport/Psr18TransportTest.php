@@ -263,4 +263,114 @@ class Psr18TransportTest extends TestCase
 
         $this->assertSame([], $result);
     }
+
+    public function testEmptyTokenDoesNotSetHeader(): void
+    {
+        $transport = new Psr18Transport(
+            $this->httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            'http://127.0.0.1:8500',
+            ''
+        );
+
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('getBody')->willReturn($this->createStreamWithContent('[]'));
+
+        $request->expects($this->never())->method('withHeader');
+
+        $this->requestFactory->method('createRequest')->willReturn($request);
+        $this->httpClient->method('sendRequest')->willReturn($response);
+
+        $result = $transport->get('/v1/kv/test');
+
+        $this->assertSame([], $result);
+    }
+
+    public function testGetRawReturnsRawString(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('getBody')->willReturn($this->createStreamWithContent('raw-value'));
+
+        $this->requestFactory->method('createRequest')
+            ->with('GET', 'http://127.0.0.1:8500/v1/kv/key?raw=true')
+            ->willReturn($request);
+        $this->httpClient->method('sendRequest')->with($request)->willReturn($response);
+
+        $result = $this->transport->getRaw('/v1/kv/key', ['raw' => 'true']);
+
+        $this->assertSame('raw-value', $result);
+    }
+
+    public function testPutRawSendsRawBodyWithOctetStreamContentType(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('getBody')->willReturn($this->createStreamWithContent('{"body":true}'));
+
+        $request->method('withBody')->willReturn($request);
+        $request->method('withHeader')
+            ->with('Content-Type', 'application/octet-stream')
+            ->willReturn($request);
+
+        $this->requestFactory->method('createRequest')
+            ->with('PUT', 'http://127.0.0.1:8500/v1/kv/key')
+            ->willReturn($request);
+
+        $stream = $this->createMock(StreamInterface::class);
+        $this->streamFactory->method('createStream')->with('raw-data')->willReturn($stream);
+
+        $this->httpClient->method('sendRequest')->willReturn($response);
+
+        $result = $this->transport->putRaw('/v1/kv/key', 'raw-data');
+
+        $this->assertSame(['body' => true], $result);
+    }
+
+    public function testGetWithHeadersReturnsHeadersAndBody(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(200);
+        $response->method('getBody')->willReturn($this->createStreamWithContent('[{"Key":"k"}]'));
+        $response->method('getHeaders')->willReturn([
+            'X-Consul-Index' => ['42'],
+            'Content-Type' => ['application/json'],
+        ]);
+
+        $this->requestFactory->method('createRequest')
+            ->with('GET', 'http://127.0.0.1:8500/v1/kv/key?index=42&wait=30s')
+            ->willReturn($request);
+        $this->httpClient->method('sendRequest')->with($request)->willReturn($response);
+
+        $result = $this->transport->getWithHeaders('/v1/kv/key', ['index' => '42', 'wait' => '30s']);
+
+        $this->assertSame('42', $result['headers']['X-Consul-Index']);
+        $this->assertSame([['Key' => 'k']], $result['body']);
+    }
+
+    public function testServerErrorBodyIsTruncated(): void
+    {
+        $request = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getStatusCode')->willReturn(500);
+        $response->method('getBody')->willReturn($this->createStreamWithContent(str_repeat('x', 1000)));
+
+        $this->requestFactory->method('createRequest')->willReturn($request);
+        $this->httpClient->method('sendRequest')->willReturn($response);
+
+        try {
+            $this->transport->get('/v1/status/leader');
+            $this->fail('Expected ServerException');
+        } catch (ServerException $e) {
+            // "Consul server error [500]: " (27) + 200 + "..." (3) = 230
+            $this->assertLessThanOrEqual(230, strlen($e->getMessage()));
+            $this->assertStringContainsString('...', $e->getMessage());
+        }
+    }
 }

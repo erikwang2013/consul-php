@@ -54,15 +54,30 @@ class KvTest extends TestCase
         $this->assertCount(2, $result);
     }
 
-    public function testPutEncodesValue(): void
+    public function testPutStoresRawValue(): void
     {
-        $this->transport->method('put')
-            ->with('/v1/kv/key', ['value' => base64_encode('data')], [])
+        $this->transport->expects($this->once())
+            ->method('putRaw')
+            ->with('/v1/kv/key', 'data', [])
             ->willReturn(['body' => true]);
+        $this->transport->expects($this->never())->method('put');
 
         $result = $this->kv->put('key', 'data');
 
         $this->assertTrue($result);
+    }
+
+    public function testGetWithRawOptionReturnsRawBody(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('getRaw')
+            ->with('/v1/kv/key', ['raw' => 'true'])
+            ->willReturn('raw-data');
+        $this->transport->expects($this->never())->method('get');
+
+        $result = $this->kv->get('key', ['raw' => true]);
+
+        $this->assertSame(['body' => 'raw-data'], $result);
     }
 
     public function testKeysReturnsKeyList(): void

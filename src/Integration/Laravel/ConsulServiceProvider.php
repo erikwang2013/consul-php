@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Erikwang2013\Consul\Integration\Laravel;
 
 use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\ClientFactory;
 use Illuminate\Support\ServiceProvider;
 
 class ConsulServiceProvider extends ServiceProvider
@@ -16,15 +17,13 @@ class ConsulServiceProvider extends ServiceProvider
         $this->app->singleton(ConsulClient::class, function ($app) {
             $config = $app['config']['consul'];
 
-            return new ConsulClient(
+            return ClientFactory::create(
                 $config,
-                $app->make(\Psr\Http\Client\ClientInterface::class),
-                $app->make(\Psr\Http\Message\RequestFactoryInterface::class),
-                $app->make(\Psr\Http\Message\StreamFactoryInterface::class),
-                $app->make(\Psr\Log\LoggerInterface::class),
-                ($config['cache']['enable'] ?? false) && $app->bound(\Psr\SimpleCache\CacheInterface::class)
-                    ? $app->make(\Psr\SimpleCache\CacheInterface::class)
-                    : null,
+                $app->bound(\Psr\Http\Client\ClientInterface::class) ? $app->make(\Psr\Http\Client\ClientInterface::class) : null,
+                $app->bound(\Psr\Http\Message\RequestFactoryInterface::class) ? $app->make(\Psr\Http\Message\RequestFactoryInterface::class) : null,
+                $app->bound(\Psr\Http\Message\StreamFactoryInterface::class) ? $app->make(\Psr\Http\Message\StreamFactoryInterface::class) : null,
+                $app->bound(\Psr\Log\LoggerInterface::class) ? $app->make(\Psr\Log\LoggerInterface::class) : null,
+                $app->bound(\Psr\SimpleCache\CacheInterface::class) ? $app->make(\Psr\SimpleCache\CacheInterface::class) : null,
                 $app->bound(\Psr\EventDispatcher\EventDispatcherInterface::class)
                     ? $app->make(\Psr\EventDispatcher\EventDispatcherInterface::class)
                     : null

@@ -5,6 +5,7 @@ namespace Erikwang2013\Consul\Tests\Config;
 use Erikwang2013\Consul\Api\Kv;
 use Erikwang2013\Consul\Config\ConfigCenter;
 use Erikwang2013\Consul\Config\Watcher;
+use Erikwang2013\Consul\Tests\Support\ArrayCache;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCenterTest extends TestCase
@@ -71,5 +72,39 @@ class ConfigCenterTest extends TestCase
         $watcher = $this->config->watch('app/');
 
         $this->assertInstanceOf(Watcher::class, $watcher);
+    }
+
+    public function testSetInvalidatesCachedValue(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->method('get')->willReturnOnConsecutiveCalls(
+            ['Key' => 'app/key', 'Value' => base64_encode('old')],
+            ['Key' => 'app/key', 'Value' => base64_encode('new')]
+        );
+        $this->kv->method('put')->with('app/key', 'new')->willReturn(true);
+
+        $this->assertSame('old', $config->get('app/key')); // primed from kv, cached
+        $this->assertTrue($config->set('app/key', 'new'));
+        $this->assertNull($cache->get('consul:config:app/key')); // invalidated
+        $this->assertSame('new', $config->get('app/key')); // refetched from kv, not stale cache
+    }
+
+    public function testDeleteInvalidatesCachedValue(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->method('get')->willReturnOnConsecutiveCalls(
+            ['Key' => 'app/key', 'Value' => base64_encode('old')],
+            null
+        );
+        $this->kv->method('delete')->with('app/key')->willReturn(true);
+
+        $this->assertSame('old', $config->get('app/key')); // primed from kv, cached
+        $this->assertTrue($config->delete('app/key'));
+        $this->assertNull($cache->get('consul:config:app/key')); // invalidated
+        $this->assertSame('fallback', $config->get('app/key', 'fallback')); // cache miss -> kv -> default
     }
 }

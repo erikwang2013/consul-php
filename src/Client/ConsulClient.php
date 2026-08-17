@@ -16,6 +16,7 @@ use Erikwang2013\Consul\Api\Session;
 use Erikwang2013\Consul\Api\Snapshot;
 use Erikwang2013\Consul\Api\Status;
 use Erikwang2013\Consul\Config\ConfigCenter;
+use Erikwang2013\Consul\Exception\ConsulException;
 use Erikwang2013\Consul\Service\Discovery;
 use Erikwang2013\Consul\Service\Registry;
 use Erikwang2013\Consul\Transport\Psr18Transport;
@@ -114,7 +115,7 @@ class ConsulClient
             'coordinate' => $this->coordinate ??= new Coordinate($this->transport),
             'operator'  => $this->operator ??= new Operator($this->transport),
             'snapshot'  => $this->snapshot ??= new Snapshot($this->transport),
-            default     => throw new RuntimeException("Unknown API module: {$name}"),
+            default     => throw new ConsulException("Unknown API module: {$name}"),
         };
     }
 
@@ -133,37 +134,47 @@ class ConsulClient
         return $this->configCenter ??= new ConfigCenter(
             $this->__get('kv'),
             $this->cache,
-            $this->cacheTtl ?? 300,
+            $this->cacheTtl,
             $this->eventDispatcher
         );
     }
 
+    /**
+     * @return mixed
+     */
+    private function discover(string $class, string $method, string $errorMessage)
+    {
+        if (class_exists($class)) {
+            return $class::$method();
+        }
+
+        throw new RuntimeException($errorMessage);
+    }
+
     private function discoverHttpClient(): ClientInterface
     {
-        $class = 'Http\Discovery\Psr18ClientDiscovery';
-        if (class_exists($class)) {
-            return $class::find();
-        }
-        throw new RuntimeException(
+        return $this->discover(
+            'Http\Discovery\Psr18ClientDiscovery',
+            'find',
             'No PSR-18 HTTP client found. Require php-http/discovery and guzzlehttp/guzzle, or inject manually.'
         );
     }
 
     private function discoverRequestFactory(): RequestFactoryInterface
     {
-        $class = 'Http\Discovery\Psr17FactoryDiscovery';
-        if (class_exists($class)) {
-            return $class::findRequestFactory();
-        }
-        throw new RuntimeException('No PSR-17 request factory found.');
+        return $this->discover(
+            'Http\Discovery\Psr17FactoryDiscovery',
+            'findRequestFactory',
+            'No PSR-17 request factory found.'
+        );
     }
 
     private function discoverStreamFactory(): StreamFactoryInterface
     {
-        $class = 'Http\Discovery\Psr17FactoryDiscovery';
-        if (class_exists($class)) {
-            return $class::findStreamFactory();
-        }
-        throw new RuntimeException('No PSR-17 stream factory found.');
+        return $this->discover(
+            'Http\Discovery\Psr17FactoryDiscovery',
+            'findStreamFactory',
+            'No PSR-17 stream factory found.'
+        );
     }
 }
