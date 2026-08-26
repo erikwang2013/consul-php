@@ -21,7 +21,7 @@ class Snapshot
         if (isset($options['dc'])) {
             $query['dc'] = $options['dc'];
         }
-        if (isset($options['stale'])) {
+        if (!empty($options['stale'])) {
             $query['stale'] = 'true';
         }
         return $this->transport->getRaw('/v1/snapshot', $query);

@@ -69,4 +69,85 @@ class PromiseTest extends TestCase
         $this->assertSame($promise, $result);
         $this->assertFalse($caught);
     }
+
+    public function testExecutorRunsOnlyOnceAcrossMultipleWaits(): void
+    {
+        $runs = 0;
+        $promise = new Promise(function () use (&$runs) {
+            $runs++;
+            return 'value';
+        });
+
+        $this->assertSame('value', $promise->wait());
+        $this->assertSame('value', $promise->wait());
+        $this->assertSame(1, $runs);
+    }
+
+    public function testThenRegisteredAfterResolutionRunsImmediately(): void
+    {
+        $promise = new Promise(function () {
+            return 7;
+        });
+        $promise->wait();
+
+        $received = null;
+        $promise->then(function ($value) use (&$received) {
+            $received = $value;
+        });
+
+        $this->assertSame(7, $received);
+    }
+
+    public function testCatchRegisteredAfterRejectionRunsImmediately(): void
+    {
+        $promise = $this->rejectedPromise();
+        try {
+            $promise->wait();
+        } catch (RuntimeException $e) {
+        }
+
+        $caught = null;
+        $promise->catch(function ($e) use (&$caught) {
+            $caught = $e->getMessage();
+        });
+
+        $this->assertSame('boom', $caught);
+    }
+
+    public function testMultipleThenCallbacksRunInOrderOnWait(): void
+    {
+        $order = [];
+        $promise = new Promise(function () {
+            return 'x';
+        });
+        $promise->then(function () use (&$order) {
+            $order[] = 'first';
+        });
+        $promise->then(function () use (&$order) {
+            $order[] = 'second';
+        });
+
+        $promise->wait();
+
+        $this->assertSame(['first', 'second'], $order);
+    }
+
+    public function testThenReturnsSelfForChaining(): void
+    {
+        $promise = new Promise(function () {
+            return 1;
+        });
+
+        $this->assertSame($promise, $promise->then(function ($v) {
+        }));
+    }
+
+    public function testWaitReturnsNullValueOnFulfilledPromise(): void
+    {
+        $promise = new Promise(function () {
+            return null;
+        });
+
+        $this->assertNull($promise->wait());
+    }
 }

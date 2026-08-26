@@ -2,8 +2,11 @@
 
 namespace Erikwang2013\Consul\Tests\Client;
 
+use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Api\Snapshot;
 use Erikwang2013\Consul\Client\ConsulAsyncClient;
 use Erikwang2013\Consul\Client\Promise;
+use Erikwang2013\Consul\Exception\ConsulException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -89,5 +92,30 @@ class ConsulAsyncClientTest extends TestCase
     public function testConfigCenter(): void
     {
         $this->assertInstanceOf(\Erikwang2013\Consul\Config\ConfigCenter::class, $this->client->configCenter());
+    }
+
+    public function testMagicGetDelegatesToSyncClient(): void
+    {
+        $this->assertInstanceOf(Kv::class, $this->client->kv);
+        $this->assertInstanceOf(Snapshot::class, $this->client->snapshot);
+    }
+
+    public function testUnknownPropertyThrowsConsulException(): void
+    {
+        $this->expectException(ConsulException::class);
+        $this->client->unknown;
+    }
+
+    public function testWrapRunsExecutorLazilyOnWait(): void
+    {
+        $executed = false;
+        $promise = $this->client->wrap(function () use (&$executed) {
+            $executed = true;
+            return 'done';
+        });
+
+        $this->assertFalse($executed);
+        $this->assertSame('done', $promise->wait());
+        $this->assertTrue($executed);
     }
 }

@@ -1,0 +1,359 @@
+Acl (Erikwang2013\Consul\Tests\Api\Acl)
+ [x] Bootstrap
+ [x] Bootstrap propagates transport error
+ [x] Replication
+ [x] Translate
+ [x] Translate encodes accessor id
+ [x] Token list
+ [x] Token create
+ [x] Token read
+ [x] Token update
+ [x] Token delete
+ [x] Token delete encodes accessor id
+ [x] Token clone
+ [x] Role list
+ [x] Role create
+ [x] Role read
+ [x] Role update
+ [x] Role delete
+ [x] Policy list
+ [x] Policy create
+ [x] Policy read
+ [x] Policy update
+ [x] Policy delete
+ [x] Auth method list
+ [x] Auth method create
+ [x] Auth method read
+ [x] Auth method read encodes name
+ [x] Auth method update
+ [x] Auth method delete
+ [x] Login
+ [x] Logout
+
+Agent (Erikwang2013\Consul\Tests\Api\Agent)
+ [x] Members
+ [x] Members with wan
+ [x] Members propagates transport error
+ [x] Self
+ [x] Maintenance uses query parameters
+ [x] Maintenance without reason
+ [x] Maintenance disable uses query parameters
+ [x] Join
+ [x] Join with wan
+ [x] Join encodes address
+ [x] Force leave
+ [x] Checks
+ [x] Services
+ [x] Register service
+ [x] Deregister service
+ [x] Enable maintenance uses query parameters
+ [x] Enable maintenance without reason
+ [x] Disable maintenance uses query parameters
+ [x] Check pass sends note as query parameter
+ [x] Check pass without note
+ [x] Check fail sends note as query parameter
+ [x] Check warn sends note as query parameter
+ [x] Check pass encodes check id
+ [x] Check register
+ [x] Check deregister
+ [x] Ttl check pass delegates
+ [x] Ttl check fail delegates
+ [x] Ttl check warn delegates
+
+Catalog (Erikwang2013\Consul\Tests\Api\Catalog)
+ [x] Register with node and service
+ [x] Register with full options
+ [x] Register service address defaults to node address
+ [x] Register with check
+ [x] Deregister
+ [x] Deregister without service id
+ [x] Deregister with datacenter
+ [x] Services
+ [x] Services with dc
+ [x] Service nodes
+ [x] Service with options
+ [x] Service url encodes special characters
+ [x] Nodes
+ [x] Nodes returns empty array
+ [x] Connect
+ [x] Node
+ [x] Node services
+ [x] Node services url encodes special characters
+
+Config Center (Erikwang2013\Consul\Tests\Config\ConfigCenter)
+ [x] Get returns decoded value
+ [x] Get returns default when missing
+ [x] Namespace returns key value map
+ [x] Set
+ [x] Watch returns watcher
+ [x] Set invalidates cached value
+ [x] Delete invalidates cached value
+ [x] Get hits cache without calling kv
+ [x] Get returns default when value is not base 64
+ [x] Get returns empty string when kv entry has no value
+ [x] Namespace uses cache
+ [x] Namespace keeps raw value when not base 64
+ [x] Set failure does not invalidate cache
+ [x] Delete failure does not invalidate cache
+ [x] Delete invalidates all namespace prefix levels
+ [x] Watch passes dispatcher to watcher
+
+Consul Async Client (Erikwang2013\Consul\Tests\Client\ConsulAsyncClient)
+ [x] Constructor
+ [x] Wrap returns promise
+ [x] Promise then
+ [x] Promise catch
+ [x] Service registry
+ [x] Service discovery
+ [x] Config center
+ [x] Magic get delegates to sync client
+ [x] Unknown property throws consul exception
+ [x] Wrap runs executor lazily on wait
+
+Consul Client (Erikwang2013\Consul\Tests\Client\ConsulClient)
+ [x] Constructor with manual dependencies
+ [x] Property access returns api modules
+ [x] All eleven api modules are dispatchable
+ [x] Api module is lazily created and cached
+ [x] Service registry is cached
+ [x] Service discovery
+ [x] Config center
+ [x] Unknown property throws consul exception
+ [x] Unknown property on each access throws
+
+Coordinate (Erikwang2013\Consul\Tests\Api\Coordinate)
+ [x] Datacenters
+ [x] Datacenters returns empty array
+ [x] Datacenters returns coord fields
+ [x] Nodes
+ [x] Nodes with dc
+ [x] Nodes with multiple options
+ [x] Nodes returns empty array
+ [x] Node
+ [x] Node with options
+ [x] Node url encodes special characters
+ [x] Node returns coord structure
+
+Discovery (Erikwang2013\Consul\Tests\Service\Discovery)
+ [x] Healthy instances
+ [x] Healthy instances uses node address when service address is empty
+ [x] Select instance
+ [x] Select instance returns null when no service
+ [x] Cache key distinguishes datacenter
+ [x] Without options uses plain cache key and hits
+ [x] Healthy instances with index option skips cache
+ [x] Select instance uses provided load balancer
+ [x] Watch loops with index progression until stopped
+ [x] Watch error is logged and loop continues
+
+End To End (Erikwang2013\Consul\Tests\Integration\EndToEnd)
+ [x] Full workflow
+ [x] Config workflow
+
+Event (Erikwang2013\Consul\Tests\Api\Event)
+ [x] Fire
+ [x] Fire without payload omits payload key
+ [x] Fire payload is base 64 encoded
+ [x] Fire with options
+ [x] Fire with all options
+ [x] Fire url encodes name
+ [x] Fire ignores unknown options
+ [x] List
+ [x] List with name filter
+ [x] List returns empty array
+
+Exception (Erikwang2013\Consul\Tests\Exception\Exception)
+ [x] Exception hierarchy
+ [x] Consul exception is runtime exception
+ [x] Server exception is not request exception
+ [x] Message and code are preserved
+ [x] Previous exception is preserved
+ [x] Specific exceptions carry status code
+
+Health (Erikwang2013\Consul\Tests\Api\Health)
+ [x] Service with passing filter
+ [x] Service with all options
+ [x] Service returns empty array
+ [x] Service url encodes name
+ [x] Checks
+ [x] Checks with filter option
+ [x] Node
+ [x] Node with node meta option renames key
+ [x] Node url encodes special characters
+ [x] State
+ [x] State with all options
+ [x] State ignores unknown options
+ [x] Connect
+ [x] Connect with options
+ [x] Ingress
+ [x] Ingress returns empty array
+ [x] Get transport returns same instance
+
+Kv (Erikwang2013\Consul\Tests\Api\Kv)
+ [x] Get returns value
+ [x] Get returns null when missing
+ [x] Get with query options
+ [x] Get with raw option returns raw body
+ [x] Get with raw option and query params
+ [x] Get propagates transport error
+ [x] All returns recursive list
+ [x] All with empty prefix hits root
+ [x] All merges query options
+ [x] Put stores raw value
+ [x] Put with cas options
+ [x] Put returns false when cas fails
+ [x] Put returns false when body missing
+ [x] Delete
+ [x] Delete with options
+ [x] Keys returns key list
+ [x] Keys with separator
+ [x] Encode key preserves path separators
+ [x] Encode key escapes special characters
+ [x] Encode key preserves literal percent sequences
+ [x] Get transport
+
+Operator (Erikwang2013\Consul\Tests\Api\Operator)
+ [x] Raft config
+ [x] Raft config propagates transport error
+ [x] Raft peer
+ [x] Raft peer with special address
+ [x] Autopilot config
+ [x] Update autopilot config
+ [x] Autopilot health
+ [x] Keyring list
+ [x] Keyring list with relay and local
+ [x] Keyring install
+ [x] Keyring install with relay
+ [x] Keyring use
+ [x] Keyring use with local
+ [x] Keyring remove
+
+Promise (Erikwang2013\Consul\Tests\Client\Promise)
+ [x] Wait throws executor exception
+ [x] Second wait still throws after rejection
+ [x] Then after rejection throws
+ [x] Catch on fulfilled returns self without queuing
+ [x] Executor runs only once across multiple waits
+ [x] Then registered after resolution runs immediately
+ [x] Catch registered after rejection runs immediately
+ [x] Multiple then callbacks run in order on wait
+ [x] Then returns self for chaining
+ [x] Wait returns null value on fulfilled promise
+
+Psr18Transport (Erikwang2013\Consul\Tests\Transport\Psr18Transport)
+ [x] Get request returns decoded json
+ [x]  404 throws not found exception
+ [x]  500 throws server exception
+ [x] Transport error throws client exception
+ [x] Post request with body
+ [x]  403 throws access denied exception
+ [x]  400 throws consul request exception
+ [x] Get with query parameters
+ [x] Put request
+ [x] Delete request
+ [x] Get does not set content type header
+ [x] Token header is set when token configured
+ [x] Empty token does not set header
+ [x] Get raw returns raw string
+ [x] Put raw sends raw body with octet stream content type
+ [x] Get with headers returns headers and body
+ [x] Server error body is truncated
+
+Psr18Transport Errors (Erikwang2013\Consul\Tests\Transport\Psr18TransportErrors)
+ [x]  401 throws unauthorized exception
+ [x] Error code is preserved on exception
+ [x] Get raw 404 throws not found exception
+ [x] Get raw 500 throws server exception
+ [x] Get with headers transport error throws client exception
+ [x] Get with headers 500 throws server exception
+ [x] Invalid json response throws client exception
+ [x] Empty json body decodes to empty array
+ [x] Put raw with error status throws mapped exception
+
+Psr18Transport Raw (Erikwang2013\Consul\Tests\Transport\Psr18TransportRaw)
+ [x] Base uri trailing slash is trimmed
+ [x] Scalar json response is wrapped in body key
+ [x] String scalar response is wrapped in body key
+ [x] Put raw empty body does not set content type header
+ [x] Put raw with token sets header
+ [x] Get with headers sets token header and preserves header values
+
+Random (Erikwang2013\Consul\Tests\Service\LoadBalancer\Random)
+ [x] Select returns an instance
+ [x] Select returns null when empty
+ [x] Select returns single instance
+ [x] Select works with associative keys
+
+Registry (Erikwang2013\Consul\Tests\Service\Registry)
+ [x] Register with ttl check
+ [x] Register with http check
+ [x] Heartbeat
+ [x] Heartbeat fail
+ [x] Deregister
+ [x] Register with tcp check
+ [x] Register with grpc check
+ [x] Register with ttl check timeout and deregister after critical
+ [x] Register with meta
+ [x] Register without check and options
+ [x] Register with unsupported check type throws
+ [x] Register with empty check array throws
+ [x] Heartbeat with note
+
+Round Robin (Erikwang2013\Consul\Tests\Service\LoadBalancer\RoundRobin)
+ [x] Select rotates instances
+ [x] Select returns null when empty
+ [x] Select normalizes associative keys
+ [x] Select single instance always returns it
+ [x] Empty selection does not advance counter
+
+Session (Erikwang2013\Consul\Tests\Api\Session)
+ [x] Create
+ [x] Create with options
+ [x] Create propagates transport error
+ [x] Destroy
+ [x] Destroy with options
+ [x] Info
+ [x] Info with options
+ [x] Info returns empty list for unknown session
+ [x] Node
+ [x] Node encodes node name
+ [x] All
+ [x] All with options
+ [x] Renew
+ [x] Renew with options
+
+Snapshot (Erikwang2013\Consul\Tests\Api\Snapshot)
+ [x] Save
+ [x] Save with options
+ [x] Save with dc only
+ [x] Save with stale false omits stale
+ [x] Save returns empty string
+ [x] Save with binary data
+ [x] Restore
+ [x] Restore with dc
+ [x] Restore with binary data
+ [x] Restore empty snapshot
+ [x] Restore ignores unknown options
+
+Status (Erikwang2013\Consul\Tests\Api\Status)
+ [x] Leader
+ [x] Leader empty body
+ [x] Leader with null body
+ [x] Leader casts non string body
+ [x] Peers
+ [x] Peers returns empty array
+ [x] Peers single peer
+ [x] Peers preserves non sequential keys
+
+Watcher (Erikwang2013\Consul\Tests\Config\Watcher)
+ [x] On change registers callback
+ [x] Set blocking wait is fluent
+ [x] Set poll interval is fluent
+ [x] Blocking query notifies on change and reuses index
+ [x] Blocking failure falls back to polling then resumes blocking
+ [x] Set blocking wait controls wait parameter
+ [x] Polling failure is logged and loop continues
+ [x] Callback exception is logged and does not stop dispatch
+ [x] Dispatcher receives config changed event
+ [x] Blocking failure count is reset after recovery
+

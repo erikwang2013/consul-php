@@ -26,4 +26,25 @@ class RandomTest extends TestCase
         $random = new Random();
         $this->assertNull($random->select([]));
     }
+
+    public function testSelectReturnsSingleInstance(): void
+    {
+        $random = new Random();
+        $instances = [['address' => '10.0.0.1', 'port' => 80]];
+
+        $this->assertSame('10.0.0.1', $random->select($instances)['address']);
+    }
+
+    public function testSelectWorksWithAssociativeKeys(): void
+    {
+        $random = new Random();
+        $instances = [
+            'a' => ['address' => '10.0.0.1', 'port' => 80],
+            'b' => ['address' => '10.0.0.2', 'port' => 80],
+        ];
+
+        $selected = $random->select($instances);
+
+        $this->assertContains($selected['address'], ['10.0.0.1', '10.0.0.2']);
+    }
 }

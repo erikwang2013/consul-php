@@ -39,6 +39,28 @@ class StatusTest extends TestCase
         $this->assertSame('', $result);
     }
 
+    public function testLeaderWithNullBody(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/status/leader')
+            ->willReturn(['body' => null]);
+
+        $result = $this->status->leader();
+
+        $this->assertSame('', $result);
+    }
+
+    public function testLeaderCastsNonStringBody(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/status/leader')
+            ->willReturn(['body' => 8300]);
+
+        $result = $this->status->leader();
+
+        $this->assertSame('8300', $result);
+    }
+
     public function testPeers(): void
     {
         $this->transport->method('get')
@@ -49,5 +71,39 @@ class StatusTest extends TestCase
 
         $this->assertCount(2, $result);
         $this->assertSame('10.0.0.1:8300', $result[0]);
+    }
+
+    public function testPeersReturnsEmptyArray(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/status/peers')
+            ->willReturn([]);
+
+        $result = $this->status->peers();
+
+        $this->assertSame([], $result);
+    }
+
+    public function testPeersSinglePeer(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/status/peers')
+            ->willReturn(['10.0.0.3:8300']);
+
+        $result = $this->status->peers();
+
+        $this->assertCount(1, $result);
+        $this->assertSame('10.0.0.3:8300', $result[0]);
+    }
+
+    public function testPeersPreservesNonSequentialKeys(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/status/peers')
+            ->willReturn(['a' => '10.0.0.1:8300']);
+
+        $result = $this->status->peers();
+
+        $this->assertSame(['a' => '10.0.0.1:8300'], $result);
     }
 }

@@ -83,17 +83,26 @@ class Agent
 
     public function checkPass(string $checkId, string $note = ''): void
     {
-        $this->transport->putRaw('/v1/agent/check/pass/' . rawurlencode($checkId), $note);
+        $this->transport->putRaw('/v1/agent/check/pass/' . rawurlencode($checkId), '', $this->noteQuery($note));
     }
 
     public function checkFail(string $checkId, string $note = ''): void
     {
-        $this->transport->putRaw('/v1/agent/check/fail/' . rawurlencode($checkId), $note);
+        $this->transport->putRaw('/v1/agent/check/fail/' . rawurlencode($checkId), '', $this->noteQuery($note));
     }
 
     public function checkWarn(string $checkId, string $note = ''): void
     {
-        $this->transport->putRaw('/v1/agent/check/warn/' . rawurlencode($checkId), $note);
+        $this->transport->putRaw('/v1/agent/check/warn/' . rawurlencode($checkId), '', $this->noteQuery($note));
+    }
+
+    /**
+     * Consul's check TTL endpoints read the note from the query string,
+     * not the request body.
+     */
+    private function noteQuery(string $note): array
+    {
+        return $note !== '' ? ['note' => $note] : [];
     }
 
     public function checkRegister(array $check): void

@@ -3,6 +3,7 @@
 namespace Erikwang2013\Consul\Tests\Api;
 
 use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Exception\ClientException;
 use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -23,9 +24,15 @@ class OperatorTest extends TestCase
             ->with('/v1/operator/raft/configuration')
             ->willReturn(['Servers' => [['ID' => 'node1', 'Address' => '10.0.0.1:8300']]]);
 
-        $result = $this->operator->raftConfig();
+        $this->assertArrayHasKey('Servers', $this->operator->raftConfig());
+    }
 
-        $this->assertArrayHasKey('Servers', $result);
+    public function testRaftConfigPropagatesTransportError(): void
+    {
+        $this->transport->method('get')->willThrowException(new ClientException('down'));
+
+        $this->expectException(ClientException::class);
+        $this->operator->raftConfig();
     }
 
     public function testRaftPeer(): void
@@ -37,15 +44,22 @@ class OperatorTest extends TestCase
         $this->operator->raftPeer('10.0.0.3:8300');
     }
 
+    public function testRaftPeerWithSpecialAddress(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('delete')
+            ->with('/v1/operator/raft/peer', ['address' => 'a b:8300']);
+
+        $this->operator->raftPeer('a b:8300');
+    }
+
     public function testAutopilotConfig(): void
     {
         $this->transport->method('get')
             ->with('/v1/operator/autopilot/configuration')
             ->willReturn(['CleanupDeadServers' => true]);
 
-        $result = $this->operator->autopilotConfig();
-
-        $this->assertTrue($result['CleanupDeadServers']);
+        $this->assertTrue($this->operator->autopilotConfig()['CleanupDeadServers']);
     }
 
     public function testUpdateAutopilotConfig(): void
@@ -57,15 +71,34 @@ class OperatorTest extends TestCase
         $this->operator->updateAutopilotConfig(['CleanupDeadServers' => false]);
     }
 
+    public function testAutopilotHealth(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/operator/autopilot/health')
+            ->willReturn(['Healthy' => true, 'FailureTolerance' => 0]);
+
+        $result = $this->operator->autopilotHealth();
+
+        $this->assertTrue($result['Healthy']);
+        $this->assertSame(0, $result['FailureTolerance']);
+    }
+
     public function testKeyringList(): void
     {
         $this->transport->method('get')
             ->with('/v1/operator/keyring', [])
             ->willReturn([['PrimaryKey' => 'abc']]);
 
-        $result = $this->operator->keyring('list');
+        $this->assertSame('abc', $this->operator->keyring('list')[0]['PrimaryKey']);
+    }
 
-        $this->assertSame('abc', $result[0]['PrimaryKey']);
+    public function testKeyringListWithRelayAndLocal(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/operator/keyring', ['relay' => '10.0.0.2:8300', 'local' => 'true'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->operator->keyring('list', ['relay' => '10.0.0.2:8300', 'local' => 'true']));
     }
 
     public function testKeyringInstall(): void
@@ -74,9 +107,16 @@ class OperatorTest extends TestCase
             ->with('/v1/operator/keyring', ['Key' => 'new-key'], [])
             ->willReturn(['Messages' => []]);
 
-        $result = $this->operator->keyring('install', ['key' => 'new-key']);
+        $this->assertSame([], $this->operator->keyring('install', ['key' => 'new-key'])['Messages']);
+    }
 
-        $this->assertSame([], $result['Messages']);
+    public function testKeyringInstallWithRelay(): void
+    {
+        $this->transport->method('post')
+            ->with('/v1/operator/keyring', ['Key' => 'new-key'], ['relay' => '10.0.0.2:8300'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->operator->keyring('install', ['key' => 'new-key', 'relay' => '10.0.0.2:8300']));
     }
 
     public function testKeyringUse(): void
@@ -85,8 +125,24 @@ class OperatorTest extends TestCase
             ->with('/v1/operator/keyring', ['Key' => 'primary-key'], [])
             ->willReturn(['Messages' => []]);
 
-        $result = $this->operator->keyring('use', ['key' => 'primary-key']);
+        $this->assertSame([], $this->operator->keyring('use', ['key' => 'primary-key'])['Messages']);
+    }
 
-        $this->assertSame([], $result['Messages']);
+    public function testKeyringUseWithLocal(): void
+    {
+        $this->transport->method('put')
+            ->with('/v1/operator/keyring', ['Key' => 'primary-key'], ['local' => 'true'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->operator->keyring('use', ['key' => 'primary-key', 'local' => 'true']));
+    }
+
+    public function testKeyringRemove(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('delete')
+            ->with('/v1/operator/keyring', ['Key' => 'old-key']);
+
+        $this->operator->keyring('remove', ['key' => 'old-key']);
     }
 }

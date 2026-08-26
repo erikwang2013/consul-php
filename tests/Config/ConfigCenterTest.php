@@ -107,4 +107,116 @@ class ConfigCenterTest extends TestCase
         $this->assertNull($cache->get('consul:config:app/key')); // invalidated
         $this->assertSame('fallback', $config->get('app/key', 'fallback')); // cache miss -> kv -> default
     }
+
+    public function testGetHitsCacheWithoutCallingKv(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->expects($this->once())
+            ->method('get')
+            ->with('app/key')
+            ->willReturn(['Key' => 'app/key', 'Value' => base64_encode('v1')]);
+
+        $this->assertSame('v1', $config->get('app/key'));
+        $this->assertSame('v1', $config->get('app/key')); // served from cache
+    }
+
+    public function testGetReturnsDefaultWhenValueIsNotBase64(): void
+    {
+        $this->kv->method('get')
+            ->with('app/broken')
+            ->willReturn(['Key' => 'app/broken', 'Value' => 'not-base64!!!']);
+
+        $this->assertSame('fallback', $this->config->get('app/broken', 'fallback'));
+    }
+
+    public function testGetReturnsEmptyStringWhenKvEntryHasNoValue(): void
+    {
+        // An existing key without a Value decodes to '' (base64 of empty),
+        // distinct from a missing key (-> default).
+        $this->kv->method('get')
+            ->with('app/empty')
+            ->willReturn(['Key' => 'app/empty']);
+
+        $this->assertSame('', $this->config->get('app/empty', 'fallback'));
+    }
+
+    public function testNamespaceUsesCache(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->expects($this->once())
+            ->method('all')
+            ->with('app/')
+            ->willReturn([['Key' => 'app/x', 'Value' => base64_encode('1')]]);
+
+        $this->assertSame('1', $config->namespace('app/')['app/x']);
+        $this->assertSame('1', $config->namespace('app/')['app/x']); // cached
+    }
+
+    public function testNamespaceKeepsRawValueWhenNotBase64(): void
+    {
+        $this->kv->method('all')
+            ->with('app/')
+            ->willReturn([['Key' => 'app/raw', 'Value' => 'plain-text']]);
+
+        $result = $this->config->namespace('app/');
+
+        $this->assertSame('plain-text', $result['app/raw']);
+    }
+
+    public function testSetFailureDoesNotInvalidateCache(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->method('get')->willReturn(['Key' => 'app/key', 'Value' => base64_encode('old')]);
+        $this->kv->method('put')->with('app/key', 'new')->willReturn(false);
+
+        $this->assertSame('old', $config->get('app/key')); // cached
+        $this->assertFalse($config->set('app/key', 'new'));
+        $this->assertSame('old', $cache->get('consul:config:app/key')); // still cached
+    }
+
+    public function testDeleteFailureDoesNotInvalidateCache(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->method('get')->willReturn(['Key' => 'app/key', 'Value' => base64_encode('old')]);
+        $this->kv->method('delete')->with('app/key')->willReturn(false);
+
+        $this->assertSame('old', $config->get('app/key')); // cached
+        $this->assertFalse($config->delete('app/key'));
+        $this->assertSame('old', $cache->get('consul:config:app/key')); // still cached
+    }
+
+    public function testDeleteInvalidatesAllNamespacePrefixLevels(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        $this->kv->method('get')->willReturn(['Key' => 'app/foo/bar', 'Value' => base64_encode('v')]);
+        $this->kv->method('delete')->with('app/foo/bar')->willReturn(true);
+        $this->kv->method('all')->willReturn([]);
+
+        $config->get('app/foo/bar');               // caches consul:config:app/foo/bar
+        $config->namespace('app/');                // caches consul:config:ns:app
+        $config->namespace('app/foo');             // caches consul:config:ns:app/foo
+        $config->delete('app/foo/bar');
+
+        $this->assertNull($cache->get('consul:config:app/foo/bar'));
+        $this->assertNull($cache->get('consul:config:ns:app'));
+        $this->assertNull($cache->get('consul:config:ns:app/foo'));
+    }
+
+    public function testWatchPassesDispatcherToWatcher(): void
+    {
+        $dispatcher = $this->createMock(\Psr\EventDispatcher\EventDispatcherInterface::class);
+        $config = new ConfigCenter($this->kv, null, null, $dispatcher);
+
+        $this->assertInstanceOf(Watcher::class, $config->watch('app/'));
+    }
 }
