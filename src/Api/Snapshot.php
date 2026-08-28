@@ -17,10 +17,7 @@ class Snapshot
 
     public function save(array $options = []): string
     {
-        $query = [];
-        if (isset($options['dc'])) {
-            $query['dc'] = $options['dc'];
-        }
+        $query = array_intersect_key($options, array_flip(['dc']));
         if (!empty($options['stale'])) {
             $query['stale'] = 'true';
         }
@@ -29,10 +26,6 @@ class Snapshot
 
     public function restore(string $snapshot, array $options = []): void
     {
-        $query = [];
-        if (isset($options['dc'])) {
-            $query['dc'] = $options['dc'];
-        }
-        $this->transport->putRaw('/v1/snapshot', $snapshot, $query);
+        $this->transport->putRaw('/v1/snapshot', $snapshot, array_intersect_key($options, array_flip(['dc'])));
     }
 }

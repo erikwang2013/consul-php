@@ -60,17 +60,24 @@ class Watcher
         $this->running = true;
         $index = 0;
         $lastSnapshot = null;
+        $lastFingerprint = null;
         $usePolling = false;
         $pollSuccesses = 0;
+        $path = '/v1/kv/' . $this->kv->encodeKey($this->prefix);
+        $wait = "{$this->blockingWait}s";
 
         while ($this->running) {
             if ($usePolling) {
                 try {
                     $result = $this->kv->all($this->prefix);
-                    $snapshot = $this->snapshot($result);
-                    if ($snapshot !== $lastSnapshot) {
-                        $lastSnapshot = $snapshot;
-                        $this->notify($snapshot);
+                    $fingerprint = md5(serialize($result));
+                    if ($fingerprint !== $lastFingerprint) {
+                        $lastFingerprint = $fingerprint;
+                        $snapshot = $this->snapshot($result);
+                        if ($snapshot !== $lastSnapshot) {
+                            $lastSnapshot = $snapshot;
+                            $this->notify($snapshot);
+                        }
                     }
 
                     $pollSuccesses++;
@@ -87,10 +94,10 @@ class Watcher
                 sleep($this->pollInterval);
             } else {
                 try {
-                    $response = $this->transport->getWithHeaders('/v1/kv/' . $this->kv->encodeKey($this->prefix), [
+                    $response = $this->transport->getWithHeaders($path, [
                         'recurse' => 'true',
                         'index'   => $index,
-                        'wait'    => "{$this->blockingWait}s",
+                        'wait'    => $wait,
                     ]);
                     $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);
                     $result = $response['body'];
@@ -121,10 +128,7 @@ class Watcher
     {
         $snap = [];
         foreach ($kvResult as $item) {
-            $key = $item['Key'] ?? '';
-            $decoded = base64_decode($item['Value'] ?? '', true);
-            $value = $decoded !== false ? $decoded : ($item['Value'] ?? '');
-            $snap[$key] = $value;
+            $snap[$item['Key'] ?? ''] = $this->kv->decodeValue($item);
         }
         ksort($snap);
         return $snap;

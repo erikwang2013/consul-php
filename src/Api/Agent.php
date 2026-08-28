@@ -29,11 +29,16 @@ class Agent
 
     public function maintenance(bool $enable, string $reason = ''): void
     {
+        $this->transport->put('/v1/agent/maintenance', [], $this->maintenanceQuery($enable, $reason));
+    }
+
+    private function maintenanceQuery(bool $enable, string $reason): array
+    {
         $query = ['enable' => $enable ? 'true' : 'false'];
         if ($reason !== '') {
             $query['reason'] = $reason;
         }
-        $this->transport->put('/v1/agent/maintenance', [], $query);
+        return $query;
     }
 
     public function join(string $address, bool $wan = false): void
@@ -69,16 +74,12 @@ class Agent
 
     public function enableMaintenance(string $serviceId, string $reason = ''): void
     {
-        $query = ['enable' => 'true'];
-        if ($reason !== '') {
-            $query['reason'] = $reason;
-        }
-        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], $query);
+        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], $this->maintenanceQuery(true, $reason));
     }
 
     public function disableMaintenance(string $serviceId): void
     {
-        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], ['enable' => 'false']);
+        $this->transport->put('/v1/agent/service/maintenance/' . rawurlencode($serviceId), [], $this->maintenanceQuery(false, ''));
     }
 
     public function checkPass(string $checkId, string $note = ''): void

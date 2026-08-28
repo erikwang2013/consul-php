@@ -66,16 +66,23 @@ class Kv
         return str_replace('%2F', '/', rawurlencode($key));
     }
 
+    /**
+     * Decode a Consul KV item value (base64), falling back to the raw value
+     * when it is not valid base64 (public: used by Config\Watcher and Config\ConfigCenter).
+     */
+    public function decodeValue(array $item): string
+    {
+        $raw = $item['Value'] ?? '';
+        $decoded = base64_decode($raw, true);
+        return $decoded !== false ? $decoded : $raw;
+    }
+
     private function buildQuery(array $options): array
     {
-        $query = [];
-        if (isset($options['dc']))          $query['dc'] = $options['dc'];
-        if (isset($options['index']))       $query['index'] = $options['index'];
-        if (isset($options['wait']))        $query['wait'] = $options['wait'];
-        if (isset($options['ns']))          $query['ns'] = $options['ns'];
-        if (isset($options['partition']))   $query['partition'] = $options['partition'];
-        if (isset($options['raw']))         $query['raw'] = 'true';
-        if (isset($options['cas']))         $query['cas'] = $options['cas'];
+        $query = array_intersect_key($options, array_flip(['dc', 'index', 'wait', 'ns', 'partition', 'cas']));
+        if (isset($options['raw'])) {
+            $query['raw'] = 'true';
+        }
         return $query;
     }
 }

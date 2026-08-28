@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Erikwang2013\Consul\Api;
 
 use Erikwang2013\Consul\Transport\TransportInterface;
+use InvalidArgumentException;
 
 class Operator
 {
@@ -47,25 +48,26 @@ class Operator
 
     public function keyring(string $method, array $options = []): array
     {
-        $query = [];
-        if (isset($options['relay'])) {
-            $query['relay'] = $options['relay'];
-        }
-        if (isset($options['local'])) {
-            $query['local'] = $options['local'];
-        }
+        $query = array_intersect_key($options, array_flip(['relay', 'local']));
 
-        if ($method === 'list') {
+        if ($method === self::KEYRING_LIST) {
             return $this->transport->get('/v1/operator/keyring', $query);
         }
+
+        if (!in_array($method, [self::KEYRING_INSTALL, self::KEYRING_USE, self::KEYRING_REMOVE], true)) {
+            throw new InvalidArgumentException("Unknown keyring method: {$method}");
+        }
+
+        if (!isset($options['key']) || $options['key'] === '') {
+            throw new InvalidArgumentException("Keyring method \"{$method}\" requires a non-empty \"key\" option");
+        }
         $body = ['Key' => $options['key']];
-        if ($method === 'install') {
-            return $this->transport->post('/v1/operator/keyring', $body, $query);
-        }
-        if ($method === 'use') {
-            return $this->transport->put('/v1/operator/keyring', $body, $query);
-        }
-        // Transport::delete() does not support request body; Key sent as query parameter
-        return $this->transport->delete('/v1/operator/keyring', array_merge($query, $body));
+
+        return match ($method) {
+            self::KEYRING_INSTALL => $this->transport->post('/v1/operator/keyring', $body, $query),
+            self::KEYRING_USE => $this->transport->put('/v1/operator/keyring', $body, $query),
+            // Transport::delete() does not support request body; Key sent as query parameter
+            self::KEYRING_REMOVE => $this->transport->delete('/v1/operator/keyring', array_merge($query, $body)),
+        };
     }
 }

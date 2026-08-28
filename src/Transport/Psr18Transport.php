@@ -12,6 +12,7 @@ use Erikwang2013\Consul\Exception\ServerException;
 use Erikwang2013\Consul\Exception\UnauthorizedException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -77,47 +78,37 @@ class Psr18Transport implements TransportInterface
 
     public function getWithHeaders(string $path, array $query = []): array
     {
-        $uri = $this->baseUri . $path;
-        if (!empty($query)) {
-            $uri .= '?' . http_build_query($query);
-        }
-
-        $request = $this->requestFactory->createRequest('GET', $uri);
-
-        if ($this->token !== null && $this->token !== '') {
-            $request = $request->withHeader('X-Consul-Token', $this->token);
-        }
-
-        $this->logger->debug("Consul request with headers: GET $uri");
-
-        try {
-            $response = $this->httpClient->sendRequest($request);
-        } catch (Throwable $e) {
-            $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
-            throw new ClientException('HTTP transport error', 0, $e);
-        }
-
-        $statusCode = $response->getStatusCode();
-
-        try {
-            $contents = (string) $response->getBody();
-        } catch (RuntimeException $e) {
-            throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
-        }
-
-        $this->checkStatus($statusCode, $contents);
+        $response = $this->sendRequest('GET', $path, '', '', $query);
+        $contents = $this->readBody($response);
+        $this->checkStatus($response->getStatusCode(), $contents);
 
         $headers = [];
         foreach ($response->getHeaders() as $name => $values) {
             $headers[$name] = $values[0] ?? '';
         }
 
-        $body = $this->decodeBody($contents);
-        return ['headers' => $headers, 'body' => $body];
+        return ['headers' => $headers, 'body' => $this->decodeBody($contents)];
     }
 
     private function sendRaw(string $method, string $path, string $body, array $query = [], bool $decodeJson = false): array|string
     {
+        $response = $this->sendRequest($method, $path, $body, 'application/octet-stream', $query);
+        $contents = $this->readBody($response);
+        $this->checkStatus($response->getStatusCode(), $contents);
+
+        if ($decodeJson) {
+            return $this->decodeBody($contents);
+        }
+        return $contents;
+    }
+
+    private function sendRequest(
+        string $method,
+        string $path,
+        string $body,
+        string $contentType,
+        array $query = []
+    ): ResponseInterface {
         $uri = $this->baseUri . $path;
         if (!empty($query)) {
             $uri .= '?' . http_build_query($query);
@@ -132,32 +123,26 @@ class Psr18Transport implements TransportInterface
         if ($body !== '') {
             $stream = $this->streamFactory->createStream($body);
             $request = $request->withBody($stream)
-                ->withHeader('Content-Type', 'application/octet-stream');
+                ->withHeader('Content-Type', $contentType);
         }
 
-        $this->logger->debug("Consul raw request: $method $uri");
+        $this->logger->debug("Consul request: $method $uri");
 
         try {
-            $response = $this->httpClient->sendRequest($request);
+            return $this->httpClient->sendRequest($request);
         } catch (Throwable $e) {
             $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
             throw new ClientException('HTTP transport error', 0, $e);
         }
+    }
 
-        $statusCode = $response->getStatusCode();
-
+    private function readBody(ResponseInterface $response): string
+    {
         try {
-            $contents = (string) $response->getBody();
+            return (string) $response->getBody();
         } catch (RuntimeException $e) {
             throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
         }
-
-        $this->checkStatus($statusCode, $contents);
-
-        if ($decodeJson) {
-            return $this->decodeBody($contents);
-        }
-        return $contents;
     }
 
     private function checkStatus(int $statusCode, string $contents): void
@@ -215,45 +200,18 @@ class Psr18Transport implements TransportInterface
 
     private function request(string $method, string $path, array $body = [], array $query = []): array
     {
-        $uri = $this->baseUri . $path;
-        if (!empty($query)) {
-            $uri .= '?' . http_build_query($query);
-        }
-
-        $request = $this->requestFactory->createRequest($method, $uri);
-
-        if ($this->token !== null && $this->token !== '') {
-            $request = $request->withHeader('X-Consul-Token', $this->token);
-        }
-
+        $rawBody = '';
         if (!empty($body)) {
             $json = json_encode($body);
             if ($json === false) {
                 throw new ConsulRequestException('Failed to encode request body: ' . json_last_error_msg());
             }
-            $stream = $this->streamFactory->createStream($json);
-            $request = $request->withBody($stream)
-                ->withHeader('Content-Type', 'application/json');
+            $rawBody = $json;
         }
 
-        $this->logger->debug("Consul request: $method $uri");
-
-        try {
-            $response = $this->httpClient->sendRequest($request);
-        } catch (Throwable $e) {
-            $this->logger->debug('Consul HTTP transport error: ' . $e->getMessage());
-            throw new ClientException('HTTP transport error', 0, $e);
-        }
-
-        $statusCode = $response->getStatusCode();
-
-        try {
-            $contents = (string) $response->getBody();
-        } catch (RuntimeException $e) {
-            throw new ClientException("Failed to read response body: " . $e->getMessage(), 0, $e);
-        }
-
-        $this->checkStatus($statusCode, $contents);
+        $response = $this->sendRequest($method, $path, $rawBody, 'application/json', $query);
+        $contents = $this->readBody($response);
+        $this->checkStatus($response->getStatusCode(), $contents);
 
         return $this->decodeBody($contents);
     }

@@ -76,14 +76,16 @@ class Discovery
     {
         $this->running = true;
         $index = $options['index'] ?? 0;
+        $path = '/v1/health/service/' . rawurlencode($service);
+        $wait = $options['wait'] ?? '30s';
 
         /** @phpstan-ignore-next-line */
         while ($this->running) {
             try {
-                $response = $this->transport->getWithHeaders('/v1/health/service/' . rawurlencode($service), [
+                $response = $this->transport->getWithHeaders($path, [
                     'passing' => 'true',
                     'index'   => $index,
-                    'wait'    => $options['wait'] ?? '30s',
+                    'wait'    => $wait,
                 ]);
 
                 $index = (int) ($response['headers']['X-Consul-Index'] ?? $index);

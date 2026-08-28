@@ -72,9 +72,7 @@ class ConfigCenter
         $config = [];
 
         foreach ($result as $item) {
-            $key = $item['Key'] ?? '';
-            $decoded = base64_decode($item['Value'] ?? '', true);
-            $config[$key] = $decoded !== false ? $decoded : ($item['Value'] ?? '');
+            $config[$item['Key'] ?? ''] = $this->kv->decodeValue($item);
         }
 
         if ($this->cache) {

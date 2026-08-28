@@ -67,12 +67,15 @@ class Promise
                 foreach ($this->catchCallbacks as $cb) {
                     $cb($this->exception);
                 }
+                $this->catchCallbacks = [];
+                $this->thenCallbacks = [];
                 throw $this->exception;
             }
 
             foreach ($this->thenCallbacks as $cb) {
                 $cb($this->value);
             }
+            $this->thenCallbacks = [];
         }
 
         return $this->value;

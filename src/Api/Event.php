@@ -21,28 +21,12 @@ class Event
         if ($payload !== '') {
             $body['Payload'] = base64_encode($payload);
         }
-        $query = [];
-        if (isset($options['dc'])) {
-            $query['dc'] = $options['dc'];
-        }
-        if (isset($options['node'])) {
-            $query['node'] = $options['node'];
-        }
-        if (isset($options['service'])) {
-            $query['service'] = $options['service'];
-        }
-        if (isset($options['tag'])) {
-            $query['tag'] = $options['tag'];
-        }
+        $query = array_intersect_key($options, array_flip(['dc', 'node', 'service', 'tag']));
         return $this->transport->put('/v1/event/fire/' . rawurlencode($name), $body, $query);
     }
 
     public function list(array $options = []): array
     {
-        $query = [];
-        if (isset($options['name'])) {
-            $query['name'] = $options['name'];
-        }
-        return $this->transport->get('/v1/event/list', $query);
+        return $this->transport->get('/v1/event/list', array_intersect_key($options, array_flip(['name'])));
     }
 }

@@ -6,6 +6,7 @@ use Erikwang2013\Consul\Api\Kv;
 use Erikwang2013\Consul\Config\ConfigCenter;
 use Erikwang2013\Consul\Config\Watcher;
 use Erikwang2013\Consul\Tests\Support\ArrayCache;
+use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
 
 class ConfigCenterTest extends TestCase
@@ -15,7 +16,9 @@ class ConfigCenterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->kv = $this->createMock(Kv::class);
+        // Partial mock: only the HTTP-facing methods are stubbed; decodeValue() runs the real implementation.
+        $this->kv = $this->createPartialMock(Kv::class, ['get', 'all', 'put', 'delete', 'getTransport']);
+        $this->kv->method('getTransport')->willReturn($this->createMock(TransportInterface::class));
         $this->config = new ConfigCenter($this->kv);
     }
 

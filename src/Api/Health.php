@@ -52,12 +52,10 @@ class Health
 
     private function optionsQuery(array $options): array
     {
-        $query = [];
-        foreach (['dc', 'ns', 'filter', 'index', 'wait', 'passing', 'near', 'node_meta'] as $key) {
-            if (isset($options[$key])) {
-                $k = $key === 'node_meta' ? 'node-meta' : $key;
-                $query[$k] = $options[$key];
-            }
+        $query = array_intersect_key($options, array_flip(['dc', 'ns', 'filter', 'index', 'wait', 'passing', 'near', 'node_meta']));
+        if (isset($query['node_meta'])) {
+            $query['node-meta'] = $query['node_meta'];
+            unset($query['node_meta']);
         }
         return $query;
     }
