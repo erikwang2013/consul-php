@@ -26,7 +26,7 @@
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="44" y="48" style="font-size:17.3px">Desain arsitektur consul-php</text>
-    <text class="sub" x="44" y="74" style="font-size:9.4px">Dependensi berlapis: lapisan aplikasi → lapisan integrasi → klien → pembungkus tingkat tinggi → modul API → lapisan transport → abstraksi PSR → Consul Agent</text>
+    <text class="sub" x="44" y="74" style="font-size:9.4px">Dependensi berlapis: lapisan aplikasi → lapisan integrasi → klien → wrapper → modul API → lapisan transport → abstraksi PSR → Consul Agent</text>
     <text class="gutter" x="32" y="140" style="font-size:9.4px">Lapisan aplikasi</text>
     <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="128">Laravel</text>

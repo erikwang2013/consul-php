@@ -189,7 +189,7 @@
     "会话失效即锁失效，无需额外心跳": "Lock lepas saat sesi kedaluwarsa, tanpa heartbeat",
     "传输层": "Lapisan transport",
     "健康检查": "Health check",
-    "分层依赖：应用层 → 集成层 → 客户端 → 高层封装 → API 模块 → 传输层 → PSR 抽象 → Consul Agent": "Dependensi berlapis: lapisan aplikasi → lapisan integrasi → klien → pembungkus tingkat tinggi → modul API → lapisan transport → abstraksi PSR → Consul Agent",
+    "分层依赖：应用层 → 集成层 → 客户端 → 高层封装 → API 模块 → 传输层 → PSR 抽象 → Consul Agent": "Dependensi berlapis: lapisan aplikasi → lapisan integrasi → klien → wrapper → modul API → lapisan transport → abstraksi PSR → Consul Agent",
     "切回 ②，计数器清零": "Kembali ke ②, penghitung direset",
     "前缀批量管理配置树": "Kelola pohon konfigurasi secara massal lewat prefiks",
     "协程 + 注解注入": "Coroutine + injeksi anotasi",
