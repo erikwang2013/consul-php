@@ -25,54 +25,54 @@
 
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="44" y="48" style="font-size:17.3px">consul-php আর্কিটেকচার ডিজাইন</text>
-    <text class="sub" x="44" y="74" style="font-size:9.4px">স্তরভিত্তিক নির্ভরতা: অ্যাপ্লিকেশন লেয়ার → ইন্টিগ্রেশন লেয়ার → ক্লায়েন্ট → হাই-লেভেল র্যাপার → API মডিউল → ট্রান্সপোর্ট লেয়ার → PSR অ্যাবস্ট্রাকশন → Consul Agent</text>
-    <text class="gutter" x="32" y="140" style="font-size:9.4px">অ্যাপ্লিকেশন লেয়ার</text>
+    <text class="h1" x="44" y="48">consul-php আর্কিটেকচার ডিজাইন</text>
+    <text class="sub" x="44" y="74">স্তরভিত্তিক নির্ভরতা: অ্যাপ্লিকেশন লেয়ার → ইন্টিগ্রেশন লেয়ার → ক্লায়েন্ট → হাই-লেভেল র্যাপার → API মডিউল → ট্রান্সপোর্ট লেয়ার → PSR অ্যাবস্ট্রাকশন → Consul Agent</text>
+    <text class="gutter" x="32" y="140" style="font-size:12.7px">অ্যাপ্লিকেশন লেয়ার</text>
     <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="128">Laravel</text>
-    <text class="cs" x="138" y="150" style="font-size:9.4px">অটো-ডিসকভার + Facade</text>
+    <text class="cs" x="138" y="150">অটো-ডিসকভার + Facade</text>
     <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="307" y="128">Hyperf</text>
-    <text class="cs" x="307" y="150" style="font-size:8.3px">করউটিন + অ্যানোটেশন ইনজেকশন</text>
+    <text class="cs" x="307" y="150">করউটিন + অ্যানোটেশন ইনজেকশন</text>
     <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="476" y="128">webman</text>
-    <text class="cs" x="476" y="150" style="font-size:8.3px">প্লাগইন অটো-ইনস্টল</text>
+    <text class="cs" x="476" y="150">প্লাগইন অটো-ইনস্টল</text>
     <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="645" y="128">ThinkPHP</text>
-    <text class="cs" x="645" y="150" style="font-size:8.9px">Service বাইন্ডিং</text>
+    <text class="cs" x="645" y="150">Service বাইন্ডিং</text>
     <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="128" style="font-size:11.9px">নেটিভ PHP</text>
+    <text class="ct" x="814" y="128">নেটিভ PHP</text>
     <text class="cs" x="814" y="150">new ConsulClient()</text>
 
     <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="234" style="font-size:9.4px">ইন্টিগ্রেশন লেয়ার</text>
+    <text class="gutter" x="32" y="234">ইন্টিগ্রেশন লেয়ার</text>
     <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="222">ServiceProvider</text>
     <text class="cs" x="138" y="244">Facade · consul:watch</text>
     <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="307" y="222">ConfigProvider</text>
-    <text class="cs" x="307" y="244" style="font-size:8.3px">করউটিন ক্লায়েন্ট ফ্যাক্টরি</text>
+    <text class="cs" x="307" y="244">করউটিন ক্লায়েন্ট ফ্যাক্টরি</text>
     <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="476" y="222">Webman Install</text>
-    <text class="cs" x="476" y="244" style="font-size:10.4px">কনফিগ কপি + Worker</text>
+    <text class="cs" x="476" y="244">কনফিগ কপি + Worker</text>
     <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="645" y="222">ConsulService</text>
     <text class="cs" x="645" y="244">app(&apos;consul&apos;)</text>
     <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="814" y="222">ClientFactory</text>
-    <text class="cs" x="814" y="244" style="font-size:8.3px">PSR নির্ভরতার অটো-ওয়্যারিং</text>
+    <text class="cs" x="814" y="244">PSR নির্ভরতার অটো-ওয়্যারিং</text>
 
     <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="328" style="font-size:10.1px">ক্লায়েন্ট</text>
+    <text class="gutter" x="32" y="328">ক্লায়েন্ট</text>
     <rect x="122" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="316" style="font-size:12.5px">ConsulClient · সিঙ্ক এন্ট্রি</text>
-    <text class="cs" x="138" y="338" style="font-size:9.5px">__get ম্যাজিক প্রপার্টি ডিসপ্যাচ → $client-&gt;kv / health / catalog …</text>
+    <text class="ct" x="138" y="316">ConsulClient · সিঙ্ক এন্ট্রি</text>
+    <text class="cs" x="138" y="338">__get ম্যাজিক প্রপার্টি ডিসপ্যাচ → $client-&gt;kv / health / catalog …</text>
     <rect x="543" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="559" y="316" style="font-size:11px">ConsulAsyncClient · Promise বিলম্বিত এক্সিকিউশন</text>
+    <text class="ct" x="559" y="316">ConsulAsyncClient · Promise বিলম্বিত এক্সিকিউশন</text>
     <text class="cs" x="559" y="338">wrap(fn() =&gt; ...)-&gt;then(...)-&gt;catch(...)-&gt;wait()</text>
 
     <path d="M534 364 L540 375 L546 364" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="430" style="font-size:9.4px">হাই-লেভেল র্যাপার</text>
+    <text class="gutter" x="32" y="430">হাই-লেভেল র্যাপার</text>
     <rect x="122" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
     <text class="ct" x="138" y="408">Service\Registry</text>
     <text class="cs" x="138" y="430">register · heartbeat</text>
@@ -80,14 +80,14 @@
     <rect x="403" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
     <text class="ct" x="419" y="408">Service\Discovery</text>
     <text class="cs" x="419" y="430">healthyInstances · watch</text>
-    <text class="cs" x="419" y="450" style="font-size:11.4px">LoadBalancer: RoundRobin / Random</text>
+    <text class="cs" x="419" y="450">LoadBalancer: RoundRobin / Random</text>
     <rect x="684" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
     <text class="ct" x="700" y="408">Config\ConfigCenter</text>
     <text class="cs" x="700" y="430">get · namespace · set · delete</text>
-    <text class="cs" x="700" y="450" style="font-size:10.6px">watch() → Config\Watcher হট-রিলোড</text>
+    <text class="cs" x="700" y="450">watch() → Config\Watcher হট-রিলোড</text>
 
     <path d="M534 474 L540 485 L546 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="536" style="font-size:11px">API মডিউল</text>
+    <text class="gutter" x="32" y="536">API মডিউল</text>
     <rect x="122" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
     <text class="mini" x="157" y="536" text-anchor="middle">Agent</text>
     <rect x="198" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
@@ -112,46 +112,46 @@
     <text class="mini" x="917" y="536" text-anchor="middle">Snapshot</text>
 
     <path d="M534 578 L540 589 L546 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="640" style="font-size:9.4px">ট্রান্সপোর্ট লেয়ার</text>
+    <text class="gutter" x="32" y="640">ট্রান্সপোর্ট লেয়ার</text>
     <rect x="122" y="592" width="520" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
     <text class="ct" x="138" y="622">TransportInterface ← Psr18Transport</text>
     <text class="cs" x="138" y="644">get / put / post / delete · getRaw / putRaw · getWithHeaders</text>
-    <text class="cs" x="138" y="664" style="font-size:8.6px">X-Consul-Token ইনজেকশন · স্ট্যাটাস কোড চেক · JSON ডিকোড · এক্সেপশন ম্যাপিং</text>
+    <text class="cs" x="138" y="664">X-Consul-Token ইনজেকশন · স্ট্যাটাস কোড চেক · JSON ডিকোড · এক্সেপশন ম্যাপিং</text>
     <rect x="650" y="592" width="306" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="666" y="622" style="font-size:10.1px">রেসপন্স হেডার ক্যাপচার</text>
-    <text class="cs" x="666" y="644" style="font-size:8.8px">getWithHeaders() এক্সপোজ করে</text>
-    <text class="cs" x="666" y="664" style="font-size:11.1px">X-Consul-Index → blocking query কার্সর</text>
+    <text class="ct" x="666" y="622">রেসপন্স হেডার ক্যাপচার</text>
+    <text class="cs" x="666" y="644">getWithHeaders() এক্সপোজ করে</text>
+    <text class="cs" x="666" y="664">X-Consul-Index → blocking query কার্সর</text>
 
     <path d="M534 682 L540 693 L546 682" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="738" style="font-size:9.4px">PSR অ্যাবস্ট্রাকশন</text>
+    <text class="gutter" x="32" y="738" style="font-size:11.8px">PSR অ্যাবস্ট্রাকশন</text>
     <rect x="122" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="728">PSR-18</text>
     <text class="cs" x="138" y="750">HTTP Client</text>
     <rect x="291" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="307" y="728">PSR-17</text>
-    <text class="cs" x="307" y="750">Request / Stream Factory</text>
+    <text class="cs" x="307" y="750" style="font-size:10.6px">Request / Stream Factory</text>
     <rect x="460" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="476" y="728">PSR-16</text>
-    <text class="cs" x="476" y="750" style="font-size:10.9px">Cache (ঐচ্ছিক)</text>
+    <text class="cs" x="476" y="750">Cache (ঐচ্ছিক)</text>
     <rect x="629" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="645" y="728">PSR-3</text>
-    <text class="cs" x="645" y="750" style="font-size:10.9px">Logger (ঐচ্ছিক)</text>
+    <text class="cs" x="645" y="750">Logger (ঐচ্ছিক)</text>
     <rect x="798" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="814" y="728">PSR-14</text>
     <text class="cs" x="814" y="750">EventDispatcher</text>
 
     <path d="M534 776 L540 787 L546 776" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="830" style="font-size:9.4px">ক্লাস্টার ব্যাকএন্ড</text>
+    <text class="gutter" x="32" y="830">ক্লাস্টার ব্যাকএন্ড</text>
     <rect x="122" y="790" width="834" height="72" rx="14" fill="#141826" stroke="#41476B"/>
     <rect x="122" y="790" width="6" height="72" rx="3" fill="url(#accent)"/>
     <text class="ct" x="148" y="822">Consul Agent · HTTP API v1　/agent　/catalog　/health　/kv　/session　/acl　/operator</text>
-    <text class="cs" x="148" y="844" style="font-size:8.9px">লোকাল Agent ফরওয়ার্ড → Consul Server ক্লাস্টার (Raft কনসেনসাস · মাল্টি-ডেটাসেন্টার · ACL)</text>
+    <text class="cs" x="148" y="844">লোকাল Agent ফরওয়ার্ড → Consul Server ক্লাস্টার (Raft কনসেনসাস · মাল্টি-ডেটাসেন্টার · ACL)</text>
     <rect x="24" y="878" width="952" height="88" rx="16" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="890" width="4" height="18" rx="2" fill="#8B8FE8"/>
-    <text class="band" x="58" y="904" style="font-size:9.4px">ক্রস-কাটিং কনসার্ন</text>
-    <text class="bands" x="44" y="928" style="font-size:9.9px">এক্সেপশন সিস্টেম: ConsulException → Client / Server / Request(401·403·404)</text>
-    <text class="bands" x="500" y="928" style="font-size:8.7px">PSR-16 ক্যাশ: get() / namespace() স্বয়ংক্রিয় পড়া-লেখা</text>
-    <text class="bands" x="44" y="950" style="font-size:10.6px">PSR-3 লগ: NullLogger ফলব্যাক</text>
-    <text class="bands" x="500" y="950" style="font-size:8.9px">কোয়ালিটি অ্যাসুরেন্স: PHP 8.0–8.4 · PHPStan L5 · 309টি টেস্ট</text>
+    <text class="band" x="58" y="904">ক্রস-কাটিং কনসার্ন</text>
+    <text class="bands" x="44" y="928">এক্সেপশন সিস্টেম: ConsulException → Client / Server / Request(401·403·404)</text>
+    <text class="bands" x="500" y="928">PSR-16 ক্যাশ: get() / namespace() স্বয়ংক্রিয় পড়া-লেখা</text>
+    <text class="bands" x="44" y="950">PSR-3 লগ: NullLogger ফলব্যাক</text>
+    <text class="bands" x="500" y="950">কোয়ালিটি অ্যাসুরেন্স: PHP 8.0–8.4 · PHPStan L5 · 309টি টেস্ট</text>
   </g>
 </svg>

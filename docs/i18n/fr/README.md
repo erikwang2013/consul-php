@@ -41,6 +41,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · aucune dépendance à un framework
 | **Conception fonctionnelle** | voir ci-dessous · [features.svg](./images/features.svg) |
 | **Cycle de vie** | voir ci-dessous · [lifecycle.svg](./images/lifecycle.svg) |
 | **Mascotte du projet** | [Consu](./images/pet.svg) |
+| **README multilingue** | [docs/i18n/](../../i18n/) · [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · **Français** · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md) |
 | **Sommaire de la documentation** | [docs/README.md](../../README.md) |
 | **Intégration Laravel** | voir ci-dessous « Laravel » |
 | **Intégration Hyperf** | voir ci-dessous « Hyperf » |

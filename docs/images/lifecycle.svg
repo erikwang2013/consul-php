@@ -62,13 +62,13 @@
     <text class="bs" x="899" y="236" text-anchor="middle">优雅下线或自动清理</text>
 
     <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
+    <text class="al" x="197" y="174" text-anchor="middle">register()</text>
     <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="397" y="212" text-anchor="middle">检查告警</text>
+    <text class="al" x="397" y="174" text-anchor="middle">检查告警</text>
     <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="597" y="212" text-anchor="middle">心跳超时</text>
+    <text class="al" x="597" y="174" text-anchor="middle">心跳超时</text>
     <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="797" y="212" text-anchor="middle">自动或主动注销</text>
+    <text class="al" x="797" y="174" text-anchor="middle">自动或主动注销</text>
 
     <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
     <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92">heartbeat() 恢复正常 → 重新回到 passing，无需重新注册</text>

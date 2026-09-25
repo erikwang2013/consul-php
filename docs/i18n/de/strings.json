@@ -184,7 +184,7 @@
     "三个关键生命周期：服务实例状态迁移 · 配置热更新（长轮询与降级恢复）· 单次请求处理链路": "Drei zentrale Lebenszyklen: Statuswechsel der Service-Instanz · Konfig-Hot-Reload (Long-Polling und Degradierung) · Verarbeitung einer Anfrage",
     "交由上层封装继续处理": "geht an den High-Level-Wrapper weiter",
     "仍在目录，可按需过滤": "bleibt im Katalog, bei Bedarf filterbar",
-    "优雅下线或自动清理": "sauberes Abmelden oder automatische Bereinigung",
+    "优雅下线或自动清理": "Abmelden oder Auto-Purge",
     "会话与分布式锁": "Sessions und verteilte Locks",
     "会话失效即锁失效，无需额外心跳": "Session läuft ab, Lock läuft ab – kein Extra-Heartbeat",
     "传输层": "Transport",

@@ -9,4 +9,6 @@ return [
         'enable' => true,
         'ttl'    => 300,
     ],
+    // php artisan consul:watch 默认监听的前缀
+    'watch_prefix' => env('CONSUL_WATCH_PREFIX', 'app/'),
 ];

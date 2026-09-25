@@ -27,112 +27,112 @@
 
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="24" y="48" style="font-size:17.5px">Жизненный цикл consul-php</text>
-    <text class="sub" x="24" y="74" style="font-size:12px">Три жизненных цикла: экземпляр сервиса · обновление конфигурации · обработка запроса</text>
+    <text class="h1" x="24" y="48">Жизненный цикл consul-php</text>
+    <text class="sub" x="24" y="74">Три жизненных цикла: экземпляр сервиса · обновление конфигурации · обработка запроса</text>
     <rect x="24" y="100" width="952" height="232" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="lt" x="58" y="136" style="font-size:10.8px">① Жизненный цикл экземпляра · Service\Registry</text>
+    <text class="lt" x="58" y="136">① Жизненный цикл экземпляра · Service\Registry</text>
     <text class="chip" x="956" y="136" text-anchor="end">register → heartbeat → deregister</text>
 
     <rect x="24" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="99" y="214" text-anchor="middle" style="font-size:9px">Не в реестре</text>
-    <text class="bs" x="99" y="236" text-anchor="middle" style="font-size:9.5px">Нет в каталоге Consul</text>
+    <text class="bt" x="99" y="214" text-anchor="middle">Не в реестре</text>
+    <text class="bs" x="99" y="236" text-anchor="middle">Нет в каталоге Consul</text>
 
     <rect x="224" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0" style="font-size:9.1px">passing — здоров</text>
-    <text class="bs" x="299" y="236" text-anchor="middle" style="font-size:7.6px">TTL heartbeat OK</text>
-    <text class="bs" x="299" y="252" text-anchor="middle" style="font-size:9px">Может быть выбран</text>
+    <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0">passing — здоров</text>
+    <text class="bs" x="299" y="236" text-anchor="middle">TTL heartbeat OK</text>
+    <text class="bs" x="299" y="252" text-anchor="middle">Может быть выбран</text>
     <path d="M274 180 C274 158 324 158 324 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
-    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92" style="font-size:7.6px">heartbeat() — продление</text>
+    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92">heartbeat() — продление</text>
 
     <rect x="424" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
     <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066">warning</text>
-    <text class="bs" x="499" y="236" text-anchor="middle" style="font-size:8.5px">Проверка не прошла</text>
-    <text class="bs" x="499" y="252" text-anchor="middle" style="font-size:10px">Остаётся в каталоге</text>
+    <text class="bs" x="499" y="236" text-anchor="middle">Проверка не прошла</text>
+    <text class="bs" x="499" y="252" text-anchor="middle">Остаётся в каталоге</text>
 
     <rect x="624" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
     <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F">critical</text>
-    <text class="bs" x="699" y="236" text-anchor="middle" style="font-size:7.6px">Таймаут TTL / сбой проверки</text>
+    <text class="bs" x="699" y="236" text-anchor="middle" style="font-size:9.3px">Таймаут TTL / сбой проверки</text>
     <text class="bs" x="699" y="252" text-anchor="middle" style="font-size:7.7px">healthyInstances больше не вернёт</text>
 
     <rect x="824" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="899" y="214" text-anchor="middle" style="font-size:11.4px">Удалён</text>
-    <text class="bs" x="899" y="236" text-anchor="middle" style="font-size:7.6px">Дерегистрация или очистка</text>
+    <text class="bt" x="899" y="214" text-anchor="middle">Удалён</text>
+    <text class="bs" x="899" y="236" text-anchor="middle" style="font-size:9.6px">Дерегистрация или очистка</text>
 
     <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
+    <text class="al" x="197" y="174" text-anchor="middle">register()</text>
     <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="397" y="212" text-anchor="middle" style="font-size:7.6px">Предупреждение</text>
+    <text class="al" x="397" y="174" text-anchor="middle">Предупреждение</text>
     <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="597" y="212" text-anchor="middle" style="font-size:7.6px">Таймаут TTL</text>
+    <text class="al" x="597" y="174" text-anchor="middle">Таймаут TTL</text>
     <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="797" y="212" text-anchor="middle" style="font-size:8.4px">Авто или вручную</text>
+    <text class="al" x="797" y="174" text-anchor="middle">Авто или вручную</text>
 
     <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
-    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92" style="font-size:8.5px">heartbeat() восстановился → снова passing, без перерегистрации</text>
+    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92">heartbeat() восстановился → снова passing, без перерегистрации</text>
     <rect x="24" y="352" width="952" height="320" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="372" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="lt" x="58" y="388" style="font-size:10.1px">② Жизненный цикл горячего обновления · Config\Watcher</text>
-    <text class="chip" x="956" y="388" text-anchor="end" style="font-size:7.9px">Сначала blocking query, при сбое — деградация и возврат</text>
+    <text class="lt" x="58" y="388">② Жизненный цикл горячего обновления · Config\Watcher</text>
+    <text class="chip" x="956" y="388" text-anchor="end">Сначала blocking query, при сбое — деградация и возврат</text>
 
     <rect x="24" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="bt" x="99" y="432" text-anchor="middle">① watch(prefix)</text>
-    <text class="bs" x="99" y="452" text-anchor="middle" style="font-size:7.6px">Запуск watch</text>
+    <text class="bs" x="99" y="452" text-anchor="middle">Запуск watch</text>
 
     <rect x="200" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
-    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4" style="font-size:9px">② blocking query — блокирующий длинный опрос</text>
-    <text class="bs" x="365" y="452" text-anchor="middle" style="font-size:10.1px">Таймаут 30 с, с курсором X-Consul-Index</text>
+    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4">② blocking query — блокирующий длинный опрос</text>
+    <text class="bs" x="365" y="452" text-anchor="middle">Таймаут 30 с, с курсором X-Consul-Index</text>
 
     <rect x="556" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="641" y="432" text-anchor="middle" style="font-size:10.5px">③ Изменения</text>
-    <text class="bs" x="641" y="452" text-anchor="middle" style="font-size:7.6px">Сдвиг index + сравнение снимков</text>
+    <text class="bt" x="641" y="432" text-anchor="middle">③ Изменения</text>
+    <text class="bs" x="641" y="452" text-anchor="middle" style="font-size:9.1px">Сдвиг index + сравнение снимков</text>
 
     <rect x="752" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="864" y="432" text-anchor="middle" style="font-size:9px">④ Уведомление ↺</text>
-    <text class="bs" x="864" y="452" text-anchor="middle" style="font-size:8.1px">callback onChange + событие PSR-14</text>
+    <text class="bt" x="864" y="432" text-anchor="middle">④ Уведомление ↺</text>
+    <text class="bs" x="864" y="452" text-anchor="middle">callback onChange + событие PSR-14</text>
 
     <path d="M174 438 H196" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M530 438 H552" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M726 438 H748" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="864" y="494" text-anchor="middle" style="font-size:7.6px">Изменений нет — index сдвигается, снова к ②</text>
+    <text class="al" x="864" y="494" text-anchor="middle" style="font-size:8.9px">Изменений нет — index сдвигается, снова к ②</text>
 
     <path d="M250 470 V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="262" y="506" style="font-size:8.8px">Сбой / таймаут blocking</text>
+    <text class="al" x="262" y="506">Сбой / таймаут blocking</text>
 
     <rect x="214" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
-    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066" style="font-size:10.2px">⑤ Переход на опрос</text>
-    <text class="bs" x="314" y="582" text-anchor="middle" style="font-size:7.7px">По умолчанию 10 с, setPollInterval()</text>
+    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066">⑤ Переход на опрос</text>
+    <text class="bs" x="314" y="582" text-anchor="middle" style="font-size:10.4px">По умолчанию 10 с, setPollInterval()</text>
 
     <rect x="440" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="540" y="562" text-anchor="middle" style="font-size:9.8px">⑥ 5 успехов подряд</text>
-    <text class="bs" x="540" y="582" text-anchor="middle" style="font-size:7.6px">Цель достигнута</text>
+    <text class="bt" x="540" y="562" text-anchor="middle">⑥ 5 успехов подряд</text>
+    <text class="bs" x="540" y="582" text-anchor="middle">Цель достигнута</text>
 
     <rect x="666" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0" style="font-size:10.5px">⑦ Возврат к blocking ↺</text>
-    <text class="bs" x="796" y="582" text-anchor="middle" style="font-size:7.6px">Возврат к ②, счётчик сброшен</text>
+    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0">⑦ Возврат к blocking ↺</text>
+    <text class="bs" x="796" y="582" text-anchor="middle">Возврат к ②, счётчик сброшен</text>
 
     <path d="M414 568 H436" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M640 568 H662" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="note" x="44" y="640" style="font-size:7.9px">stop() можно вызвать на любом этапе из другого процесса / корутины; канал кэша отделён от канала наблюдения — Watcher всегда читает актуальные данные Consul.</text>
+    <text class="note" x="44" y="640" style="font-size:10.4px">stop() можно вызвать на любом этапе из другого процесса / корутины; канал кэша отделён от канала наблюдения — Watcher всегда читает актуальные данные Consul.</text>
     <rect x="24" y="692" width="952" height="274" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="lt" x="58" y="728" style="font-size:10.5px">③ Жизненный цикл одного запроса · Api → Transport → PSR-18</text>
+    <text class="lt" x="58" y="728">③ Жизненный цикл одного запроса · Api → Transport → PSR-18</text>
     <text class="chip" x="956" y="728" text-anchor="end">Синхронный вызов</text>
 
     <rect x="24" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="bt" x="124" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
-    <text class="bs" x="124" y="790" text-anchor="middle" style="font-size:8.7px">Вызов извне</text>
+    <text class="bs" x="124" y="790" text-anchor="middle">Вызов извне</text>
 
     <rect x="250" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="345" y="770" text-anchor="middle" style="font-size:9px">② Диспетчер __get</text>
-    <text class="bs" x="345" y="790" text-anchor="middle" style="font-size:8.5px">Создаётся один раз</text>
+    <text class="bt" x="345" y="770" text-anchor="middle">② Диспетчер __get</text>
+    <text class="bs" x="345" y="790" text-anchor="middle">Создаётся один раз</text>
 
     <rect x="466" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
-    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7" style="font-size:9.5px">③ Psr18Transport собирает запрос</text>
+    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7">③ Psr18Transport собирает запрос</text>
     <text class="bs" x="616" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
 
     <rect x="792" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="884" y="770" text-anchor="middle" style="font-size:9px">④ Внедрение Token</text>
+    <text class="bt" x="884" y="770" text-anchor="middle">④ Внедрение Token</text>
     <text class="bs" x="884" y="790" text-anchor="middle">X-Consul-Token</text>
 
     <path d="M224 772 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
@@ -142,26 +142,26 @@
     <path d="M884 800 V 818 H 124 V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
     <rect x="24" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="124" y="864" text-anchor="middle" style="font-size:9px">⑤ Отправка HTTP-запроса</text>
-    <text class="bs" x="124" y="884" text-anchor="middle" style="font-size:9px">Guzzle / Swoole / свой клиент · PSR-18</text>
+    <text class="bt" x="124" y="864" text-anchor="middle">⑤ Отправка HTTP-запроса</text>
+    <text class="bs" x="124" y="884" text-anchor="middle" style="font-size:9.7px">Guzzle / Swoole / свой клиент · PSR-18</text>
 
     <rect x="250" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="335" y="864" text-anchor="middle" style="font-size:11.6px">⑥ Код ответа</text>
-    <text class="bs" x="335" y="884" text-anchor="middle" style="font-size:9.5px">ветки 4xx / 5xx</text>
+    <text class="bt" x="335" y="864" text-anchor="middle">⑥ Код ответа</text>
+    <text class="bs" x="335" y="884" text-anchor="middle">ветки 4xx / 5xx</text>
 
     <rect x="446" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="584" y="864" text-anchor="middle" style="font-size:10.2px">⑦ Разбор JSON</text>
-    <text class="bs" x="584" y="884" text-anchor="middle" style="font-size:7.8px">getRaw возвращает сырые байты (Snapshot)</text>
+    <text class="bt" x="584" y="864" text-anchor="middle">⑦ Разбор JSON</text>
+    <text class="bs" x="584" y="884" text-anchor="middle">getRaw возвращает сырые байты (Snapshot)</text>
 
     <rect x="748" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0" style="font-size:10.7px">⑧ Возврат array | string</text>
+    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0">⑧ Возврат array | string</text>
     <text class="bs" x="862" y="884" text-anchor="middle">Дальше — обёртка</text>
 
     <path d="M224 866 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M420 866 H442" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M722 866 H744" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
-    <text class="note" x="44" y="924" style="font-size:10px">Ветки исключений: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
-    <text class="note" x="44" y="944" style="font-size:9.8px">　　　　　5xx → ServerException · сбой соединения / разбора → ClientException (прочие 4xx → ConsulRequestException)</text>
+    <text class="note" x="44" y="924">Ветки исключений: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
+    <text class="note" x="44" y="944">　　　　　5xx → ServerException · сбой соединения / разбора → ClientException (прочие 4xx → ConsulRequestException)</text>
   </g>
 </svg>

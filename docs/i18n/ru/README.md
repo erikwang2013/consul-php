@@ -41,6 +41,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · ядро без зависимосте
 | **Дизайн возможностей** | [Дизайн возможностей](../../../README.md) · [features.svg](./images/features.svg) |
 | **Жизненные циклы** | [Жизненные циклы](../../../README.md) · [lifecycle.svg](./images/lifecycle.svg) |
 | **Питомец проекта** | [Consu](./images/pet.svg) |
+| **Многоязычный README** | [docs/i18n/](../../i18n/) · [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · **Русский** · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md) |
 | **Общий каталог документации** | [docs/README.md](../../README.md) |
 | **Интеграция с Laravel** | см. раздел **Laravel** ниже |
 | **Интеграция с Hyperf** | см. раздел **Hyperf** ниже |

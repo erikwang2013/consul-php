@@ -18,127 +18,127 @@
 
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="24" y="48" style="font-size:19.9px">consul-php फ़ीचर डिज़ाइन</text>
-    <text class="sub" x="24" y="74" style="font-size:11.1px">11 API मॉड्यूल + 3 हाई-लेवल रैपर + 4 फ़्रेमवर्क अडैप्टर: क्षमता मानचित्र और एंट्री</text>
+    <text class="h1" x="24" y="48">consul-php फ़ीचर डिज़ाइन</text>
+    <text class="sub" x="24" y="74">11 API मॉड्यूल + 3 हाई-लेवल रैपर + 4 फ़्रेमवर्क अडैप्टर: क्षमता मानचित्र और एंट्री</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
-    <text class="ct" x="42" y="140" style="font-size:10.2px">सेवा पंजीकरण</text>
+    <text class="ct" x="42" y="140">सेवा पंजीकरण</text>
     <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
     <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
-    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:10.5px">TTL / HTTP / TCP / gRPC चार health check</text>
-    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232" style="font-size:9.5px">heartbeat / heartbeatFail heartbeat रिपोर्ट</text>
-    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254" style="font-size:10px">deregister सुचारु ऑफ़लाइन</text>
-    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:8.6px">टाइमआउट पर नीति से ऑटो डीरजिस्टर</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210">TTL / HTTP / TCP / gRPC चार health check</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232">heartbeat / heartbeatFail heartbeat रिपोर्ट</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254">deregister सुचारु ऑफ़लाइन</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276">टाइमआउट पर नीति से ऑटो डीरजिस्टर</text>
 
     <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="363" y="140">सेवा खोज</text>
     <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
-    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188" style="font-size:11.2px">healthyInstances() स्वस्थ इंस्टेंस सूची</text>
-    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:11.2px">selectInstance() लोड बैलेंस से चयन</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188">healthyInstances() स्वस्थ इंस्टेंस सूची</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210">selectInstance() लोड बैलेंस से चयन</text>
     <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232">RoundRobin / Random / कस्टम नीति</text>
-    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254" style="font-size:8.6px">watch() इंस्टेंस ऑनलाइन/ऑफ़लाइन कॉलबैक</text>
-    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:9.1px">stop() क्रॉस-प्रोसेस सुचारु रोक</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254">watch() इंस्टेंस ऑनलाइन/ऑफ़लाइन कॉलबैक</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276">stop() क्रॉस-प्रोसेस सुचारु रोक</text>
 
     <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="ct" x="684" y="140" style="font-size:13.3px">KV स्टोर</text>
+    <text class="ct" x="684" y="140">KV स्टोर</text>
     <text class="capi" x="684" y="158">Api\Kv</text>
-    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188" style="font-size:9.6px">put / get / delete बुनियादी पढ़ें-लिखें</text>
-    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:10.3px">all() पुनरावर्ती सूची · keys() विभाजक से स्तर</text>
-    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:11.5px">acquire पैरामीटर से Session लॉक</text>
-    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:12px">getRaw / putRaw रॉ बाइट चैनल</text>
-    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:8.6px">prefix से कॉन्फ़िग ट्री प्रबंधन</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188">put / get / delete बुनियादी पढ़ें-लिखें</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210">all() पुनरावर्ती सूची · keys() विभाजक से स्तर</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232">acquire पैरामीटर से Session लॉक</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254">getRaw / putRaw रॉ बाइट चैनल</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276">prefix से कॉन्फ़िग ट्री प्रबंधन</text>
     <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="ct" x="42" y="336" style="font-size:10.1px">कॉन्फ़िगरेशन केंद्र</text>
+    <text class="ct" x="42" y="336">कॉन्फ़िगरेशन केंद्र</text>
     <text class="capi" x="42" y="354">Config\ConfigCenter</text>
-    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384" style="font-size:10.8px">get(key, default) एकल key पढ़ें</text>
-    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:9.6px">namespace(prefix) पूरा कॉन्फ़िग ट्री लाएँ</text>
-    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428" style="font-size:11px">set / delete लिखें और हटाएँ</text>
-    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:11.2px">PSR-16 कैश जोड़ने पर ऑटो त्वरण</text>
-    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.6px">Watcher चैनल कैश छोड़ रीयल-टाइम मान पढ़ता है</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384">get(key, default) एकल key पढ़ें</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406">namespace(prefix) पूरा कॉन्फ़िग ट्री लाएँ</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428">set / delete लिखें और हटाएँ</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450">PSR-16 कैश जोड़ने पर ऑटो त्वरण</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472">Watcher चैनल कैश छोड़ रीयल-टाइम मान पढ़ता है</text>
 
     <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="ct" x="363" y="336" style="font-size:10.1px">कॉन्फ़िग हॉट अपडेट</text>
+    <text class="ct" x="363" y="336">कॉन्फ़िग हॉट अपडेट</text>
     <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
     <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
-    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:8.6px">नेटवर्क त्रुटि पर ऑटो पोलिंग डाउनग्रेड</text>
-    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:9px">लगातार 5 सफलता पर लॉन्ग पोलिंग बहाल</text>
-    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:10.9px">onChange कॉलबैक + PSR-14 इवेंट, दो चैनल</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406">नेटवर्क त्रुटि पर ऑटो पोलिंग डाउनग्रेड</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428">लगातार 5 सफलता पर लॉन्ग पोलिंग बहाल</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450">onChange कॉलबैक + PSR-14 इवेंट, दो चैनल</text>
     <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
 
     <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="ct" x="684" y="336" style="font-size:10.1px">Health check</text>
+    <text class="ct" x="684" y="336">Health check</text>
     <text class="capi" x="684" y="354">Api\Health</text>
     <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, [&apos;passing&apos; =&gt; true])</text>
-    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406" style="font-size:10.5px">node(name) नोड की सभी जाँचें</text>
-    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:10.6px">checks(name) सेवा की सभी जाँचें</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406">node(name) नोड की सभी जाँचें</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428">checks(name) सेवा की सभी जाँचें</text>
     <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
-    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:8.6px">TTL heartbeat और बाहरी जाँच का एकीकृत दृश्य</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472">TTL heartbeat और बाहरी जाँच का एकीकृत दृश्य</text>
     <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
-    <text class="ct" x="42" y="532" style="font-size:10.1px">सत्र और डिस्ट्रिब्यूटेड लॉक</text>
+    <text class="ct" x="42" y="532">सत्र और डिस्ट्रिब्यूटेड लॉक</text>
     <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
     <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
     <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
     <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624">Kv::put(..., [&apos;acquire&apos; =&gt; id]) लॉक</text>
-    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:8.6px">delete व्यवहार: समय समाप्ति पर संसाधन मुक्त</text>
-    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:8.6px">सत्र समाप्त तो लॉक समाप्त, अतिरिक्त heartbeat नहीं</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646">delete व्यवहार: समय समाप्ति पर संसाधन मुक्त</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:11.5px">सत्र समाप्त तो लॉक समाप्त, अतिरिक्त heartbeat नहीं</text>
 
     <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
-    <text class="ct" x="363" y="532" style="font-size:11.9px">ACL अनुमति</text>
+    <text class="ct" x="363" y="532">ACL अनुमति</text>
     <text class="capi" x="363" y="550">Api\Acl</text>
     <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
-    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602" style="font-size:11.2px">policy* / role* / authMethod* पूरा सेट</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602">policy* / role* / authMethod* पूरा सेट</text>
     <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
     <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646">Token X-Consul-Token से ऑटो इंजेक्ट</text>
-    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:11.6px">अनुमति नहीं तो AccessDeniedException</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668">अनुमति नहीं तो AccessDeniedException</text>
 
     <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
-    <text class="ct" x="684" y="532" style="font-size:10.1px">क्लस्टर संचालन</text>
+    <text class="ct" x="684" y="532">क्लस्टर संचालन</text>
     <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
-    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580" style="font-size:10.3px">leader / peers क्लस्टर स्थिति</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580">leader / peers क्लस्टर स्थिति</text>
     <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
     <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
-    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:10.7px">snapshot save / restore बाइनरी स्नैपशॉट</text>
-    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668" style="font-size:9.9px">datacenters / nodes नेटवर्क निर्देशांक</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646">snapshot save / restore बाइनरी स्नैपशॉट</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668">datacenters / nodes नेटवर्क निर्देशांक</text>
     <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
-    <text class="ct" x="42" y="728" style="font-size:10.1px">फ़्रेमवर्क एकीकरण</text>
+    <text class="ct" x="42" y="728">फ़्रेमवर्क एकीकरण</text>
     <text class="capi" x="42" y="746">src/Integration</text>
-    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776" style="font-size:10.8px">Laravel: ऑटो-डिस्कवरी + Facade + Artisan</text>
-    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:11px">Hyperf: ConfigProvider + कोरूटीन क्लाइंट</text>
-    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:10.7px">webman: प्लगइन इंस्टॉल + onWorkerStart</text>
-    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842" style="font-size:11.9px">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
-    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:9.1px">API पूरी तरह समान, केवल $client पाने का तरीका अलग</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776">Laravel: ऑटो-डिस्कवरी + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798">Hyperf: ConfigProvider + कोरूटीन क्लाइंट</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820">webman: प्लगइन इंस्टॉल + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:11.8px">API पूरी तरह समान, केवल $client पाने का तरीका अलग</text>
 
     <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="ct" x="363" y="728" style="font-size:10.1px">विश्वसनीयता डिज़ाइन</text>
+    <text class="ct" x="363" y="728">विश्वसनीयता डिज़ाइन</text>
     <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
-    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:10.8px">एकीकृत अपवाद प्रणाली, सब ConsulException से</text>
-    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:11.5px">PSR-3 लॉग, NullLogger ऑटो फ़ॉलबैक</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776">एकीकृत अपवाद प्रणाली, सब ConsulException से</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798">PSR-3 लॉग, NullLogger ऑटो फ़ॉलबैक</text>
     <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820">PSR-14 इवेंट: ConfigChangedEvent</text>
-    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:10.3px">ConsulAsyncClient + Promise डेफ़र्ड एक्ज़ीक्यूशन</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:11.6px">ConsulAsyncClient + Promise डेफ़र्ड एक्ज़ीक्यूशन</text>
     <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864">कनेक्शन/डिकोड त्रुटि → ClientException</text>
 
     <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="ct" x="684" y="728" style="font-size:10.1px">मुख्य विशेषताएँ</text>
+    <text class="ct" x="684" y="728">मुख्य विशेषताएँ</text>
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
-    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.6px">PHP 8.0+, कोर पैकेज में शून्य फ़्रेमवर्क निर्भरता</text>
-    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:10.5px">Consul HTTP API v1 पूरी तरह कवर</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.8px">11 API मॉड्यूल + 3 हाई-लेवल रैपर</text>
-    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:10.3px">केवल PSR इंटरफ़ेस, HTTP क्लाइंट बदल सकते हैं</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776">PHP 8.0+, कोर पैकेज में शून्य फ़्रेमवर्क निर्भरता</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Consul HTTP API v1 पूरी तरह कवर</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11 API मॉड्यूल + 3 हाई-लेवल रैपर</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842">केवल PSR इंटरफ़ेस, HTTP क्लाइंट बदल सकते हैं</text>
     <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 यूनिट टेस्ट · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
-    <text class="ct" x="44" y="920" style="font-size:13px">एक API, चार फ़्रेमवर्क</text>
-    <text class="cl" x="200" y="920" style="font-size:10.7px">Laravel · Hyperf · webman · ThinkPHP —— कोर पैकेज शून्य निर्भरता, अडैप्टर अंतर्निहित, एक composer require और तैयार</text>
+    <text class="ct" x="44" y="920">एक API, चार फ़्रेमवर्क</text>
+    <text class="cl" x="200" y="920">Laravel · Hyperf · webman · ThinkPHP —— कोर पैकेज शून्य निर्भरता, अडैप्टर अंतर्निहित, एक composer require और तैयार</text>
     <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
   </g>
 </svg>

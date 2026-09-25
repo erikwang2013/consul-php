@@ -41,6 +41,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 프레임워크 의존성 제로
 | **기능 설계** | 기능 설계 · [features.svg](./images/features.svg) |
 | **라이프사이클** | 라이프사이클 · [lifecycle.svg](./images/lifecycle.svg) |
 | **프로젝트 펫** | [Consu](./images/pet.svg) |
+| **다국어 README** | [docs/i18n/](../../i18n/) · [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · **한국어** · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md) |
 | **문서 총목차** | [docs/README.md](../../README.md) |
 | **Laravel 통합** | 아래 Laravel 섹션 참고 |
 | **Hyperf 통합** | 아래 Hyperf 섹션 참고 |

@@ -21,3 +21,5 @@ jobs:
         run: php scripts/i18n-svg.php build all && git diff --exit-code -- docs/i18n
       - name: i18n 校验
         run: php scripts/i18n-svg.php verify all
+      - name: i18n 版面审计（译文不得溢出卡片）
+        run: php scripts/i18n-svg.php audit all

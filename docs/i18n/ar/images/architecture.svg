@@ -25,133 +25,133 @@
 
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="44" y="48" style="font-size:18.3px">تصميم معمارية consul-php</text>
-    <text class="sub" x="44" y="74" style="font-size:9.4px">اعتماديات طبقية: طبقة التطبيق → طبقة الدمج → العميل → التغليفات العليا → وحدات API → طبقة النقل → تجريدات PSR → Consul Agent</text>
-    <text class="gutter" x="32" y="140" style="font-size:9.4px">طبقة التطبيق</text>
-    <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="128">Laravel</text>
-    <text class="cs" x="138" y="150" style="font-size:8.5px">اكتشاف تلقائي + Facade</text>
-    <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="128">Hyperf</text>
-    <text class="cs" x="307" y="150" style="font-size:8.3px">coroutine + حقن بالتعليقات</text>
-    <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="128">webman</text>
-    <text class="cs" x="476" y="150" style="font-size:8.3px">تثبيت الإضافة تلقائيًا</text>
-    <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="128">ThinkPHP</text>
-    <text class="cs" x="645" y="150">ربط Service</text>
-    <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="128" style="font-size:13.4px">PHP خالص</text>
-    <text class="cs" x="814" y="150">new ConsulClient()</text>
+    <text class="h1" x="956" y="48" text-anchor="end">تصميم معمارية consul-php</text>
+    <text class="sub" x="956" y="74" text-anchor="end">اعتماديات طبقية: طبقة التطبيق → طبقة الدمج → العميل → التغليفات العليا → وحدات API → طبقة النقل → تجريدات PSR → Consul Agent</text>
+    <text class="gutter" x="968" y="140" style="font-size:9.4px" text-anchor="end">طبقة التطبيق</text>
+    <rect x="718" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="862" y="128" text-anchor="end">Laravel</text>
+    <text class="cs" x="862" y="150" style="font-size:9.6px" text-anchor="end">اكتشاف تلقائي + Facade</text>
+    <rect x="549" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="693" y="128" text-anchor="end">Hyperf</text>
+    <text class="cs" x="693" y="150" style="font-size:8.7px" text-anchor="end">coroutine + حقن بالتعليقات</text>
+    <rect x="380" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="524" y="128" text-anchor="end">webman</text>
+    <text class="cs" x="524" y="150" style="font-size:9.7px" text-anchor="end">تثبيت الإضافة تلقائيًا</text>
+    <rect x="211" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="355" y="128" text-anchor="end">ThinkPHP</text>
+    <text class="cs" x="355" y="150" text-anchor="end">ربط Service</text>
+    <rect x="42" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="186" y="128" text-anchor="end">PHP خالص</text>
+    <text class="cs" x="186" y="150" text-anchor="end">new ConsulClient()</text>
 
-    <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="234" style="font-size:9.4px">طبقة الدمج</text>
-    <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="222">ServiceProvider</text>
-    <text class="cs" x="138" y="244">Facade · consul:watch</text>
-    <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="222">ConfigProvider</text>
-    <text class="cs" x="307" y="244" style="font-size:8.3px">مصنع عميل coroutine</text>
-    <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="222">Webman Install</text>
-    <text class="cs" x="476" y="244" style="font-size:8.5px">نسخ الإعدادات + Worker</text>
-    <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="222">ConsulService</text>
-    <text class="cs" x="645" y="244">app(&apos;consul&apos;)</text>
-    <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="222">ClientFactory</text>
-    <text class="cs" x="814" y="244" style="font-size:8.3px">تجميع اعتماديات PSR تلقائيًا</text>
+    <path d="M 466 176L 460 187L 454 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="234" text-anchor="end">طبقة الدمج</text>
+    <rect x="718" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="862" y="222" text-anchor="end">ServiceProvider</text>
+    <text class="cs" x="862" y="244" text-anchor="end">Facade · consul:watch</text>
+    <rect x="549" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="693" y="222" text-anchor="end">ConfigProvider</text>
+    <text class="cs" x="693" y="244" text-anchor="end">مصنع عميل coroutine</text>
+    <rect x="380" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="524" y="222" text-anchor="end">Webman Install</text>
+    <text class="cs" x="524" y="244" style="font-size:11.2px" text-anchor="end">نسخ الإعدادات + Worker</text>
+    <rect x="211" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="355" y="222" text-anchor="end">ConsulService</text>
+    <text class="cs" x="355" y="244" text-anchor="end">app(&apos;consul&apos;)</text>
+    <rect x="42" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="186" y="222" text-anchor="end">ClientFactory</text>
+    <text class="cs" x="186" y="244" style="font-size:8.6px" text-anchor="end">تجميع اعتماديات PSR تلقائيًا</text>
 
-    <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="328" style="font-size:11.8px">العميل</text>
-    <rect x="122" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="316" style="font-size:10.4px">ConsulClient · المدخل المتزامن</text>
-    <text class="cs" x="138" y="338" style="font-size:9.6px">__get توزيع الخصائص السحرية → $client-&gt;kv / health / catalog …</text>
-    <rect x="543" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="559" y="316" style="font-size:12.3px">ConsulAsyncClient · تنفيذ Promise المؤجَّل</text>
-    <text class="cs" x="559" y="338">wrap(fn() =&gt; ...)-&gt;then(...)-&gt;catch(...)-&gt;wait()</text>
+    <path d="M 466 270L 460 281L 454 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="328" text-anchor="end">العميل</text>
+    <rect x="465" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="862" y="316" text-anchor="end">ConsulClient · المدخل المتزامن</text>
+    <text class="cs" x="862" y="338" text-anchor="end">__get توزيع الخصائص السحرية → $client-&gt;kv / health / catalog …</text>
+    <rect x="44" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="441" y="316" text-anchor="end">ConsulAsyncClient · تنفيذ Promise المؤجَّل</text>
+    <text class="cs" x="441" y="338" text-anchor="end">wrap(fn() =&gt; ...)-&gt;then(...)-&gt;catch(...)-&gt;wait()</text>
 
-    <path d="M534 364 L540 375 L546 364" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="430" style="font-size:9.4px">التغليفات عالية المستوى</text>
-    <rect x="122" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="138" y="408">Service\Registry</text>
-    <text class="cs" x="138" y="430">register · heartbeat</text>
-    <text class="cs" x="138" y="450">heartbeatFail · deregister</text>
-    <rect x="403" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="419" y="408">Service\Discovery</text>
-    <text class="cs" x="419" y="430">healthyInstances · watch</text>
-    <text class="cs" x="419" y="450" style="font-size:11.4px">LoadBalancer: RoundRobin / Random</text>
-    <rect x="684" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="700" y="408">Config\ConfigCenter</text>
-    <text class="cs" x="700" y="430">get · namespace · set · delete</text>
-    <text class="cs" x="700" y="450" style="font-size:10px">watch() → Config\Watcher تحديث لحظي</text>
+    <path d="M 466 364L 460 375L 454 364" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="430" text-anchor="end">التغليفات</text>
+    <rect x="606" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="862" y="408" text-anchor="end">Service\Registry</text>
+    <text class="cs" x="862" y="430" text-anchor="end">register · heartbeat</text>
+    <text class="cs" x="862" y="450" text-anchor="end">heartbeatFail · deregister</text>
+    <rect x="325" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="581" y="408" text-anchor="end">Service\Discovery</text>
+    <text class="cs" x="581" y="430" text-anchor="end">healthyInstances · watch</text>
+    <text class="cs" x="581" y="450" text-anchor="end">LoadBalancer: RoundRobin / Random</text>
+    <rect x="44" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="300" y="408" text-anchor="end">Config\ConfigCenter</text>
+    <text class="cs" x="300" y="430" text-anchor="end">get · namespace · set · delete</text>
+    <text class="cs" x="300" y="450" text-anchor="end">watch() → Config\Watcher تحديث لحظي</text>
 
-    <path d="M534 474 L540 485 L546 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="536" style="font-size:11px">وحدات API</text>
-    <rect x="122" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="157" y="536" text-anchor="middle">Agent</text>
-    <rect x="198" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="233" y="536" text-anchor="middle">Catalog</text>
-    <rect x="274" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="309" y="536" text-anchor="middle">Health</text>
-    <rect x="350" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="385" y="536" text-anchor="middle">Kv</text>
-    <rect x="426" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="461" y="536" text-anchor="middle">Session</text>
-    <rect x="502" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="537" y="536" text-anchor="middle">Acl</text>
-    <rect x="578" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="613" y="536" text-anchor="middle">Event</text>
-    <rect x="654" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="689" y="536" text-anchor="middle">Status</text>
-    <rect x="730" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="765" y="536" text-anchor="middle">Coordinate</text>
-    <rect x="806" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="841" y="536" text-anchor="middle">Operator</text>
-    <rect x="882" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="917" y="536" text-anchor="middle">Snapshot</text>
+    <path d="M 466 474L 460 485L 454 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="536" text-anchor="end">وحدات API</text>
+    <rect x="808" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="843" y="536" text-anchor="middle">Agent</text>
+    <rect x="732" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="767" y="536" text-anchor="middle">Catalog</text>
+    <rect x="656" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="691" y="536" text-anchor="middle">Health</text>
+    <rect x="580" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="615" y="536" text-anchor="middle">Kv</text>
+    <rect x="504" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="539" y="536" text-anchor="middle">Session</text>
+    <rect x="428" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="463" y="536" text-anchor="middle">Acl</text>
+    <rect x="352" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="387" y="536" text-anchor="middle">Event</text>
+    <rect x="276" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="311" y="536" text-anchor="middle">Status</text>
+    <rect x="200" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="235" y="536" text-anchor="middle">Coordinate</text>
+    <rect x="124" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="159" y="536" text-anchor="middle">Operator</text>
+    <rect x="48" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="83" y="536" text-anchor="middle">Snapshot</text>
 
-    <path d="M534 578 L540 589 L546 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="640" style="font-size:9.4px">طبقة النقل</text>
-    <rect x="122" y="592" width="520" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="138" y="622">TransportInterface ← Psr18Transport</text>
-    <text class="cs" x="138" y="644">get / put / post / delete · getRaw / putRaw · getWithHeaders</text>
-    <text class="cs" x="138" y="664" style="font-size:9.3px">حقن X-Consul-Token · فحص رمز الحالة · فك JSON · تحويل الاستثناءات</text>
-    <rect x="650" y="592" width="306" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
-    <text class="ct" x="666" y="622" style="font-size:10.1px">التقاط ترويسات الاستجابة</text>
-    <text class="cs" x="666" y="644" style="font-size:11.3px">getWithHeaders() يُظهر</text>
-    <text class="cs" x="666" y="664" style="font-size:11.4px">X-Consul-Index → مؤشر blocking query</text>
+    <path d="M 466 578L 460 589L 454 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="640" style="font-size:12.7px" text-anchor="end">طبقة النقل</text>
+    <rect x="358" y="592" width="520" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="862" y="622" text-anchor="end">TransportInterface ← Psr18Transport</text>
+    <text class="cs" x="862" y="644" text-anchor="end">get / put / post / delete · getRaw / putRaw · getWithHeaders</text>
+    <text class="cs" x="862" y="664" text-anchor="end">حقن X-Consul-Token · فحص رمز الحالة · فك JSON · تحويل الاستثناءات</text>
+    <rect x="44" y="592" width="306" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="334" y="622" text-anchor="end">التقاط ترويسات الاستجابة</text>
+    <text class="cs" x="334" y="644" text-anchor="end">getWithHeaders() يُظهر</text>
+    <text class="cs" x="334" y="664" text-anchor="end">X-Consul-Index → مؤشر blocking query</text>
 
-    <path d="M534 682 L540 693 L546 682" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="738" style="font-size:9.4px">تجريدات PSR</text>
-    <rect x="122" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="728">PSR-18</text>
-    <text class="cs" x="138" y="750">HTTP Client</text>
-    <rect x="291" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="728">PSR-17</text>
-    <text class="cs" x="307" y="750">Request / Stream Factory</text>
-    <rect x="460" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="728">PSR-16</text>
-    <text class="cs" x="476" y="750" style="font-size:9.4px">Cache (اختياري)</text>
-    <rect x="629" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="728">PSR-3</text>
-    <text class="cs" x="645" y="750" style="font-size:9.5px">Logger (اختياري)</text>
-    <rect x="798" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="728">PSR-14</text>
-    <text class="cs" x="814" y="750">EventDispatcher</text>
+    <path d="M 466 682L 460 693L 454 682" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="738" style="font-size:12px" text-anchor="end">تجريدات PSR</text>
+    <rect x="718" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="862" y="728" text-anchor="end">PSR-18</text>
+    <text class="cs" x="862" y="750" text-anchor="end">HTTP Client</text>
+    <rect x="549" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="693" y="728" text-anchor="end">PSR-17</text>
+    <text class="cs" x="693" y="750" style="font-size:10.6px" text-anchor="end">Request / Stream Factory</text>
+    <rect x="380" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="524" y="728" text-anchor="end">PSR-16</text>
+    <text class="cs" x="524" y="750" text-anchor="end">Cache (اختياري)</text>
+    <rect x="211" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="355" y="728" text-anchor="end">PSR-3</text>
+    <text class="cs" x="355" y="750" text-anchor="end">Logger (اختياري)</text>
+    <rect x="42" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="186" y="728" text-anchor="end">PSR-14</text>
+    <text class="cs" x="186" y="750" text-anchor="end">EventDispatcher</text>
 
-    <path d="M534 776 L540 787 L546 776" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="gutter" x="32" y="830" style="font-size:9.4px">خلفية العنقود</text>
-    <rect x="122" y="790" width="834" height="72" rx="14" fill="#141826" stroke="#41476B"/>
-    <rect x="122" y="790" width="6" height="72" rx="3" fill="url(#accent)"/>
-    <text class="ct" x="148" y="822">Consul Agent · HTTP API v1　/agent　/catalog　/health　/kv　/session　/acl　/operator</text>
-    <text class="cs" x="148" y="844" style="font-size:8.3px">إعادة توجيه عبر Agent المحلي → عنقود Consul Server (إجماع Raft · مراكز بيانات متعددة · ACL)</text>
+    <path d="M 466 776L 460 787L 454 776" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="968" y="830" style="font-size:10.5px" text-anchor="end">خلفية العنقود</text>
+    <rect x="44" y="790" width="834" height="72" rx="14" fill="#141826" stroke="#41476B"/>
+    <rect x="872" y="790" width="6" height="72" rx="3" fill="url(#accent)"/>
+    <text class="ct" x="852" y="822" text-anchor="end">Consul Agent · HTTP API v1　/agent　/catalog　/health　/kv　/session　/acl　/operator</text>
+    <text class="cs" x="852" y="844" text-anchor="end">إعادة توجيه عبر Agent المحلي → عنقود Consul Server (إجماع Raft · مراكز بيانات متعددة · ACL)</text>
     <rect x="24" y="878" width="952" height="88" rx="16" fill="#131722" stroke="#262B3A"/>
-    <rect x="44" y="890" width="4" height="18" rx="2" fill="#8B8FE8"/>
-    <text class="band" x="58" y="904" style="font-size:9.4px">الجوانب العرضية</text>
-    <text class="bands" x="44" y="928" style="font-size:9.7px">نظام الاستثناءات: ConsulException → Client / Server / Request(401·403·404)</text>
-    <text class="bands" x="500" y="928" style="font-size:10.7px">تخزين PSR-16: get() / namespace() تلقائيًا</text>
-    <text class="bands" x="44" y="950" style="font-size:9.3px">سجلات PSR-3: NullLogger احتياطي</text>
-    <text class="bands" x="500" y="950" style="font-size:10px">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 309 اختبار</text>
+    <rect x="952" y="890" width="4" height="18" rx="2" fill="#8B8FE8"/>
+    <text class="band" x="942" y="904" text-anchor="end">الجوانب العرضية</text>
+    <text class="bands" x="956" y="928" text-anchor="end">نظام الاستثناءات: ConsulException → Client / Server / Request(401·403·404)</text>
+    <text class="bands" x="500" y="928" text-anchor="end">تخزين PSR-16: get() / namespace() تلقائيًا</text>
+    <text class="bands" x="956" y="950" text-anchor="end">سجلات PSR-3: NullLogger احتياطي</text>
+    <text class="bands" x="500" y="950" text-anchor="end">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 309 اختبار</text>
   </g>
 </svg>

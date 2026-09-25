@@ -62,35 +62,35 @@
   </g>
   <g class="t">
     <text class="name" x="410" y="126">Consu</text>
-    <text class="sub" x="412" y="156" style="font-size:12.6px">erikwang2013/consul-php · project pet</text>
-    <text class="sub" x="412" y="177" fill="#6E768A" style="font-size:10.1px">&quot;A registry sidekick that only eats heartbeats and never goes offline&quot;</text>
+    <text class="sub" x="412" y="156">erikwang2013/consul-php · project pet</text>
+    <text class="sub" x="412" y="177" fill="#6E768A">&quot;A registry sidekick that only eats heartbeats and never goes offline&quot;</text>
     <line x1="410" y1="196" x2="940" y2="196" stroke="#262B3A" stroke-width="1.5"/>
-    <text class="label" x="410" y="228" style="font-size:10.1px">service registration</text>
+    <text class="label" x="410" y="228">service registration</text>
     <rect x="600" y="218" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="218" width="250" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="228" text-anchor="end">Registry</text>
 
-    <text class="label" x="410" y="266" style="font-size:10.1px">service discovery</text>
+    <text class="label" x="410" y="266">service discovery</text>
     <rect x="600" y="256" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="256" width="230" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="266" text-anchor="end">Discovery</text>
 
-    <text class="label" x="410" y="304" style="font-size:10.1px">config hot reload</text>
+    <text class="label" x="410" y="304">config hot reload</text>
     <rect x="600" y="294" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="294" width="220" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="304" text-anchor="end">Watcher</text>
 
-    <text class="label" x="410" y="342" style="font-size:10.1px">framework adapters</text>
+    <text class="label" x="410" y="342">framework adapters</text>
     <rect x="600" y="332" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="332" width="240" height="10" rx="5" fill="url(#bar)"/>
-    <text class="val" x="940" y="342" text-anchor="end" style="font-size:8.6px">4 frameworks</text>
+    <text class="val" x="940" y="342" text-anchor="end" style="font-size:11.8px">4 frameworks</text>
     <rect x="410" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="472" y="386" text-anchor="middle" style="font-size:8.6px">PSR-18 transport</text>
+    <text class="chip" x="472" y="386" text-anchor="middle">PSR-18 transport</text>
     <rect x="544" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="606" y="386" text-anchor="middle" style="font-size:10.6px">PSR-16 cache</text>
+    <text class="chip" x="606" y="386" text-anchor="middle">PSR-16 cache</text>
     <rect x="678" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="740" y="386" text-anchor="middle" style="font-size:8.9px">PSR-3 logging</text>
+    <text class="chip" x="740" y="386" text-anchor="middle">PSR-3 logging</text>
     <rect x="812" y="366" width="128" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="876" y="386" text-anchor="middle" style="font-size:9.8px">PSR-14 events</text>
+    <text class="chip" x="876" y="386" text-anchor="middle">PSR-14 events</text>
   </g>
 </svg>

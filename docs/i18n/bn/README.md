@@ -41,6 +41,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · ফ্রেমওয়ার্ক �
 | **ফিচার ডিজাইন** | ফিচার ডিজাইন · [features.svg](./images/features.svg) |
 | **লাইফসাইকেল** | লাইফসাইকেল · [lifecycle.svg](./images/lifecycle.svg) |
 | **প্রজেক্টের পেট** | [Consu](./images/pet.svg) |
+| **বহুভাষিক README** | [docs/i18n/](../../i18n/) · [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · **বাংলা** · [Bahasa Indonesia](../id/README.md) |
 | **ডকুমেন্ট সূচি** | [docs/README.md](../../README.md) |
 | **Laravel ইন্টিগ্রেশন** | নিচে দেখুন Laravel |
 | **Hyperf ইন্টিগ্রেশন** | নিচে দেখুন Hyperf |

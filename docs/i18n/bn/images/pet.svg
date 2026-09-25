@@ -62,35 +62,35 @@
   </g>
   <g class="t">
     <text class="name" x="410" y="126">Consu</text>
-    <text class="sub" x="412" y="156" style="font-size:12.3px">erikwang2013/consul-php · প্রজেক্টের পেট</text>
-    <text class="sub" x="412" y="177" fill="#6E768A" style="font-size:10.1px">&quot;শুধু হার্টবিট খায়, কখনো অফলাইন হয় না — এমন এক রেজিস্ট্রি সেন্টার সহকারী&quot;</text>
+    <text class="sub" x="412" y="156">erikwang2013/consul-php · প্রজেক্টের পেট</text>
+    <text class="sub" x="412" y="177" fill="#6E768A">&quot;শুধু হার্টবিট খায়, কখনো অফলাইন হয় না — এমন এক রেজিস্ট্রি সেন্টার সহকারী&quot;</text>
     <line x1="410" y1="196" x2="940" y2="196" stroke="#262B3A" stroke-width="1.5"/>
-    <text class="label" x="410" y="228" style="font-size:10.1px">সার্ভিস রেজিস্ট্রেশন</text>
+    <text class="label" x="410" y="228">সার্ভিস রেজিস্ট্রেশন</text>
     <rect x="600" y="218" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="218" width="250" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="228" text-anchor="end">Registry</text>
 
-    <text class="label" x="410" y="266" style="font-size:10.1px">সার্ভিস ডিসকভারি</text>
+    <text class="label" x="410" y="266">সার্ভিস ডিসকভারি</text>
     <rect x="600" y="256" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="256" width="230" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="266" text-anchor="end">Discovery</text>
 
-    <text class="label" x="410" y="304" style="font-size:10.1px">কনফিগ হট-রিলোড</text>
+    <text class="label" x="410" y="304">কনফিগ হট-রিলোড</text>
     <rect x="600" y="294" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="294" width="220" height="10" rx="5" fill="url(#bar)"/>
     <text class="val" x="940" y="304" text-anchor="end">Watcher</text>
 
-    <text class="label" x="410" y="342" style="font-size:10.1px">ফ্রেমওয়ার্ক অ্যাডাপ্টার</text>
+    <text class="label" x="410" y="342">ফ্রেমওয়ার্ক অ্যাডাপ্টার</text>
     <rect x="600" y="332" width="250" height="10" rx="5" fill="#232838"/>
     <rect x="600" y="332" width="240" height="10" rx="5" fill="url(#bar)"/>
-    <text class="val" x="940" y="342" text-anchor="end" style="font-size:8.6px">4টি ফ্রেমওয়ার্ক</text>
+    <text class="val" x="940" y="342" text-anchor="end">4টি ফ্রেমওয়ার্ক</text>
     <rect x="410" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="472" y="386" text-anchor="middle" style="font-size:8.6px">PSR-18 ট্রান্সপোর্ট</text>
+    <text class="chip" x="472" y="386" text-anchor="middle">PSR-18 ট্রান্সপোর্ট</text>
     <rect x="544" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="606" y="386" text-anchor="middle" style="font-size:11.6px">PSR-16 ক্যাশ</text>
+    <text class="chip" x="606" y="386" text-anchor="middle">PSR-16 ক্যাশ</text>
     <rect x="678" y="366" width="124" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
     <text class="chip" x="740" y="386" text-anchor="middle">PSR-3 লগ</text>
     <rect x="812" y="366" width="128" height="30" rx="15" fill="#1C2131" stroke="#3A4059"/>
-    <text class="chip" x="876" y="386" text-anchor="middle" style="font-size:10.6px">PSR-14 ইভেন্ট</text>
+    <text class="chip" x="876" y="386" text-anchor="middle">PSR-14 ইভেন্ট</text>
   </g>
 </svg>

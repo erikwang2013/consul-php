@@ -36,5 +36,9 @@ class ConsulServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/config/consul.php' => config_path('consul.php'),
         ], 'consul-config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([Console\ConsulWatchCommand::class]);
+        }
     }
 }

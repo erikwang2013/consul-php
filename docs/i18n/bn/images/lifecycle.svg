@@ -27,112 +27,112 @@
 
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="24" y="48" style="font-size:20.9px">consul-php লাইফসাইকেল</text>
-    <text class="sub" x="24" y="74" style="font-size:9.4px">তিনটি প্রধান লাইফসাইকেল: সেবা ইনস্ট্যান্সের স্টেট ট্রানজিশন · কনফিগ হট-রিলোড (লং পোলিং ও ডিগ্রেড থেকে পুনরুদ্ধার) · একক রিকোয়েস্ট প্রসেসিং চেইন</text>
+    <text class="h1" x="24" y="48">consul-php লাইফসাইকেল</text>
+    <text class="sub" x="24" y="74">তিনটি প্রধান লাইফসাইকেল: সেবা ইনস্ট্যান্সের স্টেট ট্রানজিশন · কনফিগ হট-রিলোড (লং পোলিং ও ডিগ্রেড থেকে পুনরুদ্ধার) · একক রিকোয়েস্ট প্রসেসিং চেইন</text>
     <rect x="24" y="100" width="952" height="232" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="lt" x="58" y="136" style="font-size:11.1px">① সেবা ইনস্ট্যান্স লাইফসাইকেল · Service\Registry</text>
+    <text class="lt" x="58" y="136">① সেবা ইনস্ট্যান্স লাইফসাইকেল · Service\Registry</text>
     <text class="chip" x="956" y="136" text-anchor="end">register → heartbeat → deregister</text>
 
     <rect x="24" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="99" y="214" text-anchor="middle" style="font-size:9px">রেজিস্টার্ড নয়</text>
-    <text class="bs" x="99" y="236" text-anchor="middle" style="font-size:8.3px">সেবা Consul ক্যাটালগে নেই</text>
+    <text class="bt" x="99" y="214" text-anchor="middle">রেজিস্টার্ড নয়</text>
+    <text class="bs" x="99" y="236" text-anchor="middle">সেবা Consul ক্যাটালগে নেই</text>
 
     <rect x="224" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
     <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0">passing সুস্থ</text>
-    <text class="bs" x="299" y="236" text-anchor="middle" style="font-size:7.6px">TTL হার্টবিট স্বাভাবিক</text>
-    <text class="bs" x="299" y="252" text-anchor="middle" style="font-size:7.6px">সার্ভিস ডিসকভারিতে নির্বাচিত হতে পারে</text>
+    <text class="bs" x="299" y="236" text-anchor="middle">TTL হার্টবিট স্বাভাবিক</text>
+    <text class="bs" x="299" y="252" text-anchor="middle">সার্ভিস ডিসকভারিতে নির্বাচিত হতে পারে</text>
     <path d="M274 180 C274 158 324 158 324 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
-    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92" style="font-size:9.7px">heartbeat() রিনিউ</text>
+    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92">heartbeat() রিনিউ</text>
 
     <rect x="424" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
-    <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066" style="font-size:10.4px">warning সতর্কতা</text>
-    <text class="bs" x="499" y="236" text-anchor="middle" style="font-size:7.6px">চেক অস্বাভাবিক স্টেটাস দেয়</text>
-    <text class="bs" x="499" y="252" text-anchor="middle" style="font-size:7.6px">ক্যাটালগে থাকে, প্রয়োজনমতো ফিল্টার করা যায়</text>
+    <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066">warning সতর্কতা</text>
+    <text class="bs" x="499" y="236" text-anchor="middle">চেক অস্বাভাবিক স্টেটাস দেয়</text>
+    <text class="bs" x="499" y="252" text-anchor="middle" style="font-size:9.1px">ক্যাটালগে থাকে, প্রয়োজনমতো ফিল্টার করা যায়</text>
 
     <rect x="624" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
-    <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F" style="font-size:12.2px">critical গুরুতর</text>
-    <text class="bs" x="699" y="236" text-anchor="middle" style="font-size:7.6px">হার্টবিট টাইমআউট / প্রোব ব্যর্থ</text>
-    <text class="bs" x="699" y="252" text-anchor="middle" style="font-size:7.7px">healthyInstances আর রিটার্ন করে না</text>
+    <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F">critical গুরুতর</text>
+    <text class="bs" x="699" y="236" text-anchor="middle">হার্টবিট টাইমআউট / প্রোব ব্যর্থ</text>
+    <text class="bs" x="699" y="252" text-anchor="middle" style="font-size:9.5px">healthyInstances আর রিটার্ন করে না</text>
 
     <rect x="824" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="899" y="214" text-anchor="middle" style="font-size:9px">ডিরেজিস্টার্ড</text>
-    <text class="bs" x="899" y="236" text-anchor="middle" style="font-size:7.6px">গ্রেসফুল অফলাইন বা অটো-ক্লিনআপ</text>
+    <text class="bt" x="899" y="214" text-anchor="middle">ডিরেজিস্টার্ড</text>
+    <text class="bs" x="899" y="236" text-anchor="middle">গ্রেসফুল অফলাইন বা অটো-ক্লিনআপ</text>
 
     <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
+    <text class="al" x="197" y="174" text-anchor="middle">register()</text>
     <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="397" y="212" text-anchor="middle" style="font-size:7.6px">চেক সতর্কতা</text>
+    <text class="al" x="397" y="174" text-anchor="middle">চেক সতর্কতা</text>
     <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="597" y="212" text-anchor="middle" style="font-size:7.6px">হার্টবিট টাইমআউট</text>
+    <text class="al" x="597" y="174" text-anchor="middle">হার্টবিট টাইমআউট</text>
     <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="797" y="212" text-anchor="middle" style="font-size:7.6px">অটো বা ম্যানুয়াল ডিরেজিস্ট্রেশন</text>
+    <text class="al" x="797" y="174" text-anchor="middle">অটো বা ম্যানুয়াল ডিরেজিস্ট্রেশন</text>
 
     <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
-    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92" style="font-size:7.6px">heartbeat() স্বাভাবিক হলে → আবার passing-এ ফেরে, নতুন করে রেজিস্ট্রেশন লাগে না</text>
+    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92">heartbeat() স্বাভাবিক হলে → আবার passing-এ ফেরে, নতুন করে রেজিস্ট্রেশন লাগে না</text>
     <rect x="24" y="352" width="952" height="320" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="372" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="lt" x="58" y="388" style="font-size:11.3px">② কনফিগ হট-রিলোড লাইফসাইকেল · Config\Watcher</text>
-    <text class="chip" x="956" y="388" text-anchor="end" style="font-size:7.9px">blocking query অগ্রাধিকার, ব্যতিক্রমে অটো-ডিগ্রেড ও পুনরুদ্ধার</text>
+    <text class="lt" x="58" y="388">② কনফিগ হট-রিলোড লাইফসাইকেল · Config\Watcher</text>
+    <text class="chip" x="956" y="388" text-anchor="end">blocking query অগ্রাধিকার, ব্যতিক্রমে অটো-ডিগ্রেড ও পুনরুদ্ধার</text>
 
     <rect x="24" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="bt" x="99" y="432" text-anchor="middle">① watch(prefix)</text>
-    <text class="bs" x="99" y="452" text-anchor="middle" style="font-size:7.6px">মনিটরিং শুরু</text>
+    <text class="bs" x="99" y="452" text-anchor="middle">মনিটরিং শুরু</text>
 
     <rect x="200" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
-    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4" style="font-size:10.5px">② blocking query ব্লকিং লং পোলিং</text>
-    <text class="bs" x="365" y="452" text-anchor="middle" style="font-size:9.3px">ডিফল্ট 30s টাইমআউট, X-Consul-Index কার্সর সহ</text>
+    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4">② blocking query ব্লকিং লং পোলিং</text>
+    <text class="bs" x="365" y="452" text-anchor="middle">ডিফল্ট 30s টাইমআউট, X-Consul-Index কার্সর সহ</text>
 
     <rect x="556" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="641" y="432" text-anchor="middle" style="font-size:9px">③ পরিবর্তন শনাক্ত</text>
-    <text class="bs" x="641" y="452" text-anchor="middle" style="font-size:7.7px">index অগ্রগতি + স্ন্যাপশট তুলনা</text>
+    <text class="bt" x="641" y="432" text-anchor="middle">③ পরিবর্তন শনাক্ত</text>
+    <text class="bs" x="641" y="452" text-anchor="middle">index অগ্রগতি + স্ন্যাপশট তুলনা</text>
 
     <rect x="752" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="864" y="432" text-anchor="middle" style="font-size:9px">④ নোটিফিকেশন ↺</text>
-    <text class="bs" x="864" y="452" text-anchor="middle" style="font-size:9.2px">onChange কলব্যাক + PSR-14 ইভেন্ট</text>
+    <text class="bt" x="864" y="432" text-anchor="middle">④ নোটিফিকেশন ↺</text>
+    <text class="bs" x="864" y="452" text-anchor="middle">onChange কলব্যাক + PSR-14 ইভেন্ট</text>
 
     <path d="M174 438 H196" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M530 438 H552" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M726 438 H748" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="864" y="494" text-anchor="middle" style="font-size:7.6px">পরিবর্তন না থাকলে index এগোয়, আবার ②-এ ফেরে</text>
+    <text class="al" x="864" y="494" text-anchor="middle">পরিবর্তন না থাকলে index এগোয়, আবার ②-এ ফেরে</text>
 
     <path d="M250 470 V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="262" y="506" style="font-size:8.8px">blocking ব্যর্থ / টাইমআউট</text>
+    <text class="al" x="262" y="506">blocking ব্যর্থ / টাইমআউট</text>
 
     <rect x="214" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
-    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066" style="font-size:9px">⑤ নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড</text>
-    <text class="bs" x="314" y="582" text-anchor="middle" style="font-size:9.9px">ডিফল্ট 10s, setPollInterval()</text>
+    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066">⑤ নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড</text>
+    <text class="bs" x="314" y="582" text-anchor="middle">ডিফল্ট 10s, setPollInterval()</text>
 
     <rect x="440" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="540" y="562" text-anchor="middle" style="font-size:11px">⑥ টানা 5 বার সফল</text>
-    <text class="bs" x="540" y="582" text-anchor="middle" style="font-size:7.6px">কাউন্টার লক্ষ্যে পৌঁছায়</text>
+    <text class="bt" x="540" y="562" text-anchor="middle">⑥ টানা 5 বার সফল</text>
+    <text class="bs" x="540" y="582" text-anchor="middle">কাউন্টার লক্ষ্যে পৌঁছায়</text>
 
     <rect x="666" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0" style="font-size:9px">⑦ ব্লকিং কোয়েরি অটো-পুনরুদ্ধার ↺</text>
-    <text class="bs" x="796" y="582" text-anchor="middle" style="font-size:7.6px">আবার ②-এ ফেরে, কাউন্টার রিসেট</text>
+    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0">⑦ ব্লকিং কোয়েরি অটো-পুনরুদ্ধার ↺</text>
+    <text class="bs" x="796" y="582" text-anchor="middle">আবার ②-এ ফেরে, কাউন্টার রিসেট</text>
 
     <path d="M414 568 H436" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M640 568 H662" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="note" x="44" y="640" style="font-size:7.9px">stop() যে-কোনো পর্যায়ে অন্য প্রসেস / করউটিন থেকে কল করে মনিটরিং গ্রেসফুলি বন্ধ করা যায়; ক্যাশ চ্যানেল ও মনিটরিং চ্যানেল আলাদা, Watcher সবসময় Consul-এর রিয়েল-টাইম মান পড়ে।</text>
+    <text class="note" x="44" y="640">stop() যে-কোনো পর্যায়ে অন্য প্রসেস / করউটিন থেকে কল করে মনিটরিং গ্রেসফুলি বন্ধ করা যায়; ক্যাশ চ্যানেল ও মনিটরিং চ্যানেল আলাদা, Watcher সবসময় Consul-এর রিয়েল-টাইম মান পড়ে।</text>
     <rect x="24" y="692" width="952" height="274" rx="18" fill="#131722" stroke="#262B3A"/>
     <rect x="44" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="lt" x="58" y="728" style="font-size:11.7px">③ একক রিকোয়েস্ট লাইফসাইকেল · Api → Transport → PSR-18</text>
-    <text class="chip" x="956" y="728" text-anchor="end" style="font-size:8.2px">সিঙ্ক কল, এক রাউন্ড-ট্রিপ</text>
+    <text class="lt" x="58" y="728">③ একক রিকোয়েস্ট লাইফসাইকেল · Api → Transport → PSR-18</text>
+    <text class="chip" x="956" y="728" text-anchor="end">সিঙ্ক কল, এক রাউন্ড-ট্রিপ</text>
 
     <rect x="24" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="bt" x="124" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
-    <text class="bs" x="124" y="790" text-anchor="middle" style="font-size:8.7px">কলার শুরু করে</text>
+    <text class="bs" x="124" y="790" text-anchor="middle">কলার শুরু করে</text>
 
     <rect x="250" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="345" y="770" text-anchor="middle" style="font-size:9.7px">② __get ডিসপ্যাচ</text>
-    <text class="bs" x="345" y="790" text-anchor="middle" style="font-size:7.6px">মডিউল ইনস্ট্যানশিয়েট করে পুনর্ব্যবহার</text>
+    <text class="bt" x="345" y="770" text-anchor="middle">② __get ডিসপ্যাচ</text>
+    <text class="bs" x="345" y="790" text-anchor="middle">মডিউল ইনস্ট্যানশিয়েট করে পুনর্ব্যবহার</text>
 
     <rect x="466" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
-    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7" style="font-size:10.1px">③ Psr18Transport রিকোয়েস্ট তৈরি</text>
+    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7">③ Psr18Transport রিকোয়েস্ট তৈরি</text>
     <text class="bs" x="616" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
 
     <rect x="792" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="884" y="770" text-anchor="middle" style="font-size:9.7px">④ Token ইনজেকশন</text>
+    <text class="bt" x="884" y="770" text-anchor="middle">④ Token ইনজেকশন</text>
     <text class="bs" x="884" y="790" text-anchor="middle">X-Consul-Token</text>
 
     <path d="M224 772 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
@@ -142,26 +142,26 @@
     <path d="M884 800 V 818 H 124 V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
     <rect x="24" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="124" y="864" text-anchor="middle" style="font-size:9px">⑤ HTTP রিকোয়েস্ট পাঠানো</text>
+    <text class="bt" x="124" y="864" text-anchor="middle">⑤ HTTP রিকোয়েস্ট পাঠানো</text>
     <text class="bs" x="124" y="884" text-anchor="middle">Guzzle / Swoole / কাস্টম · PSR-18</text>
 
     <rect x="250" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="335" y="864" text-anchor="middle" style="font-size:9px">⑥ স্ট্যাটাস কোড চেক</text>
-    <text class="bs" x="335" y="884" text-anchor="middle" style="font-size:10.2px">4xx / 5xx শাখা</text>
+    <text class="bt" x="335" y="864" text-anchor="middle">⑥ স্ট্যাটাস কোড চেক</text>
+    <text class="bs" x="335" y="884" text-anchor="middle">4xx / 5xx শাখা</text>
 
     <rect x="446" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="584" y="864" text-anchor="middle" style="font-size:11.1px">⑦ JSON ডিকোড</text>
-    <text class="bs" x="584" y="884" text-anchor="middle" style="font-size:8.2px">getRaw সরাসরি র-বাইট রিটার্ন (Snapshot)</text>
+    <text class="bt" x="584" y="864" text-anchor="middle">⑦ JSON ডিকোড</text>
+    <text class="bs" x="584" y="884" text-anchor="middle">getRaw সরাসরি র-বাইট রিটার্ন (Snapshot)</text>
 
     <rect x="748" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0" style="font-size:11.2px">⑧ array | string রিটার্ন</text>
-    <text class="bs" x="862" y="884" text-anchor="middle" style="font-size:7.6px">উপরের লেভেলের র্যাপারে হস্তান্তর</text>
+    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0">⑧ array | string রিটার্ন</text>
+    <text class="bs" x="862" y="884" text-anchor="middle">উপরের লেভেলের র্যাপারে হস্তান্তর</text>
 
     <path d="M224 866 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M420 866 H442" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
     <path d="M722 866 H744" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
-    <text class="note" x="44" y="924" style="font-size:10.4px">এক্সেপশন শাখা: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
-    <text class="note" x="44" y="944" style="font-size:10.4px">　　　　　5xx → ServerException · কানেকশন / ডিকোড ব্যর্থ → ClientException (বাকি 4xx → ConsulRequestException)</text>
+    <text class="note" x="44" y="924">এক্সেপশন শাখা: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
+    <text class="note" x="44" y="944">　　　　　5xx → ServerException · কানেকশন / ডিকোড ব্যর্থ → ClientException (বাকি 4xx → ConsulRequestException)</text>
   </g>
 </svg>

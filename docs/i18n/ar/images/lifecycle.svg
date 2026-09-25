@@ -18,150 +18,150 @@
       <stop offset="1" stop-color="#161A26"/>
     </linearGradient>
     <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#5A6288"/>
+      <path d="M 1000 0L 990 5L 1000 10z" fill="#5A6288"/>
     </marker>
     <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-      <path d="M0 0 L10 5 L0 10 z" fill="#35D07F"/>
+      <path d="M 1000 0L 990 5L 1000 10z" fill="#35D07F"/>
     </marker>
   </defs>
 
   <rect width="1000" height="990" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="24" y="48" style="font-size:21.9px">دورة حياة consul-php</text>
-    <text class="sub" x="24" y="74" style="font-size:9.4px">ثلاث دورات حياة أساسية: انتقال حالة نسخة الخدمة · التحديث اللحظي (الاستقصاء الطويل والتخفيض والاستعادة) · مسار معالجة الطلب الواحد</text>
+    <text class="h1" x="976" y="48" text-anchor="end">دورة حياة consul-php</text>
+    <text class="sub" x="976" y="74" text-anchor="end">ثلاث دورات حياة أساسية: انتقال حالة نسخة الخدمة · التحديث اللحظي (الاستقصاء الطويل والتخفيض والاستعادة) · مسار معالجة الطلب الواحد</text>
     <rect x="24" y="100" width="952" height="232" rx="18" fill="#131722" stroke="#262B3A"/>
-    <rect x="44" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="lt" x="58" y="136" style="font-size:11.8px">① دورة حياة نسخة الخدمة · Service\Registry</text>
-    <text class="chip" x="956" y="136" text-anchor="end">register → heartbeat → deregister</text>
+    <rect x="952" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="lt" x="942" y="136" text-anchor="end">① دورة حياة نسخة الخدمة · Service\Registry</text>
+    <text class="chip" x="44" y="136" text-anchor="start">register → heartbeat → deregister</text>
 
-    <rect x="24" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="99" y="214" text-anchor="middle" style="font-size:9px">غير مسجَّل</text>
-    <text class="bs" x="99" y="236" text-anchor="middle" style="font-size:7.6px">الخدمة غير موجودة في دليل Consul</text>
+    <rect x="826" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="901" y="214" text-anchor="middle">غير مسجَّل</text>
+    <text class="bs" x="901" y="236" text-anchor="middle" style="font-size:8.4px">الخدمة غير موجودة في دليل Consul</text>
 
-    <rect x="224" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0" style="font-size:12.1px">passing سليم</text>
-    <text class="bs" x="299" y="236" text-anchor="middle" style="font-size:8.5px">نبضة TTL سليمة</text>
-    <text class="bs" x="299" y="252" text-anchor="middle" style="font-size:7.6px">قابل للاختيار عبر اكتشاف الخدمات</text>
-    <path d="M274 180 C274 158 324 158 324 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
-    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92" style="font-size:9.7px">heartbeat() تجديد</text>
+    <rect x="626" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="701" y="214" text-anchor="middle" fill="#7FE3B0">passing سليم</text>
+    <text class="bs" x="701" y="236" text-anchor="middle">نبضة TTL سليمة</text>
+    <text class="bs" x="701" y="252" text-anchor="middle" style="font-size:7.5px">قابل للاختيار عبر اكتشاف الخدمات</text>
+    <path d="M 726 180C 726 158 676 158 676 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
+    <text class="al" x="701" y="154" text-anchor="middle" fill="#5FBF92">heartbeat() تجديد</text>
 
-    <rect x="424" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
-    <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066" style="font-size:11.2px">warning تحذير</text>
-    <text class="bs" x="499" y="236" text-anchor="middle" style="font-size:7.6px">الفحص يعيد حالة غير سليمة</text>
-    <text class="bs" x="499" y="252" text-anchor="middle" style="font-size:7.6px">يبقى في الدليل، ويمكن تصفيته عند الحاجة</text>
+    <rect x="426" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="501" y="214" text-anchor="middle" fill="#F7C066">warning تحذير</text>
+    <text class="bs" x="501" y="236" text-anchor="middle" style="font-size:9.5px">الفحص يعيد حالة غير سليمة</text>
+    <text class="bs" x="501" y="252" text-anchor="middle">يبقى في الدليل</text>
 
-    <rect x="624" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
-    <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F">critical حرج</text>
-    <text class="bs" x="699" y="236" text-anchor="middle" style="font-size:7.6px">مهلة النبضة / فشل الاستقصاء</text>
-    <text class="bs" x="699" y="252" text-anchor="middle" style="font-size:9.1px">healthyInstances لم تعد تعيد</text>
+    <rect x="226" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
+    <text class="bt" x="301" y="214" text-anchor="middle" fill="#FF8F8F">critical حرج</text>
+    <text class="bs" x="301" y="236" text-anchor="middle" style="font-size:8.3px">مهلة النبضة / فشل الاستقصاء</text>
+    <text class="bs" x="301" y="252" text-anchor="middle" style="font-size:9.2px">healthyInstances لم تعد تعيد</text>
 
-    <rect x="824" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="899" y="214" text-anchor="middle" style="font-size:9px">مُلغى التسجيل</text>
-    <text class="bs" x="899" y="236" text-anchor="middle" style="font-size:7.6px">إنهاء سلس أو تنظيف تلقائي</text>
+    <rect x="26" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="101" y="214" text-anchor="middle">مُلغى التسجيل</text>
+    <text class="bs" x="101" y="236" text-anchor="middle" style="font-size:9.1px">إنهاء سلس أو تنظيف تلقائي</text>
 
-    <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
-    <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="397" y="212" text-anchor="middle" style="font-size:7.6px">تنبيه الفحص</text>
-    <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="597" y="212" text-anchor="middle" style="font-size:7.6px">انتهاء مهلة النبضة</text>
-    <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="797" y="212" text-anchor="middle" style="font-size:7.6px">إلغاء تسجيل تلقائي أو يدوي</text>
+    <path d="M 826 225H 780" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="803" y="174" text-anchor="middle">register()</text>
+    <path d="M 626 225H 580" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="603" y="174" text-anchor="middle">تنبيه الفحص</text>
+    <path d="M 426 225H 380" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="403" y="174" text-anchor="middle">انتهاء مهلة النبضة</text>
+    <path d="M 226 225H 180" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="203" y="174" text-anchor="middle">إلغاء تسجيل تلقائي أو يدوي</text>
 
-    <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
-    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92" style="font-size:10px">heartbeat() يتعافى → عودة إلى passing دون إعادة تسجيل</text>
+    <path d="M 301 270V 310H 697V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
+    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92">heartbeat() يتعافى → عودة إلى passing دون إعادة تسجيل</text>
     <rect x="24" y="352" width="952" height="320" rx="18" fill="#131722" stroke="#262B3A"/>
-    <rect x="44" y="372" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="lt" x="58" y="388" style="font-size:11.5px">② دورة حياة التحديث اللحظي · Config\Watcher</text>
-    <text class="chip" x="956" y="388" text-anchor="end" style="font-size:9.2px">blocking query أولًا، وتخفيض واستعادة تلقائية</text>
+    <rect x="952" y="372" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="lt" x="942" y="388" text-anchor="end">② دورة حياة التحديث اللحظي · Config\Watcher</text>
+    <text class="chip" x="44" y="388" text-anchor="start">blocking query أولًا، وتخفيض واستعادة تلقائية</text>
 
-    <rect x="24" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="99" y="432" text-anchor="middle">① watch(prefix)</text>
-    <text class="bs" x="99" y="452" text-anchor="middle" style="font-size:7.6px">بدء المراقبة</text>
+    <rect x="826" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="901" y="432" text-anchor="middle">① watch(prefix)</text>
+    <text class="bs" x="901" y="452" text-anchor="middle">بدء المراقبة</text>
 
-    <rect x="200" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
-    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4" style="font-size:9.6px">② blocking query استقصاء طويل حاجب</text>
-    <text class="bs" x="365" y="452" text-anchor="middle" style="font-size:9.8px">مهلة افتراضية 30s مع مؤشر X-Consul-Index</text>
+    <rect x="470" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
+    <text class="bt" x="635" y="432" text-anchor="middle" fill="#F58FB4">② blocking query استقصاء طويل حاجب</text>
+    <text class="bs" x="635" y="452" text-anchor="middle">مهلة افتراضية 30s مع مؤشر X-Consul-Index</text>
 
-    <rect x="556" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="641" y="432" text-anchor="middle" style="font-size:9px">③ كشف التغيير</text>
-    <text class="bs" x="641" y="452" text-anchor="middle" style="font-size:8px">تقدّم index + مقارنة اللقطة</text>
+    <rect x="274" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="359" y="432" text-anchor="middle">③ كشف التغيير</text>
+    <text class="bs" x="359" y="452" text-anchor="middle">تقدّم index + مقارنة اللقطة</text>
 
-    <rect x="752" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="864" y="432" text-anchor="middle" style="font-size:10.6px">④ إشعار ↺</text>
-    <text class="bs" x="864" y="452" text-anchor="middle" style="font-size:8.9px">استدعاء onChange + أحداث PSR-14</text>
+    <rect x="24" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="136" y="432" text-anchor="middle">④ إشعار ↺</text>
+    <text class="bs" x="136" y="452" text-anchor="middle">استدعاء onChange + أحداث PSR-14</text>
 
-    <path d="M174 438 H196" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M530 438 H552" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M726 438 H748" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="864" y="494" text-anchor="middle" style="font-size:8px">بلا تغيير يتقدّم index، ثم العودة إلى ②</text>
+    <path d="M 826 438H 804" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 470 438H 448" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 274 438H 252" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="136" y="494" text-anchor="middle" style="font-size:10.3px">بلا تغيير يتقدّم index، ثم العودة إلى ②</text>
 
-    <path d="M250 470 V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="al" x="262" y="506">فشل / مهلة blocking</text>
+    <path d="M 750 470V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="738" y="506" text-anchor="end">فشل / مهلة blocking</text>
 
-    <rect x="214" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
-    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066" style="font-size:9px">⑤ التحويل إلى استقصاء دوري</text>
-    <text class="bs" x="314" y="582" text-anchor="middle" style="font-size:9px">افتراضيًا 10s، setPollInterval()</text>
+    <rect x="586" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="686" y="562" text-anchor="middle" fill="#F7C066" style="font-size:12.3px">⑤ التحويل إلى استقصاء دوري</text>
+    <text class="bs" x="686" y="582" text-anchor="middle">افتراضيًا 10s، setPollInterval()</text>
 
-    <rect x="440" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="540" y="562" text-anchor="middle" style="font-size:9.8px">⑥ 5 نجاحات متتالية</text>
-    <text class="bs" x="540" y="582" text-anchor="middle" style="font-size:7.6px">بلوغ العدّاد الحد</text>
+    <rect x="360" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="460" y="562" text-anchor="middle">⑥ 5 نجاحات متتالية</text>
+    <text class="bs" x="460" y="582" text-anchor="middle">بلوغ العدّاد الحد</text>
 
-    <rect x="666" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0" style="font-size:9px">⑦ استعادة تلقائية للاستقصاء الحاجب ↺</text>
-    <text class="bs" x="796" y="582" text-anchor="middle" style="font-size:7.6px">العودة إلى ② وتصفير العدّاد</text>
+    <rect x="74" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="204" y="562" text-anchor="middle" fill="#7FE3B0" style="font-size:11.4px">⑦ استعادة تلقائية للاستقصاء الحاجب ↺</text>
+    <text class="bs" x="204" y="582" text-anchor="middle">العودة إلى ② وتصفير العدّاد</text>
 
-    <path d="M414 568 H436" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M640 568 H662" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <text class="note" x="44" y="640" style="font-size:7.9px">يمكن استدعاء stop() في أي مرحلة من عملية / coroutine أخرى للخروج بسلاسة من المراقبة؛ قناة التخزين منفصلة عن قناة المراقبة، و Watcher يقرأ دائمًا قيم Consul الحية.</text>
+    <path d="M 586 568H 564" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 360 568H 338" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="note" x="956" y="640" style="font-size:10.9px" text-anchor="end">يمكن استدعاء stop() في أي مرحلة من عملية / coroutine أخرى للخروج بسلاسة من المراقبة؛ قناة التخزين منفصلة عن قناة المراقبة، و Watcher يقرأ دائمًا قيم Consul الحية.</text>
     <rect x="24" y="692" width="952" height="274" rx="18" fill="#131722" stroke="#262B3A"/>
-    <rect x="44" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="lt" x="58" y="728" style="font-size:12px">③ دورة حياة الطلب الواحد · Api → Transport → PSR-18</text>
-    <text class="chip" x="956" y="728" text-anchor="end" style="font-size:7.9px">استدعاء متزامن، رحلة واحدة</text>
+    <rect x="952" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="lt" x="942" y="728" text-anchor="end">③ دورة حياة الطلب الواحد · Api → Transport → PSR-18</text>
+    <text class="chip" x="44" y="728" text-anchor="start">استدعاء متزامن، رحلة واحدة</text>
 
-    <rect x="24" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="124" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
-    <text class="bs" x="124" y="790" text-anchor="middle" style="font-size:7.6px">يبدأه المستدعي</text>
+    <rect x="776" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="876" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
+    <text class="bs" x="876" y="790" text-anchor="middle">يبدأه المستدعي</text>
 
-    <rect x="250" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="345" y="770" text-anchor="middle" style="font-size:11.2px">② توزيع __get</text>
-    <text class="bs" x="345" y="790" text-anchor="middle" style="font-size:7.6px">إنشاء الوحدة وإعادة استخدامها</text>
+    <rect x="560" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="655" y="770" text-anchor="middle">② توزيع __get</text>
+    <text class="bs" x="655" y="790" text-anchor="middle">إنشاء الوحدة وإعادة استخدامها</text>
 
-    <rect x="466" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
-    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7" style="font-size:11.2px">③ Psr18Transport بناء الطلب</text>
-    <text class="bs" x="616" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
+    <rect x="234" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
+    <text class="bt" x="384" y="770" text-anchor="middle" fill="#8FDCF7">③ Psr18Transport بناء الطلب</text>
+    <text class="bs" x="384" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
 
-    <rect x="792" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="884" y="770" text-anchor="middle">④ حقن Token</text>
-    <text class="bs" x="884" y="790" text-anchor="middle">X-Consul-Token</text>
+    <rect x="24" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="116" y="770" text-anchor="middle">④ حقن Token</text>
+    <text class="bs" x="116" y="790" text-anchor="middle">X-Consul-Token</text>
 
-    <path d="M224 772 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M440 772 H462" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M766 772 H788" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 776 772H 754" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 560 772H 538" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 234 772H 212" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
-    <path d="M884 800 V 818 H 124 V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 116 800V 818H 876V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
-    <rect x="24" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="124" y="864" text-anchor="middle" style="font-size:11.9px">⑤ إرسال طلب HTTP</text>
-    <text class="bs" x="124" y="884" text-anchor="middle">Guzzle / Swoole / مخصص · PSR-18</text>
+    <rect x="776" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="876" y="864" text-anchor="middle">⑤ إرسال طلب HTTP</text>
+    <text class="bs" x="876" y="884" text-anchor="middle">Guzzle / Swoole / مخصص · PSR-18</text>
 
-    <rect x="250" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="335" y="864" text-anchor="middle" style="font-size:9px">⑥ فحص رمز الحالة</text>
-    <text class="bs" x="335" y="884" text-anchor="middle">فرع 4xx / 5xx</text>
+    <rect x="580" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="665" y="864" text-anchor="middle">⑥ فحص رمز الحالة</text>
+    <text class="bs" x="665" y="884" text-anchor="middle">فرع 4xx / 5xx</text>
 
-    <rect x="446" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="bt" x="584" y="864" text-anchor="middle" style="font-size:9px">⑦ فك ترميز JSON</text>
-    <text class="bs" x="584" y="884" text-anchor="middle" style="font-size:7.6px">getRaw يعيد البايتات الخام مباشرة (Snapshot)</text>
+    <rect x="278" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="416" y="864" text-anchor="middle">⑦ فك ترميز JSON</text>
+    <text class="bs" x="416" y="884" text-anchor="middle">getRaw يعيد البايتات الخام مباشرة (Snapshot)</text>
 
-    <rect x="748" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
-    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0" style="font-size:11.7px">⑧ إعادة array | string</text>
-    <text class="bs" x="862" y="884" text-anchor="middle" style="font-size:7.6px">يُترك للتغليف الأعلى ليكمل المعالجة</text>
+    <rect x="24" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="138" y="864" text-anchor="middle" fill="#7FE3B0">⑧ إعادة array | string</text>
+    <text class="bs" x="138" y="884" text-anchor="middle">يُترك للتغليف الأعلى ليكمل المعالجة</text>
 
-    <path d="M224 866 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M420 866 H442" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
-    <path d="M722 866 H744" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 776 866H 754" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 580 866H 558" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M 278 866H 256" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
 
-    <text class="note" x="44" y="924" style="font-size:10px">فروع الاستثناءات: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
-    <text class="note" x="44" y="944" style="font-size:10.6px">　　　　　5xx → ServerException · فشل الاتصال / الفك → ClientException (بقية 4xx → ConsulRequestException)</text>
+    <text class="note" x="956" y="924" text-anchor="end">فروع الاستثناءات: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
+    <text class="note" x="956" y="944" text-anchor="end">　　　　　5xx → ServerException · فشل الاتصال / الفك → ClientException (بقية 4xx → ConsulRequestException)</text>
   </g>
 </svg>

@@ -18,127 +18,127 @@
 
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
-    <text class="h1" x="24" y="48" style="font-size:17.3px">Diseño de funcionalidades de consul-php</text>
-    <text class="sub" x="24" y="74" style="font-size:9.4px">11 módulos de API + 3 envoltorios de alto nivel + 4 adaptadores de framework: mapa de capacidades y puntos de entrada</text>
+    <text class="h1" x="24" y="48">Diseño de funcionalidades de consul-php</text>
+    <text class="sub" x="24" y="74">11 módulos de API + 3 envoltorios de alto nivel + 4 adaptadores de framework: mapa de capacidades y puntos de entrada</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
-    <text class="ct" x="42" y="140" style="font-size:10.1px">Registro de servicios</text>
+    <text class="ct" x="42" y="140">Registro de servicios</text>
     <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
     <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
-    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:8.6px">Los cuatro tipos de chequeo de salud: TTL / HTTP / TCP / gRPC</text>
-    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232" style="font-size:8.9px">heartbeat / heartbeatFail: reporte de latidos</text>
-    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254" style="font-size:8.8px">deregister: baja ordenada</text>
-    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:8.6px">Baja automática por timeout de latido según la política</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:8.7px">Los cuatro tipos de chequeo de salud: TTL / HTTP / TCP / gRPC</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232">heartbeat / heartbeatFail: reporte de latidos</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254">deregister: baja ordenada</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:9.8px">Baja automática por timeout de latido según la política</text>
 
     <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
-    <text class="ct" x="363" y="140" style="font-size:10.1px">Descubrimiento de servicios</text>
+    <text class="ct" x="363" y="140">Descubrimiento de servicios</text>
     <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
-    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188" style="font-size:8.6px">healthyInstances() lista de instancias sanas</text>
-    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:8.6px">selectInstance() selección por balanceo de carga</text>
-    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232" style="font-size:8.6px">RoundRobin / Random / estrategia personalizada</text>
-    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254" style="font-size:8.6px">watch() callback de alta y baja de instancias</text>
-    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:8.6px">stop() detiene de forma ordenada entre procesos</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188">healthyInstances() lista de instancias sanas</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:11.1px">selectInstance() selección por balanceo de carga</text>
+    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232" style="font-size:11px">RoundRobin / Random / estrategia personalizada</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254">watch() callback de alta y baja de instancias</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:11px">stop() detiene de forma ordenada entre procesos</text>
 
     <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="ct" x="684" y="140" style="font-size:10.1px">Almacenamiento KV</text>
+    <text class="ct" x="684" y="140">Almacenamiento KV</text>
     <text class="capi" x="684" y="158">Api\Kv</text>
-    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188" style="font-size:8.6px">Lectura y escritura básica: put / get / delete</text>
-    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:8.6px">all() lista de forma recursiva · keys() separa por delimitador</text>
-    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:8.6px">El parámetro acquire bloquea junto con Session</text>
-    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:8.6px">Canal de bytes sin procesar: getRaw / putRaw</text>
-    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:8.6px">Gestión por lotes del árbol de configuración por prefijo</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188">Lectura y escritura básica: put / get / delete</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:9.1px">all() lista de forma recursiva · keys() separa por delimitador</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:11.3px">El parámetro acquire bloquea junto con Session</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:11.7px">Canal de bytes sin procesar: getRaw / putRaw</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:9.9px">Gestión por lotes del árbol de configuración por prefijo</text>
     <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="ct" x="42" y="336" style="font-size:10.1px">Centro de configuración</text>
+    <text class="ct" x="42" y="336">Centro de configuración</text>
     <text class="capi" x="42" y="354">Config\ConfigCenter</text>
-    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384" style="font-size:8.6px">get(key, default) lee una sola clave</text>
-    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:8.6px">namespace(prefix) obtiene todo el árbol de configuración</text>
-    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428" style="font-size:8.6px">Escritura y borrado: set / delete</text>
-    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:8.6px">Se acelera automáticamente al inyectar una caché PSR-16</text>
-    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.6px">El canal del Watcher omite la caché y lee valores en tiempo real</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384">get(key, default) lee una sola clave</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:9.4px">namespace(prefix) obtiene todo el árbol de configuración</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428">Escritura y borrado: set / delete</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:9.2px">Se acelera automáticamente al inyectar una caché PSR-16</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.4px">El canal del Watcher omite la caché y lee valores en tiempo real</text>
 
     <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
-    <text class="ct" x="363" y="336" style="font-size:10.1px">Recarga en caliente de configuración</text>
+    <text class="ct" x="363" y="336">Recarga en caliente de configuración</text>
     <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
     <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
-    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:8.6px">Ante errores de red se degrada automáticamente a sondeo periódico</text>
-    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:8.6px">Tras 5 éxitos consecutivos se restaura el sondeo largo</text>
-    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:8.6px">Doble canal: callback onChange + evento PSR-14</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:7.8px">Ante errores de red se degrada automáticamente a sondeo periódico</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:9.9px">Tras 5 éxitos consecutivos se restaura el sondeo largo</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:10.9px">Doble canal: callback onChange + evento PSR-14</text>
     <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
 
     <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="ct" x="684" y="336" style="font-size:10.1px">Chequeo de salud</text>
+    <text class="ct" x="684" y="336">Chequeo de salud</text>
     <text class="capi" x="684" y="354">Api\Health</text>
     <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, [&apos;passing&apos; =&gt; true])</text>
-    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406" style="font-size:8.6px">node(name) todos los chequeos del nodo</text>
-    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:8.6px">checks(name) todos los chequeos del servicio</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406">node(name) todos los chequeos del nodo</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:11.8px">checks(name) todos los chequeos del servicio</text>
     <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
-    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:8.6px">Vista unificada de latidos TTL y sondeos externos</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:10.9px">Vista unificada de latidos TTL y sondeos externos</text>
     <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
-    <text class="ct" x="42" y="532" style="font-size:10.1px">Sesiones y bloqueos distribuidos</text>
+    <text class="ct" x="42" y="532">Sesiones y bloqueos distribuidos</text>
     <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
     <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
     <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
-    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624" style="font-size:9.5px">Kv::put(..., [&apos;acquire&apos; =&gt; id]) para bloquear</text>
-    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:8.6px">Comportamiento delete: libera el recurso al expirar</text>
-    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:8.6px">Al invalidarse la sesión se invalida el bloqueo, sin latidos adicionales</text>
+    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624">Kv::put(..., [&apos;acquire&apos; =&gt; id]) para bloquear</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:10.5px">Comportamiento delete: libera el recurso al expirar</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:7.9px">Al invalidarse la sesión se invalida el bloqueo, sin latidos adicionales</text>
 
     <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
-    <text class="ct" x="363" y="532" style="font-size:10.1px">Permisos ACL</text>
+    <text class="ct" x="363" y="532">Permisos ACL</text>
     <text class="capi" x="363" y="550">Api\Acl</text>
     <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
-    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602" style="font-size:8.6px">Juego completo de policy* / role* / authMethod*</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602" style="font-size:11.3px">Juego completo de policy* / role* / authMethod*</text>
     <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
-    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646" style="font-size:8.6px">Token inyectado automáticamente vía X-Consul-Token</text>
-    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:8.6px">Permisos insuficientes: lanza AccessDeniedException</text>
+    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646" style="font-size:9.9px">Token inyectado automáticamente vía X-Consul-Token</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:10.2px">Permisos insuficientes: lanza AccessDeniedException</text>
 
     <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
-    <text class="ct" x="684" y="532" style="font-size:10.1px">Operación del clúster</text>
+    <text class="ct" x="684" y="532">Operación del clúster</text>
     <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
-    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580" style="font-size:8.6px">Estado del clúster: leader / peers</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580">Estado del clúster: leader / peers</text>
     <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
     <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
-    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:8.6px">Instantáneas binarias: snapshot save / restore</text>
-    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668" style="font-size:8.6px">Coordenadas de red: datacenters / nodes</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:11.7px">Instantáneas binarias: snapshot save / restore</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668">Coordenadas de red: datacenters / nodes</text>
     <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
-    <text class="ct" x="42" y="728" style="font-size:10.1px">Integración con frameworks</text>
+    <text class="ct" x="42" y="728">Integración con frameworks</text>
     <text class="capi" x="42" y="746">src/Integration</text>
-    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776" style="font-size:9.2px">Laravel: autodescubrimiento + Facade + Artisan</text>
-    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:8.8px">Hyperf: ConfigProvider + cliente de corrutinas</text>
-    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:8.6px">webman: instalación del plugin + onWorkerStart</text>
-    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842" style="font-size:11.9px">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
-    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:8.6px">API idéntica, solo cambia cómo se obtiene $client</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776" style="font-size:11.1px">Laravel: autodescubrimiento + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:11.7px">Hyperf: ConfigProvider + cliente de corrutinas</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:11.2px">webman: instalación del plugin + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:10.9px">API idéntica, solo cambia cómo se obtiene $client</text>
 
     <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
-    <text class="ct" x="363" y="728" style="font-size:10.1px">Diseño de confiabilidad</text>
+    <text class="ct" x="363" y="728">Diseño de confiabilidad</text>
     <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
-    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:8.6px">Jerarquía de excepciones unificada, todas heredan de ConsulException</text>
-    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:8.6px">Logs PSR-3, con NullLogger como respaldo automático</text>
-    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820" style="font-size:10.7px">Eventos PSR-14: ConfigChangedEvent</text>
-    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:8.6px">ConsulAsyncClient + ejecución diferida con Promise</text>
-    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:8.6px">Los errores de conexión/decodificación se normalizan como ClientException</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:7.6px">Jerarquía de excepciones unificada, todas heredan de ConsulException</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:9.9px">Logs PSR-3, con NullLogger como respaldo automático</text>
+    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820">Eventos PSR-14: ConfigChangedEvent</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:10.4px">ConsulAsyncClient + ejecución diferida con Promise</text>
+    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:7.4px">Los errores de conexión/decodificación se normalizan como ClientException</text>
 
     <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
-    <text class="ct" x="684" y="728" style="font-size:10.1px">Características principales</text>
+    <text class="ct" x="684" y="728">Características principales</text>
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
-    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.6px">PHP 8.0+, el paquete principal sin dependencias de frameworks</text>
-    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:8.6px">Cobertura completa de Consul HTTP API v1</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:8.6px">11 módulos de API + 3 envoltorios de alto nivel</text>
-    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8.6px">Solo depende de interfaces PSR, el cliente HTTP es intercambiable</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864" style="font-size:9.2px">309 pruebas unitarias · PHPStan L5</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.4px">PHP 8.0+, el paquete principal sin dependencias de frameworks</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Cobertura completa de Consul HTTP API v1</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.4px">11 módulos de API + 3 envoltorios de alto nivel</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8.1px">Solo depende de interfaces PSR, el cliente HTTP es intercambiable</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 pruebas unitarias · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
-    <text class="ct" x="44" y="920" style="font-size:10.1px">Una sola API, cuatro frameworks</text>
-    <text class="cl" x="200" y="920" style="font-size:8.6px">Laravel · Hyperf · webman · ThinkPHP — el paquete principal no tiene dependencias, los adaptadores vienen incluidos y basta un composer require</text>
+    <text class="ct" x="44" y="920" style="font-size:9.1px">Una sola API, cuatro frameworks</text>
+    <text class="cl" x="200" y="920" style="font-size:9.3px">Laravel · Hyperf · webman · ThinkPHP — el paquete principal no tiene dependencias, los adaptadores vienen incluidos y basta un composer require</text>
     <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
   </g>
 </svg>
