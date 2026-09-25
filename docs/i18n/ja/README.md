@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · **日本語** · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="consul-php プロジェクトのペット Consu" width="100%">
+<img src="./images/pet.svg" alt="consul-php プロジェクトのペット Consu" width="320">
 
 PHP 製の Consul クライアントです。Consul HTTP API v1 を完全にカバーし、サービスの登録・検出と設定センターを重点的にサポートします。コアパッケージはフレームワークに依存せず、Laravel / Hyperf / webman / ThinkPHP のアダプタを内蔵。composer require ひとつでどのフレームワークでも使えます。
 

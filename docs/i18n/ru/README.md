@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · **Русский** · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="питомец проекта consul-php Consu" width="100%">
+<img src="./images/pet.svg" alt="питомец проекта consul-php Consu" width="320">
 
 Клиент Consul для PHP, полностью покрывающий Consul HTTP API v1, с упором на регистрацию и обнаружение сервисов и на центр конфигурации. Ядро не зависит от фреймворков, адаптеры для Laravel / Hyperf / webman / ThinkPHP встроены — достаточно одного composer require, чтобы работать в любом фреймворке.
 

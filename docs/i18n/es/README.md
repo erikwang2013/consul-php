@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · **Español** · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="Mascota del proyecto consul-php: Consu" width="100%">
+<img src="./images/pet.svg" alt="Mascota del proyecto consul-php: Consu" width="320">
 
 Cliente de Consul para PHP que cubre por completo la Consul HTTP API v1, con especial foco en el registro y descubrimiento de servicios y en el centro de configuración. El paquete principal no tiene dependencias de frameworks e incluye adaptadores para Laravel / Hyperf / webman / ThinkPHP, así que un solo composer require basta para usarlo en cualquier framework.
 

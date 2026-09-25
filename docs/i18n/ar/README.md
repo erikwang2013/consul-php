@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · **العربية** · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="Consu — حيوان مشروع consul-php الأليف" width="100%">
+<img src="./images/pet.svg" alt="Consu — حيوان مشروع consul-php الأليف" width="320">
 
 عميل Consul بلغة PHP، يغطي واجهة Consul HTTP API v1 بالكامل، مع تركيز على تسجيل الخدمات واكتشافها ومركز الإعدادات. الحزمة الأساسية بلا أي اعتماد على أطر العمل، وتتضمن دعمًا مدمجًا لـ Laravel / Hyperf / webman / ThinkPHP، فيكفي أمر composer require واحد للاستخدام مع أي إطار.
 

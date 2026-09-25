@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · **বাংলা** · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="consul-php প্রজেক্টের পেট Consu" width="100%">
+<img src="./images/pet.svg" alt="consul-php প্রজেক্টের পেট Consu" width="320">
 
 PHP Consul ক্লায়েন্ট, Consul HTTP API v1 সম্পূর্ণ কভার করে, বিশেষ মনোযোগ সার্ভিস রেজিস্ট্রেশন-ডিসকভারি ও কনফিগ সেন্টারে। কোর প্যাকেজে কোনো ফ্রেমওয়ার্ক নির্ভরতা নেই, Laravel / Hyperf / webman / ThinkPHP অ্যাডাপ্টার বিল্ট-ইন — একটিই composer require, যেকোনো ফ্রেমওয়ার্কেই ব্যবহার করা যায়।
 

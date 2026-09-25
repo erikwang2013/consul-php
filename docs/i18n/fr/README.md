@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · **Français** · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="Consu, la mascotte du projet consul-php" width="100%">
+<img src="./images/pet.svg" alt="Consu, la mascotte du projet consul-php" width="320">
 
 Client Consul pour PHP, couvrant intégralement l'API HTTP v1 de Consul, avec un accent sur l'enregistrement et la découverte de services ainsi que sur le centre de configuration. Le paquet cœur ne dépend d'aucun framework et embarque les adaptateurs Laravel / Hyperf / webman / ThinkPHP : un seul `composer require` suffit pour l'utiliser avec n'importe quel framework.
 

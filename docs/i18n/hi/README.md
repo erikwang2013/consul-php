@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · **हिन्दी** · [বাংলা](../bn/README.md) · [Bahasa Indonesia](../id/README.md)
 
-<img src="./images/pet.svg" alt="consul-php परियोजना का पालतू Consu" width="100%">
+<img src="./images/pet.svg" alt="consul-php परियोजना का पालतू Consu" width="320">
 
 PHP Consul क्लाइंट, जो Consul HTTP API v1 को पूरी तरह कवर करता है और मुख्य रूप से सेवा पंजीकरण-खोज तथा कॉन्फ़िगरेशन केंद्र पर केंद्रित है। मुख्य पैकेज पर किसी फ़्रेमवर्क की निर्भरता नहीं है, Laravel / Hyperf / webman / ThinkPHP के अडैप्टर अंतर्निहित हैं — एक `composer require` और किसी भी फ़्रेमवर्क में उपयोग करें।
 

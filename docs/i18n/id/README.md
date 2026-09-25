@@ -2,7 +2,7 @@
 
 [中文](../../../README.md) · [English](../en/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [Deutsch](../de/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Português](../pt/README.md) · [Русский](../ru/README.md) · [العربية](../ar/README.md) · [हिन्दी](../hi/README.md) · [বাংলা](../bn/README.md) · **Bahasa Indonesia**
 
-<img src="./images/pet.svg" alt="Consu, maskot proyek consul-php" width="100%">
+<img src="./images/pet.svg" alt="Consu, maskot proyek consul-php" width="320">
 
 Klien Consul untuk PHP, mencakup penuh Consul HTTP API v1, dengan fokus pada registrasi/penemuan layanan dan pusat konfigurasi. Paket inti tanpa dependensi framework, sudah menyertakan adaptasi Laravel / Hyperf / webman / ThinkPHP — cukup satu `composer require` untuk memakainya di framework apa pun.
 
