@@ -546,7 +546,7 @@ Claves admitidas en `config`:
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | Si falta el esquema, se añade `http://` automáticamente (una forma como `127.0.0.1:8500` copiada de una variable de entorno funciona tal cual)|
 | `token` | — | ACL Token; se inyecta como `X-Consul-Token` |
-| `cache.enable` / `cache.ttl` | `false` / ninguno | Junto con la caché PSR-16 inyectada, actúa sobre `Discovery::healthyInstances()` y `ConfigCenter::get()` |
+| `cache.enable` / `cache.ttl` | `false` / ninguno | Junto con la caché PSR-16 inyectada, actúa sobre `Discovery::healthyInstances()` y `ConfigCenter::get()` (`cache.enable` solo lo leen los adaptadores de framework; en construcción manual basta con inyectar una caché) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (sin límite)| Solo los usa el cliente cURL integrado. **No configure `total` por debajo de `blockingWait`**, o el sondeo largo se dará siempre por agotado y se degradará |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | Número de reintentos y backoff inicial ante fallos de transporte (con crecimiento exponencial); solo se aplica a métodos idempotentes (GET/PUT/DELETE) |
 
@@ -561,7 +561,7 @@ Claves admitidas en `config`:
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (admite `node_meta` con varios valores y `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (admite consultas bloqueantes con `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

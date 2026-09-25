@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | স্কিম না থাকলে অটো `http://` যোগ হয় (এনভায়রনমেন্ট ভেরিয়েবল থেকে কপি করা `127.0.0.1:8500` ধরনের লেখা সরাসরি ব্যবহার করা যায়)|
 | `token` | — | ACL Token, `X-Consul-Token` হিসেবে ইনজেক্ট হয় |
-| `cache.enable` / `cache.ttl` | `false` / নেই | ইনজেক্ট করা PSR-16 ক্যাশের সাথে মিলে `Discovery::healthyInstances()` ও `ConfigCenter::get()`-এ কাজ করে |
+| `cache.enable` / `cache.ttl` | `false` / নেই | ইনজেক্ট করা PSR-16 ক্যাশের সাথে মিলে `Discovery::healthyInstances()` ও `ConfigCenter::get()`-এ কাজ করে (`cache.enable` কেবল ফ্রেমওয়ার্ক অ্যাডাপ্টার পড়ে; ম্যানুয়াল তৈরি হলে ক্যাশ ইনজেক্ট করাই যথেষ্ট) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (সীমা নেই)| কেবল বিল্ট-ইন cURL ক্লায়েন্টে ব্যবহৃত। **`total`-কে `blockingWait`-এর চেয়ে ছোট সেট করবেন না**, নইলে লং পোলিং অবশ্যই টাইমআউট হয়ে ডিগ্রেড হবে |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | ট্রান্সপোর্ট ব্যর্থ হলে রিট্রাইয়ের সংখ্যা ও প্রথম ব্যাকঅফ (এক্সপোনেনশিয়াল বৃদ্ধি); কেবল ইডেম্পোটেন্ট মেথডে (GET/PUT/DELETE) কাজ করে |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (`node_meta` একাধিক মান, `stale`/`consistent`/`max_stale` সাপোর্ট) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (`index`/`wait` ব্লকিং কোয়েরি সাপোর্ট) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

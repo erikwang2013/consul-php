@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | если схема не указана, подставляется `http://` (запись вида `127.0.0.1:8500`, скопированная из переменной окружения, работает сразу)|
 | `token` | — | ACL Token, добавляется как `X-Consul-Token` |
-| `cache.enable` / `cache.ttl` | `false` / нет | вместе с внедрённым кэшем PSR-16 действует на `Discovery::healthyInstances()` и `ConfigCenter::get()` |
+| `cache.enable` / `cache.ttl` | `false` / нет | вместе с внедрённым кэшем PSR-16 действует на `Discovery::healthyInstances()` и `ConfigCenter::get()` (`cache.enable` читается только адаптерами фреймворков; при ручном создании достаточно внедрить кэш) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (без ограничения)| только для встроенного клиента на cURL. **Не ставьте `total` меньше `blockingWait`**, иначе длинный опрос гарантированно упадёт по таймауту и уйдёт в деградацию |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | число повторов при сбое транспорта и первая задержка (далее растёт экспоненциально); только для идемпотентных методов (GET/PUT/DELETE) |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (поддерживают несколько значений `node_meta`, а также `stale`/`consistent`/`max_stale`)|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (поддерживают блокирующие запросы с `index`/`wait`)|
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

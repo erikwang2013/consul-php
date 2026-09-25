@@ -548,7 +548,7 @@ Clés acceptées par `config` :
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | le préfixe `http://` est ajouté automatiquement si le schéma manque (une valeur recopiée d'une variable d'environnement comme `127.0.0.1:8500` est donc utilisable telle quelle) |
 | `token` | — | Token ACL, injecté dans l'en-tête `X-Consul-Token` |
-| `cache.enable` / `cache.ttl` | `false` / aucun | s'appuie sur le cache PSR-16 injecté et s'applique à `Discovery::healthyInstances()` et `ConfigCenter::get()` |
+| `cache.enable` / `cache.ttl` | `false` / aucun | s'appuie sur le cache PSR-16 injecté et s'applique à `Discovery::healthyInstances()` et `ConfigCenter::get()` (`cache.enable` n'est lu que par les adaptateurs de framework ; en construction manuelle, injecter un cache suffit) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (illimité) | utilisés uniquement par le client cURL intégré. **Ne réglez pas `total` en dessous de `blockingWait`**, sinon le long polling sera systématiquement considéré comme expiré et rétrogradé |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | nombre de tentatives et premier délai d'attente (croissance exponentielle) en cas d'échec de transport ; ne s'applique qu'aux méthodes idempotentes (GET/PUT/DELETE) |
 
@@ -563,7 +563,7 @@ Clés acceptées par `config` :
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (gère les valeurs multiples de `node_meta` ainsi que `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (gère les requêtes bloquantes `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | 缺 scheme 时自动补 `http://`（`127.0.0.1:8500` 这种从环境变量抄来的写法可直接用）|
 | `token` | — | ACL Token，注入为 `X-Consul-Token` |
-| `cache.enable` / `cache.ttl` | `false` / 无 | 配合注入的 PSR-16 缓存，作用于 `Discovery::healthyInstances()` 与 `ConfigCenter::get()` |
+| `cache.enable` / `cache.ttl` | `false` / 无 | 配合注入的 PSR-16 缓存，作用于 `Discovery::healthyInstances()` 与 `ConfigCenter::get()`。`cache.enable` 只由框架适配（`ClientFactory`）读取；手动构造时注入缓存即生效，不看该键 |
 | `timeout.connect` / `timeout.total` | `3.0` / `0`（不限）| 仅内置 cURL 客户端使用。**`total` 别设得比 `blockingWait` 小**，否则长轮询必然被判超时并降级 |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | 传输失败时的重试次数与首次退避（指数增长）；只对幂等方法（GET/PUT/DELETE）生效 |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress`（支持 `node_meta` 多值、`stale`/`consistent`/`max_stale`）|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list`（支持 `index`/`wait` 阻塞查询）|
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

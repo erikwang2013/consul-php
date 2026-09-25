@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | تُضاف `http://` تلقائيًا عند غياب `scheme` (فالكتابة المنسوخة من متغير بيئة مثل `127.0.0.1:8500` تعمل مباشرةً)|
 | `token` | — | ACL Token، يُحقن في `X-Consul-Token` |
-| `cache.enable` / `cache.ttl` | `false` / بلا | بالتعاون مع تخزين PSR-16 المؤقت المحقون، ويعملان على `Discovery::healthyInstances()` و `ConfigCenter::get()` |
+| `cache.enable` / `cache.ttl` | `false` / بلا | بالتعاون مع تخزين PSR-16 المؤقت المحقون، ويعملان على `Discovery::healthyInstances()` و `ConfigCenter::get()` (`cache.enable` تقرأه محوّلات الأطر فقط؛ عند الإنشاء اليدوي يكفي حقن ذاكرة تخزين مؤقت) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (بلا حد) | يستخدمهما عميل cURL المدمج وحده. **لا تجعل `total` أصغر من `blockingWait`**، وإلا عُدّ الاستقصاء الطويل متجاوزًا للمهلة حتمًا وتم تخفيضه |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | عدد محاولات الإعادة وتأخير التباعد الأول عند فشل النقل (بنمو أُسّي)؛ ويعملان مع الطرق المتكافئة (idempotent) فقط (GET/PUT/DELETE) |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (تدعمان `node_meta` متعددة القيم، و `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (تدعمان الاستعلام الحاجب `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

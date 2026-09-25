@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | scheme이 없으면 자동으로 `http://` 를 붙입니다 (`127.0.0.1:8500` 처럼 환경 변수에서 그대로 복사해 온 표기도 바로 사용 가능)|
 | `token` | — | ACL Token, `X-Consul-Token` 으로 주입됩니다 |
-| `cache.enable` / `cache.ttl` | `false` / 없음 | 주입한 PSR-16 캐시와 함께 동작하며 `Discovery::healthyInstances()` 와 `ConfigCenter::get()` 에 적용됩니다 |
+| `cache.enable` / `cache.ttl` | `false` / 없음 | 주입한 PSR-16 캐시와 함께 동작하며 `Discovery::healthyInstances()` 와 `ConfigCenter::get()` 에 적용됩니다(`cache.enable` 은 프레임워크 어댑터만 읽습니다. 수동 생성 시에는 캐시를 주입하면 적용됩니다) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (무제한) | 내장 cURL 클라이언트에서만 사용합니다. **`total` 을 `blockingWait` 보다 작게 설정하지 마세요**. 그렇지 않으면 롱 폴링이 반드시 타임아웃으로 판정되어 강등됩니다 |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | 전송 실패 시 재시도 횟수와 최초 백오프(지수 증가); 멱등 메서드(GET/PUT/DELETE)에만 적용됩니다 |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress`（`node_meta` 다중 값, `stale`/`consistent`/`max_stale` 지원）|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list`（`index`/`wait` 블로킹 질의 지원）|
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |

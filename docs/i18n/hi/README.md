@@ -546,7 +546,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | scheme न हो तो `http://` स्वतः जुड़ जाता है (`127.0.0.1:8500` जैसा environment variable से लिया गया रूप सीधे काम करता है) |
 | `token` | — | ACL Token, `X-Consul-Token` के रूप में इंजेक्ट होता है |
-| `cache.enable` / `cache.ttl` | `false` / कोई नहीं | इंजेक्ट किए गए PSR-16 कैश के साथ मिलकर `Discovery::healthyInstances()` और `ConfigCenter::get()` पर लागू होता है |
+| `cache.enable` / `cache.ttl` | `false` / कोई नहीं | इंजेक्ट किए गए PSR-16 कैश के साथ मिलकर `Discovery::healthyInstances()` और `ConfigCenter::get()` पर लागू होता है (`cache.enable` केवल फ़्रेमवर्क अडैप्टर पढ़ते हैं; मैनुअल निर्माण में कैश इंजेक्ट करना ही पर्याप्त है) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (कोई सीमा नहीं) | केवल अंतर्निहित cURL क्लाइंट पर लागू। **`total` को `blockingWait` से छोटा न रखें**, वरना लॉन्ग पोलिंग ज़रूर टाइमआउट मानी जाएगी और डाउनग्रेड हो जाएगी |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | ट्रांसपोर्ट विफलता पर रिट्राई की संख्या और पहला बैकऑफ़ (घातांकीय वृद्धि); केवल idempotent मेथड (GET/PUT/DELETE) पर लागू |
 
@@ -561,7 +561,7 @@ $client = new ConsulClient(
 | `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
 | `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (`node_meta` के बहु-मान, `stale`/`consistent`/`max_stale` समर्थित) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` |
 | `$client->event` | `Api\Event` | `fire` `list` (`index`/`wait` ब्लॉकिंग क्वेरी समर्थित) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
 | `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
