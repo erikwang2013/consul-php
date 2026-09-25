@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Tanpa dependensi framework
 | **Cara pakai** | `composer require erikwang2013/consul-php`; paket inti tanpa dependensi framework, adaptasi framework sudah menyatu dan ditemukan otomatis |
 | **Framework yang didukung** | Laravel · Hyperf · webman · ThinkPHP —— API-nya identik, bedanya hanya cara memperoleh `$client` |
 | **Konvensi dependensi** | Hanya bergantung pada antarmuka PSR (PSR-18/17/16/14/3); klien HTTP, cache, log, dan event dispatcher semuanya bisa diganti |
-| **Jaminan kualitas** | PHP 8.0 – 8.4 · 309 unit test · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Jaminan kualitas** | PHP 8.0 – 8.4 · 338 unit test · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Kemampuan Inti
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # Lapisan transport
 │   │   ├── TransportInterface.php   # Kontrak transport (termasuk getRaw / putRaw / getWithHeaders)
 │   │   └── Psr18Transport.php       # Implementasi PSR-18: injeksi Token, decoding, pemetaan exception
+│   ├── Http/                        # PSR-7/17/18 bawaan (klien cURL, fallback tanpa Guzzle)
 │   ├── Support/                     # Versi terminal maskot proyek Consu (Pet::art / Pet::say)
 │   ├── Exception/                   # Hierarki exception (ConsulException dan 7 subkelasnya)
 │   └── Integration/                 # Adaptasi framework (menyatu, ditemukan otomatis)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + factory klien coroutine + config
 │       ├── Webman/                  # Instalasi plugin (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # PHP Native: registrasi / heartbeat / deregistrasi otomatis dalam satu baris
 ├── tests/                           # Kasus uji PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # Paket inti
 composer require erikwang2013/consul-php
 
-# Implementasi PSR-18 (pilih salah satu)
+# Implementasi PSR-18 (opsional: klien cURL bawaan dipakai bila tidak dipasang)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // blokir sampai hasilnya didapat
 ```
 
 **Catatan:** klien asinkron berbasis pola Promise, cocok untuk skenario yang butuh permintaan konkuren. Di lingkungan coroutine Hyperf, klien HTTP bawaan sudah bisa mencapai konkurensi tingkat coroutine.
+
+---
+
+## PHP Native (tanpa framework, tanpa dependensi tambahan)
+
+Bila tidak memakai framework dan tidak ingin memasang pustaka HTTP tambahan, klien cURL bawaan otomatis menjadi fallback dan langsung siap dipakai:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// Skrip long-running: satu baris untuk "registrasi → heartbeat TTL → deregistrasi otomatis saat keluar"
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // memblokir sambil mengirim heartbeat; bila pcntl terpasang, Ctrl+C akan melakukan deregistrasi lebih dulu
+// atau kendalikan loop sendiri: $service->heartbeat();  …  $service->stop();
+```
+
+Urutan pemilihan klien HTTP: **injeksi manual** > implementasi yang ditemukan `php-http/discovery` (Guzzle, adapter coroutine Swoole, dll.) > **cURL bawaan**.
+Implementasi bawaan mengatur sendiri timeout koneksi dan timeout totalnya (default 3s / 30s), dan bisa diganti lewat injeksi:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ Desainnya konsisten dengan [pet.svg](./images/pet.svg): antena = heartbeat healt
 
 - PHP 8.0+
 - Composer
-- Implementasi PSR-18 HTTP Client
+- Implementasi PSR-18 HTTP Client — otomatis fallback ke klien cURL bawaan bila tidak disuntikkan atau tidak terpasang (memerlukan ekstensi curl)
 - [Opsional] Cache PSR-16 — `Discovery::healthyInstances()` / `ConfigCenter::get()` otomatis memakai cache
 - [Opsional] Logger PSR-3 — log permintaan
 - [Opsional] EventDispatcher PSR-14 — event `ConfigChangedEvent`

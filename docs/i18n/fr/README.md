@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · aucune dépendance à un framework
 | **Comment l'utiliser** | `composer require erikwang2013/consul-php` : le paquet cœur ne dépend d'aucun framework, les adaptateurs sont intégrés et découverts automatiquement |
 | **Frameworks pris en charge** | Laravel · Hyperf · webman · ThinkPHP —— API strictement identique, seule change la façon d'obtenir `$client` |
 | **Contrat de dépendances** | Uniquement des interfaces PSR (PSR-18/17/16/14/3) : client HTTP, cache, journalisation et distributeur d'événements sont interchangeables |
-| **Assurance qualité** | PHP 8.0 – 8.4 · 309 tests unitaires · PHPStan niveau 5 · PHP CS Fixer (PSR-12) |
+| **Assurance qualité** | PHP 8.0 – 8.4 · 338 tests unitaires · PHPStan niveau 5 · PHP CS Fixer (PSR-12) |
 
 ### Capacités clés
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # Couche de transport
 │   │   ├── TransportInterface.php   # Contrat de transport (avec getRaw / putRaw / getWithHeaders)
 │   │   └── Psr18Transport.php       # Implémentation PSR-18 : Token, décodage, mapping des exceptions
+│   ├── Http/                        # PSR-7/17/18 intégré (client cURL, repli sans Guzzle)
 │   ├── Support/                     # Consu en version terminal (Pet::art / Pet::say)
 │   ├── Exception/                   # Hiérarchie d'exceptions (ConsulException et ses sous-classes, 7)
 │   └── Integration/                 # Adaptateurs de framework (intégrés, découverts automatiquement)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + fabrique de clients coroutine + config
 │       ├── Webman/                  # Installation du plugin (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # PHP natif : enregistrement / heartbeat / désenregistrement en une ligne
 ├── tests/                           # Cas PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # Paquet cœur
 composer require erikwang2013/consul-php
 
-# Implémentation PSR-18 (au choix)
+# Implémentation PSR-18 (optionnelle : sans installation, le client cURL intégré est utilisé)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // récupération bloquante du résultat
 ```
 
 **Remarque :** le client asynchrone repose sur le modèle Promise et convient aux scénarios qui nécessitent des requêtes concurrentes. Dans un environnement coroutine Hyperf, le client HTTP par défaut suffit à obtenir une concurrence au niveau des coroutines.
+
+---
+
+## PHP natif (sans framework, zéro dépendance supplémentaire)
+
+Si vous n'utilisez aucun framework et que vous ne souhaitez pas installer de bibliothèque HTTP supplémentaire, le client cURL intégré prend automatiquement le relais — prêt à l'emploi :
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// Script résident : une seule ligne pour « enregistrement → heartbeat TTL → désenregistrement automatique à la sortie »
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // envoie les heartbeats de façon bloquante ; avec pcntl, Ctrl+C désenregistre d'abord le service
+// Vous pouvez aussi piloter la boucle vous-même : $service->heartbeat();  …  $service->stop();
+```
+
+Ordre de sélection du client HTTP : **injection manuelle** > implémentation trouvée par `php-http/discovery` (Guzzle, adaptateur coroutine Swoole, etc.) > **cURL intégré**.
+L'implémentation intégrée gère elle-même le délai de connexion et le délai global (3 s / 30 s par défaut) ; elle peut être remplacée par injection :
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ Le design est cohérent avec [pet.svg](./images/pet.svg) : les antennes = le hea
 
 - PHP 8.0+
 - Composer
-- une implémentation de client HTTP PSR-18
+- une implémentation de client HTTP PSR-18 —— en l'absence d'injection et d'installation, repli automatique sur le client cURL intégré (extension curl requise)
 - [optionnel] cache PSR-16 — mise en cache automatique par `Discovery::healthyInstances()` / `ConfigCenter::get()`
 - [optionnel] Logger PSR-3 — journalisation des requêtes
 - [optionnel] EventDispatcher PSR-14 — événement `ConfigChangedEvent`

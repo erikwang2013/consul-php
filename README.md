@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | **怎么用** | `composer require erikwang2013/consul-php`，核心包零框架依赖，框架适配内置并自动发现 |
 | **支持框架** | Laravel · Hyperf · webman · ThinkPHP —— API 完全一致，只差获取 `$client` 的方式 |
 | **依赖约定** | 只依赖 PSR 接口（PSR-18/17/16/14/3），HTTP 客户端、缓存、日志、事件分发器均可替换 |
-| **质量保障** | PHP 8.0 – 8.4 · 309 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **质量保障** | PHP 8.0 – 8.4 · 338 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### 核心能力
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # 传输层
 │   │   ├── TransportInterface.php   # 传输契约（含 getRaw / putRaw / getWithHeaders）
 │   │   └── Psr18Transport.php       # PSR-18 实现：Token 注入、解码、异常映射
+│   ├── Http/                        # 内置 PSR-7/17/18 实现（cURL 客户端，装不上 Guzzle 时兜底）
 │   ├── Support/                     # 项目宠物 Consu 的终端版（Pet::art / Pet::say）
 │   ├── Exception/                   # 异常体系（ConsulException 及其子类，7 个）
 │   └── Integration/                 # 框架适配（内置，自动发现）
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + 协程客户端工厂 + config
 │       ├── Webman/                  # 插件安装（Install）+ config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # 原生 PHP：注册 / 心跳 / 自动注销一站式
 ├── tests/                           # PHPUnit 用例（Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport）
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # 核心包
 composer require erikwang2013/consul-php
 
-# PSR-18 实现（选其一）
+# PSR-18 实现（可选：不装则自动使用内置 cURL 客户端）
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // 阻塞获取结果
 ```
 
 **注意：** 异步客户端基于 Promise 模式，适用于需要并发请求的场景。Hyperf 协程环境中默认的 HTTP 客户端即可实现协程级并发。
+
+---
+
+## 原生 PHP（无框架、零额外依赖）
+
+没有框架、也不想额外装 HTTP 库时，内置的 cURL 客户端会自动兜底，开箱即用：
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// 常驻脚本：一行搞定「注册 → TTL 心跳 → 退出自动注销」
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // 阻塞发心跳；装了 pcntl 时 Ctrl+C 会先注销
+// 自己控制循环也行： $service->heartbeat();  …  $service->stop();
+```
+
+HTTP 客户端的选取顺序：**手动注入** > `php-http/discovery` 找到的实现（Guzzle、Swoole 协程适配器等）> **内置 cURL**。
+内置实现自己握有连接超时与总超时（默认 3s / 30s），可注入替换：
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // 强制纯文本
 
 - PHP 8.0+
 - Composer
-- PSR-18 HTTP Client 实现
+- PSR-18 HTTP Client 实现 —— 未注入且未安装时自动使用内置 cURL 客户端（需 curl 扩展）
 - [可选] PSR-16 缓存 — `Discovery::healthyInstances()` / `ConfigCenter::get()` 自动缓存
 - [可选] PSR-3 Logger — 请求日志
 - [可选] PSR-14 EventDispatcher — `ConfigChangedEvent` 事件

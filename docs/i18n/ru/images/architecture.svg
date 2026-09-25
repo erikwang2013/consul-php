@@ -152,6 +152,6 @@
     <text class="bands" x="44" y="928" style="font-size:10.9px">Иерархия исключений: ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928">Кэш PSR-16: get() / namespace() читают и пишут сами</text>
     <text class="bands" x="44" y="950">Логи PSR-3: запасной NullLogger</text>
-    <text class="bands" x="500" y="950">Качество: PHP 8.0–8.4 · PHPStan L5 · 309 тестов</text>
+    <text class="bands" x="500" y="950">Качество: PHP 8.0–8.4 · PHPStan L5 · 338 тестов</text>
   </g>
 </svg>

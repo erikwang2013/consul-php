@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · शून्य फ़्रेमव�
 | **कैसे उपयोग करें** | `composer require erikwang2013/consul-php` — मुख्य पैकेज में शून्य फ़्रेमवर्क निर्भरता, फ़्रेमवर्क अडैप्टर अंतर्निहित और स्वतः खोजे जाते हैं |
 | **समर्थित फ़्रेमवर्क** | Laravel · Hyperf · webman · ThinkPHP —— API पूरी तरह एक जैसा, अंतर केवल `$client` पाने के तरीके का |
 | **निर्भरता नीति** | केवल PSR इंटरफ़ेस पर निर्भर (PSR-18/17/16/14/3); HTTP क्लाइंट, कैश, लॉग और इवेंट डिस्पैचर सभी बदले जा सकते हैं |
-| **गुणवत्ता आश्वासन** | PHP 8.0 – 8.4 · 309 यूनिट टेस्ट · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **गुणवत्ता आश्वासन** | PHP 8.0 – 8.4 · 338 यूनिट टेस्ट · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### मुख्य क्षमताएँ
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # ट्रांसपोर्ट परत
 │   │   ├── TransportInterface.php   # ट्रांसपोर्ट अनुबंध (getRaw / putRaw / getWithHeaders सहित)
 │   │   └── Psr18Transport.php       # PSR-18 कार्यान्वयन: Token इंजेक्शन, डिकोडिंग, अपवाद मैपिंग
+│   ├── Http/                        # अंतर्निहित PSR-7/17/18 (cURL क्लाइंट, Guzzle बिना फ़ॉलबैक)
 │   ├── Support/                     # परियोजना के पालतू Consu का टर्मिनल संस्करण (Pet::art / Pet::say)
 │   ├── Exception/                   # अपवाद प्रणाली (ConsulException और उसके उपवर्ग, 7)
 │   └── Integration/                 # फ़्रेमवर्क अडैप्टर (अंतर्निहित, स्वतः खोज)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + कोरूटीन क्लाइंट फ़ैक्टरी + config
 │       ├── Webman/                  # प्लगइन इंस्टॉलेशन (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # नेटिव PHP: पंजीकरण / heartbeat / स्वतः डीरजिस्टर एक पंक्ति में
 ├── tests/                           # PHPUnit केस (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # मुख्य पैकेज
 composer require erikwang2013/consul-php
 
-# PSR-18 कार्यान्वयन (इनमें से कोई एक)
+# PSR-18 कार्यान्वयन (वैकल्पिक: न इंस्टॉल करने पर अंतर्निहित cURL क्लाइंट इस्तेमाल होता है)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // ब्लॉक करके परिणाम �
 ```
 
 **ध्यान दें:** असिंक क्लाइंट Promise पैटर्न पर आधारित है और उन परिदृश्यों के लिए उपयुक्त है जहाँ समवर्ती request चाहिए। Hyperf के कोरूटीन वातावरण में डिफ़ॉल्ट HTTP क्लाइंट से ही कोरूटीन-स्तरीय समवर्तीता मिल जाती है।
+
+---
+
+## नेटिव PHP (बिना फ़्रेमवर्क, शून्य अतिरिक्त निर्भरताएँ)
+
+जब फ़्रेमवर्क न हो और अलग से HTTP लाइब्रेरी भी इंस्टॉल न करनी हो, तो अंतर्निहित cURL क्लाइंट स्वतः फ़ॉलबैक हो जाता है और बिना किसी अतिरिक्त सेटअप के सीधे काम करता है:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// लंबे समय तक चलने वाली स्क्रिप्ट: एक ही पंक्ति में "रजिस्टर → TTL heartbeat → बाहर निकलते ही ऑटो डीरजिस्टर"
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // heartbeat भेजते हुए ब्लॉक रहता है; pcntl इंस्टॉल हो तो Ctrl+C पहले डीरजिस्टर करता है
+// लूप खुद चलाना चाहें तो यह भी कर सकते हैं: $service->heartbeat();  …  $service->stop();
+```
+
+HTTP क्लाइंट चुनने का क्रम: **मैन्युअल रूप से इंजेक्ट किया गया** > `php-http/discovery` से मिला कार्यान्वयन (Guzzle, Swoole कोरूटीन अडैप्टर आदि) > **अंतर्निहित cURL**।
+अंतर्निहित कार्यान्वयन के पास अपने connect और कुल timeout होते हैं (डिफ़ॉल्ट 3s / 30s), और इसे इंजेक्ट करके बदला जा सकता है:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // ज़बरदस्ती साद�
 
 - PHP 8.0+
 - Composer
-- PSR-18 HTTP Client का कार्यान्वयन
+- PSR-18 HTTP Client का कार्यान्वयन — कुछ भी इंजेक्ट या इंस्टॉल न होने पर स्वतः अंतर्निहित cURL क्लाइंट पर फ़ॉलबैक (curl एक्सटेंशन आवश्यक)
 - [वैकल्पिक] PSR-16 कैश — `Discovery::healthyInstances()` / `ConfigCenter::get()` स्वतः कैश करते हैं
 - [वैकल्पिक] PSR-3 Logger — request लॉग
 - [वैकल्पिक] PSR-14 EventDispatcher — `ConfigChangedEvent` इवेंट

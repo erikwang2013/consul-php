@@ -1,7 +1,7 @@
 {
     "11 个 API 模块 + 3 个高层封装": "11 modul API + 3 wrapper",
     "11 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口": "11 modul API + 3 wrapper + adaptasi 4 framework: peta kemampuan dan pintu masuknya",
-    "309 项单元测试 · PHPStan L5": "309 unit test · PHPStan L5",
+    "338 项单元测试 · PHPStan L5": "338 unit test · PHPStan L5",
     "4xx / 5xx 分支": "Cabang 4xx / 5xx",
     "ACL 权限": "Izin ACL",
     "API 完全一致，只差获取 $client 的方式": "API identik, bedanya hanya cara memperoleh $client",
@@ -219,7 +219,7 @@
     "自动或主动注销": "Otomatis / manual",
     "计数器达标": "Penghitung mencapai ambang",
     "调用方发起": "Dipicu oleh pemanggil",
-    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 309 项测试": "Jaminan kualitas: PHP 8.0–8.4 · PHPStan L5 · 309 test",
+    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 338 项测试": "Jaminan kualitas: PHP 8.0–8.4 · PHPStan L5 · 338 test",
     "连接/解码错误归一化为 ClientException": "Error koneksi/decoding → ClientException",
     "连续 5 次成功自动恢复长轮询": "Setelah 5 kali sukses, kembali ke long polling",
     "配置中心": "Pusat konfigurasi",

@@ -4,7 +4,10 @@
     "type": "library",
     "license": "MIT",
     "authors": [
-        {"name": "erik", "email": "erik@erik.xyz"}
+        {
+            "name": "erik",
+            "email": "erik@erik.xyz"
+        }
     ],
     "require": {
         "php": ">=8.0",
@@ -17,12 +20,13 @@
         "php-http/discovery": "^1.0"
     },
     "suggest": {
+        "ext-curl": "内置 cURL HTTP 客户端（未注入且未安装其他 PSR-18 实现时自动启用）",
         "guzzlehttp/guzzle": "PSR-18 HTTP client implementation",
-        "php-http/guzzle7-adapter": "PSR-18 adapter for Guzzle 7",
-        "laravel/framework": "For Laravel auto-integration (ServiceProvider + Facade)",
         "hyperf/framework": "For Hyperf auto-integration (ConfigProvider + coroutine client)",
-        "workerman/webman-framework": "For webman auto-integration (plugin auto-install)",
-        "topthink/framework": "For ThinkPHP integration (Service binding)"
+        "laravel/framework": "For Laravel auto-integration (ServiceProvider + Facade)",
+        "php-http/guzzle7-adapter": "PSR-18 adapter for Guzzle 7",
+        "topthink/framework": "For ThinkPHP integration (Service binding)",
+        "workerman/webman-framework": "For webman auto-integration (plugin auto-install)"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6|^10.5",

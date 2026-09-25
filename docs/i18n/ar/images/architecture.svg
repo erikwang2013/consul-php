@@ -152,6 +152,6 @@
     <text class="bands" x="956" y="928" text-anchor="end">نظام الاستثناءات: ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928" text-anchor="end">تخزين PSR-16: get() / namespace() تلقائيًا</text>
     <text class="bands" x="956" y="950" text-anchor="end">سجلات PSR-3: NullLogger احتياطي</text>
-    <text class="bands" x="500" y="950" text-anchor="end">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 309 اختبار</text>
+    <text class="bands" x="500" y="950" text-anchor="end">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 338 اختبار</text>
   </g>
 </svg>

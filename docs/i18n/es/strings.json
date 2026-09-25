@@ -1,7 +1,7 @@
 {
     "11 个 API 模块 + 3 个高层封装": "11 módulos de API + 3 envoltorios de alto nivel",
     "11 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口": "11 módulos de API + 3 envoltorios de alto nivel + 4 adaptadores de framework: mapa de capacidades y puntos de entrada",
-    "309 项单元测试 · PHPStan L5": "309 pruebas unitarias · PHPStan L5",
+    "338 项单元测试 · PHPStan L5": "338 pruebas unitarias · PHPStan L5",
     "4xx / 5xx 分支": "Ramas 4xx / 5xx",
     "ACL 权限": "Permisos ACL",
     "API 完全一致，只差获取 $client 的方式": "API idéntica, solo cambia cómo se obtiene $client",
@@ -219,7 +219,7 @@
     "自动或主动注销": "Baja automática o manual",
     "计数器达标": "El contador alcanza el objetivo",
     "调用方发起": "Lo inicia quien llama",
-    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 309 项测试": "Garantía de calidad: PHP 8.0–8.4 · PHPStan L5 · 309 pruebas",
+    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 338 项测试": "Garantía de calidad: PHP 8.0–8.4 · PHPStan L5 · 338 pruebas",
     "连接/解码错误归一化为 ClientException": "Los errores de conexión/decodificación se normalizan como ClientException",
     "连续 5 次成功自动恢复长轮询": "Tras 5 éxitos consecutivos se restaura el sondeo largo",
     "配置中心": "Centro de configuración",

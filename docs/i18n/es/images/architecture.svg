@@ -152,6 +152,6 @@
     <text class="bands" x="44" y="928" style="font-size:10.7px">Jerarquía de excepciones: ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928">Caché PSR-16: get() / namespace() leen y escriben automáticamente</text>
     <text class="bands" x="44" y="950">Logs PSR-3: NullLogger como respaldo</text>
-    <text class="bands" x="500" y="950">Garantía de calidad: PHP 8.0–8.4 · PHPStan L5 · 309 pruebas</text>
+    <text class="bands" x="500" y="950">Garantía de calidad: PHP 8.0–8.4 · PHPStan L5 · 338 pruebas</text>
   </g>
 </svg>

@@ -135,7 +135,7 @@
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:11.1px">Couverture complète de l&apos;API HTTP v1 de Consul</text>
     <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.4px">11 modules API + 3 surcouches de haut niveau</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:7.8px">Dépend uniquement des interfaces PSR, client HTTP interchangeable</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 tests unitaires · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 tests unitaires · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="44" y="920" style="font-size:8.7px">Une seule API, quatre frameworks</text>
     <text class="cl" x="200" y="920" style="font-size:10.7px">Laravel · Hyperf · webman · ThinkPHP —— paquet cœur sans dépendance, adaptateurs intégrés, un seul composer require suffit</text>

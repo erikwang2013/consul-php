@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · ядро без зависимосте
 | **Как использовать** | `composer require erikwang2013/consul-php`: ядро без зависимостей от фреймворков, адаптеры встроены и обнаруживаются автоматически |
 | **Поддерживаемые фреймворки** | Laravel · Hyperf · webman · ThinkPHP —— API полностью идентичен, отличается только способ получения `$client` |
 | **Соглашения о зависимостях** | Только интерфейсы PSR (PSR-18/17/16/14/3): HTTP-клиент, кэш, логи и диспетчер событий заменяемы |
-| **Гарантия качества** | PHP 8.0 – 8.4 · 309 модульных тестов · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Гарантия качества** | PHP 8.0 – 8.4 · 338 модульных тестов · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Ключевые возможности
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # транспортный уровень
 │   │   ├── TransportInterface.php   # контракт транспорта (getRaw / putRaw / getWithHeaders)
 │   │   └── Psr18Transport.php       # реализация PSR-18: внедрение Token, разбор, отображение исключений
+│   ├── Http/                        # Встроенный PSR-7/17/18 (клиент на cURL, без Guzzle — запасной вариант)
 │   ├── Support/                     # терминальная версия питомца Consu (Pet::art / Pet::say)
 │   ├── Exception/                   # иерархия исключений (ConsulException и наследники, 7 штук)
 │   └── Integration/                 # адаптеры фреймворков (встроены, находятся автоматически)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + фабрика корутинного клиента + config
 │       ├── Webman/                  # установка плагина (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # Нативный PHP: регистрация / heartbeat / автоотмена регистрации
 ├── tests/                           # тесты PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # Ядро
 composer require erikwang2013/consul-php
 
-# Реализация PSR-18 (любая одна)
+# Реализация PSR-18 (необязательно: без неё используется встроенный клиент на cURL)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // блокирующее получение резу
 ```
 
 **Внимание:** асинхронный клиент построен на модели Promise и подходит для сценариев с параллельными запросами. В корутинной среде Hyperf обычного HTTP-клиента уже достаточно для конкурентности на уровне корутин.
+
+---
+
+## Нативный PHP (без фреймворка, без лишних зависимостей)
+
+Если фреймворка нет и ставить отдельную HTTP-библиотеку не хочется, встроенный клиент на cURL подхватывается автоматически и работает сразу:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// долгоживущий скрипт: одна строка на «регистрация → TTL heartbeat → автодерегистрация при выходе»
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // блокирует поток, отправляя heartbeat; при установленном pcntl Ctrl+C сначала дерегистрирует сервис
+// можно управлять циклом самому: $service->heartbeat();  …  $service->stop();
+```
+
+Порядок выбора HTTP-клиента: **ручное внедрение** > реализация, найденная через `php-http/discovery` (Guzzle, адаптер корутин Swoole и т. д.) > **встроенный cURL**.
+У встроенной реализации свои таймауты подключения и общий таймаут (по умолчанию 3 с / 30 с), её можно заменить, внедрив свою:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // принудительно чистый
 
 - PHP 8.0+
 - Composer
-- Реализация PSR-18 HTTP Client
+- Реализация PSR-18 HTTP Client — если ничего не внедрено и не установлено, автоматически используется встроенный клиент на cURL (требуется расширение curl)
 - [опционально] Кэш PSR-16 — `Discovery::healthyInstances()` / `ConfigCenter::get()` кэшируются автоматически
 - [опционально] Logger PSR-3 — логи запросов
 - [опционально] EventDispatcher PSR-14 — событие `ConfigChangedEvent`

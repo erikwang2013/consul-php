@@ -152,6 +152,6 @@
     <text class="bands" x="44" y="928">Exception-Hierarchie: ConsulException → Client / Server / Request (401·403·404)</text>
     <text class="bands" x="500" y="928">PSR-16-Cache: get() / namespace() automatisch</text>
     <text class="bands" x="44" y="950">PSR-3-Logging: NullLogger-Fallback</text>
-    <text class="bands" x="500" y="950">Qualität: PHP 8.0–8.4 · PHPStan L5 · 309 Tests</text>
+    <text class="bands" x="500" y="950">Qualität: PHP 8.0–8.4 · PHPStan L5 · 338 Tests</text>
   </g>
 </svg>

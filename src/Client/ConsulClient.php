@@ -17,6 +17,9 @@ use Erikwang2013\Consul\Api\Snapshot;
 use Erikwang2013\Consul\Api\Status;
 use Erikwang2013\Consul\Config\ConfigCenter;
 use Erikwang2013\Consul\Exception\ConsulException;
+use Erikwang2013\Consul\Http\CurlClient;
+use Erikwang2013\Consul\Http\RequestFactory as HttpRequestFactory;
+use Erikwang2013\Consul\Http\StreamFactory as HttpStreamFactory;
 use Erikwang2013\Consul\Service\Discovery;
 use Erikwang2013\Consul\Service\Registry;
 use Erikwang2013\Consul\Transport\Psr18Transport;
@@ -28,6 +31,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
+use Throwable;
 
 /**
  * @property Kv $kv
@@ -151,30 +155,54 @@ class ConsulClient
         throw new RuntimeException($errorMessage);
     }
 
+    /**
+     * 优先用 php-http/discovery 找到的 PSR-18 实现（Guzzle、Swoole 适配器等），
+     * 找不到就退回内置 cURL 客户端——原生 PHP 下零额外依赖也能跑。
+     */
     private function discoverHttpClient(): ClientInterface
     {
-        return $this->discover(
-            'Http\Discovery\Psr18ClientDiscovery',
-            'find',
-            'No PSR-18 HTTP client found. Require php-http/discovery and guzzlehttp/guzzle, or inject manually.'
-        );
+        try {
+            return $this->discover(
+                'Http\Discovery\Psr18ClientDiscovery',
+                'find',
+                'No PSR-18 HTTP client found.'
+            );
+        } catch (Throwable $e) {
+            if (extension_loaded('curl')) {
+                return new CurlClient();
+            }
+
+            throw new RuntimeException(
+                '没有可用的 PSR-18 HTTP 客户端：请安装 guzzlehttp/guzzle，启用 curl 扩展以使用内置客户端，或手动注入。',
+                0,
+                $e
+            );
+        }
     }
 
     private function discoverRequestFactory(): RequestFactoryInterface
     {
-        return $this->discover(
-            'Http\Discovery\Psr17FactoryDiscovery',
-            'findRequestFactory',
-            'No PSR-17 request factory found.'
-        );
+        try {
+            return $this->discover(
+                'Http\Discovery\Psr17FactoryDiscovery',
+                'findRequestFactory',
+                'No PSR-17 request factory found.'
+            );
+        } catch (Throwable) {
+            return new HttpRequestFactory();
+        }
     }
 
     private function discoverStreamFactory(): StreamFactoryInterface
     {
-        return $this->discover(
-            'Http\Discovery\Psr17FactoryDiscovery',
-            'findStreamFactory',
-            'No PSR-17 stream factory found.'
-        );
+        try {
+            return $this->discover(
+                'Http\Discovery\Psr17FactoryDiscovery',
+                'findStreamFactory',
+                'No PSR-17 stream factory found.'
+            );
+        } catch (Throwable) {
+            return new HttpStreamFactory();
+        }
     }
 }

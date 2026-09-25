@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # 전송 계층
 │   │   ├── TransportInterface.php   # 전송 계약 (getRaw / putRaw / getWithHeaders 포함)
 │   │   └── Psr18Transport.php       # PSR-18 구현: Token 주입, 디코딩, 예외 매핑
+│   ├── Http/                        # 내장 PSR-7/17/18 (cURL 클라이언트, Guzzle 없을 때 대체)
 │   ├── Support/                     # 프로젝트 펫 Consu의 터미널 버전 (Pet::art / Pet::say)
 │   ├── Exception/                   # 예외 체계 (ConsulException과 하위 클래스 7개)
 │   └── Integration/                 # 프레임워크 어댑터 (내장, 자동 발견)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + 코루틴 클라이언트 팩토리 + config
 │       ├── Webman/                  # 플러그인 설치 (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # 네이티브 PHP: 등록 / 하트비트 / 자동 등록 해제를 한 줄로
 ├── tests/                           # PHPUnit 케이스 (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # 코어 패키지
 composer require erikwang2013/consul-php
 
-# PSR-18 구현 (하나 선택)
+# PSR-18 구현 (선택: 설치하지 않으면 내장 cURL 클라이언트 사용)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // 블로킹으로 결과 얻기
 ```
 
 **주의:** 비동기 클라이언트는 Promise 패턴을 기반으로 하며, 동시 요청이 필요한 상황에 적합합니다. Hyperf 코루틴 환경에서는 기본 HTTP 클라이언트만으로도 코루틴 수준의 동시성을 얻을 수 있습니다.
+
+---
+
+## 네이티브 PHP (프레임워크 없음, 추가 의존성 제로)
+
+프레임워크가 없고 HTTP 라이브러리도 따로 설치하고 싶지 않다면, 내장 cURL 클라이언트가 자동으로 대체해 주므로 바로 사용할 수 있습니다:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// 상주 스크립트: 한 줄로 등록 → TTL 하트비트 → 종료 시 자동 등록 해제
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // 블로킹으로 하트비트 전송, pcntl이 설치되어 있으면 Ctrl+C 시 먼저 등록 해제합니다
+// 직접 루프를 제어해도 됩니다: $service->heartbeat();  …  $service->stop();
+```
+
+HTTP 클라이언트 선택 순서: **수동 주입** > `php-http/discovery` 가 찾은 구현(Guzzle, Swoole 코루틴 어댑터 등) > **내장 cURL**.
+내장 구현은 연결 타임아웃과 전체 타임아웃을 직접 관리하며(기본 3s / 30s), 주입해 교체할 수 있습니다:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // 강제로 순수 텍스트
 
 - PHP 8.0+
 - Composer
-- PSR-18 HTTP Client 구현
+- PSR-18 HTTP Client 구현 — 주입하지 않고 설치되어 있지 않으면 내장 cURL 클라이언트로 자동 대체됩니다 (curl 확장 필요)
 - [선택] PSR-16 캐시 — `Discovery::healthyInstances()` / `ConfigCenter::get()` 자동 캐시
 - [선택] PSR-3 Logger — 요청 로그
 - [선택] PSR-14 EventDispatcher — `ConfigChangedEvent` 이벤트

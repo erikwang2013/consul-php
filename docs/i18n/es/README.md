@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Sin dependencias de frameworks
 | **Cómo se usa** | `composer require erikwang2013/consul-php`; el paquete principal no tiene dependencias de frameworks y los adaptadores vienen incluidos y se autodescubren |
 | **Frameworks compatibles** | Laravel · Hyperf · webman · ThinkPHP — la API es idéntica, solo cambia cómo se obtiene `$client` |
 | **Contrato de dependencias** | Solo depende de interfaces PSR (PSR-18/17/16/14/3); el cliente HTTP, la caché, los logs y el despachador de eventos son reemplazables |
-| **Garantía de calidad** | PHP 8.0 – 8.4 · 309 pruebas unitarias · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Garantía de calidad** | PHP 8.0 – 8.4 · 338 pruebas unitarias · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Capacidades principales
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # Capa de transporte
 │   │   ├── TransportInterface.php   # Contrato de transporte (incluye getRaw / putRaw / getWithHeaders)
 │   │   └── Psr18Transport.php       # Implementación PSR-18: inyección de Token, decodificación, mapeo de excepciones
+│   ├── Http/                        # PSR-7/17/18 integrado (cliente cURL, respaldo sin Guzzle)
 │   ├── Support/                     # Versión de terminal de la mascota del proyecto Consu (Pet::art / Pet::say)
 │   ├── Exception/                   # Jerarquía de excepciones (ConsulException y sus subclases, 7)
 │   └── Integration/                 # Adaptadores de framework (incluidos, autodescubiertos)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + fábrica de clientes de corrutinas + config
 │       ├── Webman/                  # Instalación del plugin (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # PHP nativo: registro / heartbeat / baja automática en una línea
 ├── tests/                           # Casos de PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # Paquete principal
 composer require erikwang2013/consul-php
 
-# Implementación PSR-18 (elija una)
+# Opcional: si no la instala, se utiliza el cliente cURL integrado
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // Obtiene el resultado de forma bloqueante
 ```
 
 **Nota:** el cliente asíncrono se basa en el patrón Promise y está pensado para escenarios que requieren peticiones concurrentes. En un entorno de corrutinas de Hyperf, el cliente HTTP predeterminado ya ofrece concurrencia a nivel de corrutina.
+
+---
+
+## PHP nativo (sin framework, sin dependencias adicionales)
+
+Cuando no utiliza un framework y tampoco quiere instalar una biblioteca HTTP adicional, el cliente cURL integrado actúa como respaldo automático y funciona de inmediato:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// Script residente: en una sola línea, «registro → latido TTL → baja automática al salir»
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // Bloquea enviando latidos; con pcntl instalado, Ctrl+C primero da de baja
+// También puede controlar el bucle usted mismo: $service->heartbeat();  …  $service->stop();
+```
+
+Orden de selección del cliente HTTP: **inyección manual** > implementación encontrada por `php-http/discovery` (Guzzle, adaptador de corrutinas Swoole, etc.) > **cURL integrado**.
+La implementación integrada maneja sus propios tiempos de espera de conexión y totales (3s / 30s por defecto) y se puede reemplazar mediante inyección:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ El diseño es consistente con [pet.svg](./images/pet.svg): la antena = el latido
 
 - PHP 8.0+
 - Composer
-- Implementación de PSR-18 HTTP Client
+- Implementación de PSR-18 HTTP Client; si no se inyecta ni se instala, se recurre automáticamente al cliente cURL integrado (requiere la extensión curl)
 - [opcional] Caché PSR-16 — `Discovery::healthyInstances()` / `ConfigCenter::get()` la aprovechan automáticamente
 - [opcional] PSR-3 Logger — logs de las peticiones
 - [opcional] PSR-14 EventDispatcher — evento `ConfigChangedEvent`

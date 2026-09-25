@@ -135,7 +135,7 @@
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Consul HTTP API v1 पूरी तरह कवर</text>
     <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11 API मॉड्यूल + 3 हाई-लेवल रैपर</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842">केवल PSR इंटरफ़ेस, HTTP क्लाइंट बदल सकते हैं</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 यूनिट टेस्ट · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 यूनिट टेस्ट · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="44" y="920">एक API, चार फ़्रेमवर्क</text>
     <text class="cl" x="200" y="920">Laravel · Hyperf · webman · ThinkPHP —— कोर पैकेज शून्य निर्भरता, अडैप्टर अंतर्निहित, एक composer require और तैयार</text>

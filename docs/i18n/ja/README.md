@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · フレームワーク非依存
 | **使い方** | `composer require erikwang2013/consul-php`。コアパッケージはフレームワーク非依存で、フレームワークアダプタは内蔵かつ自動検出されます |
 | **対応フレームワーク** | Laravel · Hyperf · webman · ThinkPHP —— API は完全に同一で、違うのは `$client` の取得方法だけです |
 | **依存の方針** | PSR インターフェース（PSR-18/17/16/14/3）のみに依存。HTTP クライアント、キャッシュ、ログ、イベントディスパッチャはすべて差し替え可能です |
-| **品質保証** | PHP 8.0 – 8.4 · 309 件のユニットテスト · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **品質保証** | PHP 8.0 – 8.4 · 338 件のユニットテスト · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### 主な機能
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # トランスポート層
 │   │   ├── TransportInterface.php   # トランスポートの契約（getRaw / putRaw / getWithHeaders を含む）
 │   │   └── Psr18Transport.php       # PSR-18 実装：Token 注入、デコード、例外マッピング
+│   ├── Http/                        # 内蔵 PSR-7/17/18（cURL クライアント、Guzzle が無いときのフォールバック）
 │   ├── Support/                     # プロジェクトのペット Consu のターミナル版（Pet::art / Pet::say）
 │   ├── Exception/                   # 例外体系（ConsulException とそのサブクラス、7 個）
 │   └── Integration/                 # フレームワークアダプタ（内蔵、自動検出）
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + コルーチンクライアントファクトリ + config
 │       ├── Webman/                  # プラグインのインストール（Install）+ config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # ネイティブ PHP：登録 / ハートビート / 自動登録解除を一行で
 ├── tests/                           # PHPUnit のテスト（Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport）
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # コアパッケージ
 composer require erikwang2013/consul-php
 
-# PSR-18 実装（いずれか 1 つ）
+# PSR-18 実装（任意：インストールしなければ内蔵 cURL クライアントを自動的に使用）
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // ブロッキングで結果を取得
 ```
 
 **注意：** 非同期クライアントは Promise パターンに基づくもので、並行リクエストが必要な場面に向いています。Hyperf のコルーチン環境では、既定の HTTP クライアントだけでコルーチンレベルの並行処理を実現できます。
+
+---
+
+## ネイティブ PHP（フレームワークなし・追加依存ゼロ）
+
+フレームワークを使わず、HTTP ライブラリも追加で入れたくない場合、内蔵の cURL クライアントが自動的にフォールバックするため、すぐに使えます：
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// 常駐スクリプト：「登録 → TTL ハートビート → 終了時の自動登録解除」を 1 行で
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // ブロッキングでハートビートを送信。pcntl があれば Ctrl+C で先に登録解除
+// 自分でループを回す場合： $service->heartbeat();  …  $service->stop();
+```
+
+HTTP クライアントの選択順序：**手動注入** > `php-http/discovery` が見つけた実装（Guzzle、Swoole コルーチンアダプタなど）> **内蔵 cURL**。
+内蔵実装は接続タイムアウトと総タイムアウト（既定 3s / 30s）を自前で持ち、注入して差し替えられます：
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // 強制的にプレーンテキスト
 
 - PHP 8.0+
 - Composer
-- PSR-18 HTTP Client の実装
+- PSR-18 HTTP Client の実装 —— 未注入かつ未インストールの場合は、内蔵 cURL クライアントを自動的に使用（curl 拡張が必要）
 - [任意] PSR-16 キャッシュ — `Discovery::healthyInstances()` / `ConfigCenter::get()` を自動でキャッシュ
 - [任意] PSR-3 Logger — リクエストログ
 - [任意] PSR-14 EventDispatcher — `ConfigChangedEvent` イベント

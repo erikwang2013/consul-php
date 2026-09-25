@@ -135,7 +135,7 @@
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Consul HTTP API v1 を完全にカバー</text>
     <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.1px">11 個の API モジュール + 3 個の高レベルラッパー</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8px">PSR インターフェースのみに依存、HTTP クライアントは差し替え可能</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 件のユニットテスト · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 件のユニットテスト · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="44" y="920" style="font-size:11px">同じ API、4 フレームワーク</text>
     <text class="cl" x="200" y="920" style="font-size:10.1px">Laravel · Hyperf · webman · ThinkPHP —— コアパッケージはフレームワーク非依存、アダプタは内蔵、composer require ひとつで使えます</text>

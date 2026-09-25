@@ -1,7 +1,7 @@
 {
     "11 个 API 模块 + 3 个高层封装": "11 API modules + 3 high-level wrappers",
     "11 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口": "11 API modules + 3 high-level wrappers + 4 framework adapters: capability map and entry points",
-    "309 项单元测试 · PHPStan L5": "309 unit tests · PHPStan L5",
+    "338 项单元测试 · PHPStan L5": "338 unit tests · PHPStan L5",
     "4xx / 5xx 分支": "4xx / 5xx branches",
     "ACL 权限": "ACL permissions",
     "API 完全一致，只差获取 $client 的方式": "Identical API — only how you obtain $client differs",
@@ -219,7 +219,7 @@
     "自动或主动注销": "automatic or explicit deregistration",
     "计数器达标": "counter reaches the threshold",
     "调用方发起": "initiated by the caller",
-    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 309 项测试": "quality: PHP 8.0–8.4 · PHPStan L5 · 309 tests",
+    "质量保障：PHP 8.0–8.4 · PHPStan L5 · 338 项测试": "quality: PHP 8.0–8.4 · PHPStan L5 · 338 tests",
     "连接/解码错误归一化为 ClientException": "connection/decode errors normalized to ClientException",
     "连续 5 次成功自动恢复长轮询": "5 consecutive successes resume long polling",
     "配置中心": "config center",

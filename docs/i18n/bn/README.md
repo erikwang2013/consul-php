@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # ট্রান্সপোর্ট লেয়ার
 │   │   ├── TransportInterface.php   # ট্রান্সপোর্ট কনট্র্যাক্ট (getRaw / putRaw / getWithHeaders সহ)
 │   │   └── Psr18Transport.php       # PSR-18 ইমপ্লিমেন্টেশন: Token ইনজেকশন, ডিকোড, এক্সেপশন ম্যাপিং
+│   ├── Http/                        # বিল্ট-ইন PSR-7/17/18 (cURL ক্লায়েন্ট, Guzzle ছাড়া ফলব্যাক)
 │   ├── Support/                     # প্রজেক্টের পেট Consu-র টার্মিনাল ভার্সন (Pet::art / Pet::say)
 │   ├── Exception/                   # এক্সেপশন সিস্টেম (ConsulException ও তার সাবক্লাস, 7টি)
 │   └── Integration/                 # ফ্রেমওয়ার্ক অ্যাডাপ্টার (বিল্ট-ইন, অটো-ডিসকভার)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + করউটিন ক্লায়েন্ট ফ্যাক্টরি + config
 │       ├── Webman/                  # প্লাগইন ইনস্টলেশন (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # নেটিভ PHP: নিবন্ধন / heartbeat / স্বয়ংক্রিয় ডিরেজিস্টার এক লাইনে
 ├── tests/                           # PHPUnit টেস্ট কেস (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # কোর প্যাকেজ
 composer require erikwang2013/consul-php
 
-# PSR-18 ইমপ্লিমেন্টেশন (একটি বেছে নিন)
+# PSR-18 ইমপ্লিমেন্টেশন (ঐচ্ছিক: না ইনস্টল করলে বিল্ট-ইন cURL ক্লায়েন্ট ব্যবহার হবে)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // ব্লক করে ফলাফল নেও�
 ```
 
 **দ্রষ্টব্য:** অ্যাসিনক্রোনাস ক্লায়েন্ট Promise প্যাটার্নভিত্তিক, একসাথে একাধিক রিকোয়েস্ট পাঠানোর প্রয়োজন হলে উপযুক্ত। Hyperf করউটিন পরিবেশে ডিফল্ট HTTP ক্লায়েন্ট দিয়েই করউটিন-লেভেল কনকারেন্সি পাওয়া যায়।
+
+---
+
+## নেটিভ PHP (ফ্রেমওয়ার্ক ছাড়া, শূন্য অতিরিক্ত নির্ভরতা)
+
+কোনো ফ্রেমওয়ার্ক ছাড়া, আবার বাড়তি HTTP লাইব্রেরি ইনস্টল করার ইচ্ছেও না থাকলে, বিল্ট-ইন cURL ক্লায়েন্টই স্বয়ংক্রিয়ভাবে ফলব্যাক হিসেবে কাজ করে, আউট-অব-দ্য-বক্স ব্যবহারযোগ্য:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// দীর্ঘসময় চালু থাকা স্ক্রিপ্ট: এক লাইনেই "রেজিস্ট্রেশন → TTL হার্টবিট → প্রস্থানে অটো-ডিরেজিস্টার"
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // হার্টবিট পাঠাতে পাঠাতে ব্লক করে থাকে; pcntl থাকলে Ctrl+C আগে ডিরেজিস্টার করে
+// নিজে লুপ চালাতে চাইলে: $service->heartbeat();  …  $service->stop();
+```
+
+HTTP ক্লায়েন্ট বেছে নেওয়ার ক্রম: **ম্যানুয়ালি ইনজেক্ট করা** > `php-http/discovery`-তে পাওয়া ইমপ্লিমেন্টেশন (Guzzle, Swoole করউটিন অ্যাডাপ্টার ইত্যাদি) > **বিল্ট-ইন cURL**।
+বিল্ট-ইন ইমপ্লিমেন্টেশন নিজেই কানেকশন টাইমআউট ও মোট টাইমআউট ধরে রাখে (ডিফল্ট 3s / 30s), চাইলে ইনজেক্ট করে বদলে দেওয়া যায়:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // জোর করে প্লেইন 
 
 - PHP 8.0+
 - Composer
-- PSR-18 HTTP Client ইমপ্লিমেন্টেশন
+- PSR-18 HTTP Client ইমপ্লিমেন্টেশন —— কিছুই ইনজেক্ট বা ইনস্টল করা না থাকলে স্বয়ংক্রিয়ভাবে বিল্ট-ইন cURL ক্লায়েন্টে ফিরে যায় (curl এক্সটেনশন প্রয়োজন)
 - [ঐচ্ছিক] PSR-16 ক্যাশ — `Discovery::healthyInstances()` / `ConfigCenter::get()` অটো-ক্যাশ
 - [ঐচ্ছিক] PSR-3 Logger — রিকোয়েস্ট লগ
 - [ঐচ্ছিক] PSR-14 EventDispatcher — `ConfigChangedEvent` ইভেন্ট

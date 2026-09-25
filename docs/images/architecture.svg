@@ -170,6 +170,6 @@
     <text class="bands" x="44" y="928">异常体系：ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928">PSR-16 缓存：get() / namespace() 自动读写</text>
     <text class="bands" x="44" y="950">PSR-3 日志：NullLogger 兜底</text>
-    <text class="bands" x="500" y="950">质量保障：PHP 8.0–8.4 · PHPStan L5 · 309 项测试</text>
+    <text class="bands" x="500" y="950">质量保障：PHP 8.0–8.4 · PHPStan L5 · 338 项测试</text>
   </g>
 </svg>

@@ -152,6 +152,6 @@
     <text class="bands" x="44" y="928">अपवाद प्रणाली: ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928">PSR-16 कैश: get() / namespace() ऑटो पढ़ें-लिखें</text>
     <text class="bands" x="44" y="950">PSR-3 लॉग: NullLogger फ़ॉलबैक</text>
-    <text class="bands" x="500" y="950">गुणवत्ता: PHP 8.0–8.4 · PHPStan L5 · 309 टेस्ट</text>
+    <text class="bands" x="500" y="950">गुणवत्ता: PHP 8.0–8.4 · PHPStan L5 · 338 टेस्ट</text>
   </g>
 </svg>

@@ -135,7 +135,7 @@
     <circle cx="312" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="798" text-anchor="end">تغطية كاملة لـ Consul HTTP API v1</text>
     <circle cx="312" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="820" text-anchor="end">11 وحدة API + 3 تغليفات عالية المستوى</text>
     <circle cx="312" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="842" style="font-size:8.9px" text-anchor="end">يعتمد على واجهات PSR فقط، وعميل HTTP قابل للاستبدال</text>
-    <circle cx="312" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="864" text-anchor="end">309 اختبار وحدة · PHPStan L5</text>
+    <circle cx="312" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="864" text-anchor="end">338 اختبار وحدة · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="956" y="920" style="font-size:12.4px" text-anchor="end">واجهة API واحدة، وأربعة أطر</text>
     <text class="cl" x="800" y="920" style="font-size:11px" text-anchor="end">Laravel · Hyperf · webman · ThinkPHP —— الحزمة الأساسية بلا اعتماديات، ودعم الأطر مدمج، ويكفي أمر composer require واحد</text>

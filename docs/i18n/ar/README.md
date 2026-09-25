@@ -21,7 +21,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · بلا اعتماد على أطر ال
 | **كيف يُستخدم** | `composer require erikwang2013/consul-php`، الحزمة الأساسية بلا اعتماد على أطر العمل، ودعم الأطر مدمج ويُكتشف تلقائيًا |
 | **الأطر المدعومة** | Laravel · Hyperf · webman · ThinkPHP —— واجهة API متطابقة تمامًا، والفرق فقط في طريقة الحصول على `$client` |
 | **اصطلاح الاعتماديات** | يعتمد على واجهات PSR فقط (PSR-18/17/16/14/3)، ويمكن استبدال عميل HTTP والتخزين المؤقت والسجلات وموزّع الأحداث |
-| **ضمان الجودة** | PHP 8.0 – 8.4 · 309 اختبار وحدة · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **ضمان الجودة** | PHP 8.0 – 8.4 · 338 اختبار وحدة · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### القدرات الأساسية
 
@@ -83,6 +83,7 @@ consul-php/
 │   ├── Transport/                   # طبقة النقل
 │   │   ├── TransportInterface.php   # عقد النقل (يشمل getRaw / putRaw / getWithHeaders)
 │   │   └── Psr18Transport.php       # تنفيذ PSR-18: حقن Token، فك الترميز، تحويل الاستثناءات
+│   ├── Http/                        # PSR-7/17/18 مدمج (عميل cURL، بديل عند غياب Guzzle)
 │   ├── Support/                     # النسخة الطرفية من Consu حيوان المشروع (Pet::art / Pet::say)
 │   ├── Exception/                   # نظام الاستثناءات (ConsulException وفئاته الفرعية، 7 فئات)
 │   └── Integration/                 # دعم أطر العمل (مدمج، يُكتشف تلقائيًا)
@@ -90,7 +91,8 @@ consul-php/
 │       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
 │       ├── Hyperf/                  # ConfigProvider + مصنع عميل coroutine + config
 │       ├── Webman/                  # تثبيت الإضافة (Install) + config/app.php
-│       └── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Thinkphp/                # ConsulService + config/consul.php
+│       └── Native/                  # PHP الأصلي: التسجيل / نبضة / إلغاء تلقائي بسطر واحد
 ├── tests/                           # حالات PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
 ├── docs/
@@ -173,7 +175,7 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 # الحزمة الأساسية
 composer require erikwang2013/consul-php
 
-# تنفيذ PSR-18 (اختر واحدًا)
+# تنفيذ PSR-18 (اختياري: يُستخدم عميل cURL المدمج إذا لم تثبّته)
 composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 ```
 
@@ -394,6 +396,36 @@ $value = $promise->wait(); // الحصول على النتيجة بشكل حاج
 ```
 
 **ملاحظة:** العميل اللامتزامن مبني على نمط Promise، ويصلح للمواقف التي تحتاج طلبات متزامنة (concurrent). وفي بيئة Hyperf coroutine يكفي عميل HTTP الافتراضي لتحقيق التزامن على مستوى coroutine.
+
+---
+
+## PHP الأصلي (بدون إطار عمل، وبلا اعتمادات إضافية)
+
+عند عدم استخدام إطار عمل وعدم الرغبة في تثبيت مكتبة HTTP إضافية، يتولى عميل cURL المدمج المهمة تلقائيًا ويعمل جاهزًا دون أي إعداد:
+
+```php
+use Erikwang2013\Consul\Client\ConsulClient;
+use Erikwang2013\Consul\Integration\Native\NativeService;
+
+$client = new ConsulClient(['base_uri' => 'http://127.0.0.1:8500']);
+
+// سكربت دائم التشغيل: سطر واحد يكفي لـ «التسجيل → نبضة TTL → إلغاء التسجيل تلقائيًا عند الخروج»
+$service = NativeService::start($client->serviceRegistry(), 'my-app', '10.0.0.1', 8080, [
+    'check' => ['ttl' => '30s', 'deregister_critical_service_after' => '120s'],
+], heartbeatInterval: 10);
+
+$service->serve();                       // يحجب أثناء إرسال النبضات؛ وعند تثبيت pcntl يُلغي Ctrl+C التسجيل أولًا
+// أو تحكّم في الحلقة بنفسك: $service->heartbeat();  …  $service->stop();
+```
+
+ترتيب اختيار عميل HTTP: **حقن يدوي** > التنفيذ الذي يعثر عليه `php-http/discovery` (Guzzle، محوّل Swoole coroutine، وما شابه) > **cURL المدمج**.
+التنفيذ المدمج يضبط مهلة الاتصال والمهلة الكلية بنفسه (افتراضيًا 3s / 30s)، ويمكن حقن بديل عنه:
+
+```php
+use Erikwang2013\Consul\Http\CurlClient;
+
+$client = new ConsulClient([...], new CurlClient(connectTimeout: 1.0, timeout: 5.0));
+```
 
 ---
 
@@ -632,7 +664,7 @@ echo Pet::art(false);                 // إجبار النص العادي
 
 - PHP 8.0+
 - Composer
-- تنفيذ عميل PSR-18 HTTP
+- تنفيذ عميل PSR-18 HTTP — عند عدم حقنه وعدم تثبيته يُرجَع تلقائيًا إلى عميل cURL المدمج (يتطلب إضافة curl)
 - [اختياري] تخزين PSR-16 المؤقت — `Discovery::healthyInstances()` / `ConfigCenter::get()` يخزّنان تلقائيًا
 - [اختياري] PSR-3 Logger — سجلات الطلبات
 - [اختياري] PSR-14 EventDispatcher — حدث `ConfigChangedEvent`
