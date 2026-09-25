@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · ফ্রেমওয়ার্ক �
 
 | | |
 |---|---|
-| **কী** | খাঁটি PHP-তে লেখা Consul HTTP API v1 ক্লায়েন্ট: সিঙ্ক + Promise দুই এন্ট্রি, 11টি API মডিউল, 3টি হাই-লেভেল র্যাপার |
+| **কী** | খাঁটি PHP-তে লেখা Consul HTTP API v1 ক্লায়েন্ট: সিঙ্ক + Promise দুই এন্ট্রি, 18টি API মডিউল, 3টি হাই-লেভেল র্যাপার |
 | **কী সমাধান করে** | PHP অ্যাপ্লিকেশনকে Consul-এ যুক্ত করে সার্ভিস রেজিস্ট্রেশন-ডিসকভারি ও কনফিগ হট-রিলোড দেওয়া, প্রতিটি ফ্রেমওয়ার্কের জন্য নতুন করে ক্লায়েন্ট লেখার দরকার নেই |
 | **কীভাবে ব্যবহার** | `composer require erikwang2013/consul-php`, কোর প্যাকেজে ফ্রেমওয়ার্ক নির্ভরতা শূন্য, ফ্রেমওয়ার্ক অ্যাডাপ্টার বিল্ট-ইন ও অটো-ডিসকভার |
 | **সমর্থিত ফ্রেমওয়ার্ক** | Laravel · Hyperf · webman · ThinkPHP —— API পুরোপুরি একই, কেবল `$client` পাওয়ার পদ্ধতিই আলাদা |
 | **নির্ভরতার নিয়ম** | কেবল PSR ইন্টারফেসের উপর নির্ভরতা (PSR-18/17/16/14/3), HTTP ক্লায়েন্ট, ক্যাশ, লগ, ইভেন্ট ডিসপ্যাচার — সবই বদলানো যায় |
-| **কোয়ালিটি অ্যাসুরেন্স** | PHP 8.0 – 8.4 · 309টি ইউনিট টেস্ট · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **কোয়ালিটি অ্যাসুরেন্স** | PHP 8.0 – 8.4 · 594টি ইউনিট টেস্ট · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### মূল সক্ষমতা
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # সিঙ্ক এন্ট্রি: __get দিয়ে API মডিউল ও হাই-লেভেল র্যাপার ডিসপ্যাচ
 │   │   ├── ConsulAsyncClient.php    # Promise বিলম্বিত এক্সিকিউশন ক্লায়েন্ট
 │   │   └── Promise.php              # হালকা Promise ইমপ্লিমেন্টেশন
-│   ├── Api/                         # Consul HTTP API v1 মডিউল (11টি)
+│   ├── Api/                         # Consul HTTP API v1 মডিউল (18টি)
 │   │   ├── Agent.php                # মেম্বার, নিজের তথ্য, মেইনটেন্যান্স মোড, join / leave
 │   │   ├── Catalog.php              # সেবা ও নোড ক্যাটালগ: রেজিস্টার, ডিরেজিস্টার, কোয়েরি
 │   │   ├── Health.php               # হেলথ চেক: সেবা / নোড / স্টেটাস অনুযায়ী ফিল্টার
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # ক্লাস্টার স্টেটাস: leader / peers
 │   │   ├── Coordinate.php           # নেটওয়ার্ক কোঅর্ডিনেট: datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring অপারেশন
-│   │   └── Snapshot.php             # স্ন্যাপশট ব্যাকআপ ও রিস্টোর (বাইনারি স্ট্রিম)
+│   │   ├── Snapshot.php             # স্ন্যাপশট ব্যাকআপ ও রিস্টোর (বাইনারি স্ট্রিম)
+│   │   ├── Txn.php                  # ট্রানজ্যাকশন: অ্যাটমিক মাল্টি-কী / ব্যাচ CAS
+│   │   ├── ConfigEntry.php          # কনফিগ এন্ট্রি: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # service mesh অথরাইজেশন চেইন (intentions)
+│   │   ├── Query.php                # প্রিপেয়ার্ড কোয়েরি: ফেইলওভার / নিয়ারেস্ট ডিসকভারি
+│   │   ├── Peering.php              # ক্লাস্টার পিয়ারিং
+│   │   ├── DiscoveryChain.php       # mesh discovery chain: রাউটিং / স্প্লিট / ফেইলওভার রেজোলিউশন
+│   │   ├── ExportedService.php      # পার্টিশন / peering জুড়ে সেবা এক্সপোর্ট-ইমপোর্ট
 │   ├── Service/                     # সার্ভিস রেজিস্ট্রেশন ও ডিসকভারি
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // ইনস্ট্যান্স চালু/বন্ধ হলে কলব্যাক
 });
 
-// মনিটরিং বন্ধ করা (অন্য প্রসেস/করউটিনে কল করুন)
+// মনিটরিং বন্ধ: কেবল এই ইনস্ট্যান্সের ফ্ল্যাগ উল্টে দেয়, তাই watch() একই প্রসেসে থাকতে হয় (Swoole করউটিন শেয়ারড মেমোরি, সম্ভব)
+// ক্রস-প্রসেস হলে সিগন্যাল (pcntl_signal + posix_kill) বা প্রসেস ম্যানেজার ব্যবহার করুন; ইন-ফ্লাইট রিকোয়েস্ট বন্ধ হতে সর্বোচ্চ একটি wait পিরিয়ড লাগতে পারে
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // কনফিগ পরিবর্তনের কলব্যাক
     });
 $watcher->start(); // ব্লকিং, আলাদা প্রসেস/করউটিনে রাখুন
-// $watcher->stop();  // মনিটরিং বন্ধ করতে অন্য প্রসেস/করউটিনে কল করুন
+// $watcher->stop();  // কেবল একই প্রসেসে (করউটিনসহ) কল করলে কাজ করে; ক্রস-প্রসেসে সিগন্যাল, বিস্তারিত নিচে লাইফসাইকেল অংশে
 ```
 
 **হট-রিলোডের নীতি:** অগ্রাধিকার Consul blocking query (`index` লং পোলিং), নেটওয়ার্ক সমস্যায় অটো নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড, কানেকশন ফিরে এলে অটো আবার লং পোলিংয়ে ফেরে। কলব্যাক + PSR-14 EventDispatcher — দুই-চ্যানেল নোটিফিকেশন।
@@ -320,7 +328,7 @@ $watcher->start(); // ব্লকিং, আলাদা প্রসেস/ক
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null মানে নেই
+$entry = $kv->get('key');              // কী না থাকলে NotFoundException ছোড়ে (Consul 404 রিটার্ন করে); null কেবল রেসপন্স খালি অ্যারে হলে
 $all = $kv->all('prefix/');            // রিকার্সিভ লিস্ট
 $keys = $kv->keys('prefix/');          // শুধু কী-এর নাম
 $keys = $kv->keys('prefix/', '/');     // সেপারেটর অনুযায়ী স্তরভিত্তিক লিস্ট
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+`config`-এ সাপোর্টেড কী:
+
+| কী | ডিফল্ট | বিবরণ |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | স্কিম না থাকলে অটো `http://` যোগ হয় (এনভায়রনমেন্ট ভেরিয়েবল থেকে কপি করা `127.0.0.1:8500` ধরনের লেখা সরাসরি ব্যবহার করা যায়)|
+| `token` | — | ACL Token, `X-Consul-Token` হিসেবে ইনজেক্ট হয় |
+| `cache.enable` / `cache.ttl` | `false` / নেই | ইনজেক্ট করা PSR-16 ক্যাশের সাথে মিলে `Discovery::healthyInstances()` ও `ConfigCenter::get()`-এ কাজ করে |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (সীমা নেই)| কেবল বিল্ট-ইন cURL ক্লায়েন্টে ব্যবহৃত। **`total`-কে `blockingWait`-এর চেয়ে ছোট সেট করবেন না**, নইলে লং পোলিং অবশ্যই টাইমআউট হয়ে ডিগ্রেড হবে |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | ট্রান্সপোর্ট ব্যর্থ হলে রিট্রাইয়ের সংখ্যা ও প্রথম ব্যাকঅফ (এক্সপোনেনশিয়াল বৃদ্ধি); কেবল ইডেম্পোটেন্ট মেথডে (GET/PUT/DELETE) কাজ করে |
+
 ---
 
 ## API মডিউল কুইক রেফারেন্স
 
 | প্রপার্টি | ক্লাস | প্রধান মেথড |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete`-এ `cas` `flags` `acquire` `release` সাপোর্ট) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (`node_meta` একাধিক মান, `stale`/`consistent`/`max_stale` সাপোর্ট) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (`index`/`wait` ব্লকিং কোয়েরি সাপোর্ট) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (কনস্ট্যান্ট: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (কনস্ট্যান্ট: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (র-স্ন্যাপশট বাইট রিটার্ন, `getRaw()` দিয়ে) `restore` (র-বাইট পাঠায়, `putRaw()` দিয়ে) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (অ্যাটমিক মাল্টি-কী ট্রানজ্যাকশন) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (service mesh অথরাইজেশন চেইন) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (প্রিপেয়ার্ড কোয়েরি: ফেইলওভার / নিয়ারেস্ট ডিসকভারি) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (ক্লাস্টার পিয়ারিং) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (mesh discovery chain: রাউটিং / স্প্লিট / ফেইলওভারের রেজলভ ফল, `compile-dc` ও ব্লকিং কোয়েরি সাপোর্ট) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (ক্রস-পার্টিশন / পিয়ারিংয়ে এক্সপোর্ট ও ইমপোর্ট হওয়া সেবা) |
+
+**যে দুটি এন্ডপয়েন্ট সাপোর্ট করা হয় না**: `/v1/agent/metrics/stream` ও `/v1/agent/monitor` হলো লং-কানেকশনের স্ট্রিমিং ইন্টারফেস (প্রথমটি মেট্রিক পুশ করে, দ্বিতীয়টি রিয়েল-টাইম লগ), কিন্তু এই লাইব্রেরির ট্রান্সপোর্ট লেয়ার রিকোয়েস্ট-রেসপন্স মডেলে চলে, যুক্ত করা হলে কেবল চিরকাল ব্লক হয়ে থাকা কল পাওয়া যেত — তাই **সচেতনভাবেই দেওয়া হয়নি**। স্ট্রিমিং দরকার হলে সরাসরি Agent-এ রিকোয়েস্ট পাঠান। `Agent::metrics(['format' => 'prometheus'])` রিটার্ন করে `['format' => 'prometheus', 'body' => <র-টেক্সট>]`, কারণ Prometheus ফরম্যাট JSON নয়।
 
 হাই-লেভেল র্যাপার:
 
@@ -594,7 +621,7 @@ try {
 নির্ভরতার দিক উপরে থেকে নিচে, প্রতিটি স্তর কেবল পরের স্তরের অ্যাবস্ট্রাকশনের উপর নির্ভর করে:
 
 - **অ্যাপ্লিকেশন লেয়ার / ইন্টিগ্রেশন লেয়ার** —— 4টি ফ্রেমওয়ার্ক অ্যাডাপ্টার কোর প্যাকেজের `src/Integration/`-এ বিল্ট-ইন, composer অটো-ডিসকভারে রেজিস্টার হয়; অ্যাপ্লিকেশন লেয়ার সবসময় কেবল `ConsulClient` এন্ট্রিটির মুখোমুখি হয়।
-- **ক্লায়েন্ট** —— `ConsulClient` `__get`-এর মাধ্যমে একসাথে 11টি API মডিউল (`$client->kv`, `$client->health` …) ও 3টি হাই-লেভেল র্যাপার (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) এক্সপোজ করে; `ConsulAsyncClient` Promise বিলম্বিত এক্সিকিউশন দেয়।
+- **ক্লায়েন্ট** —— `ConsulClient` `__get`-এর মাধ্যমে একসাথে 18টি API মডিউল (`$client->kv`, `$client->health` …) ও 3টি হাই-লেভেল র্যাপার (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) এক্সপোজ করে; `ConsulAsyncClient` Promise বিলম্বিত এক্সিকিউশন দেয়।
 - **হাই-লেভেল র্যাপার** —— `Registry` / `Discovery` / `ConfigCenter` API মডিউল কম্বাইন করে; `Watcher` `getWithHeaders()`-এর রিটার্ন করা `X-Consul-Index`-এর উপর নির্ভর করে লং পোলিং করে।
 - **API মডিউল** —— একটি মডিউল মানে Consul v1 এন্ডপয়েন্টের একটি গ্রুপ, সবই একই `TransportInterface` দিয়ে যাওয়া-আসা করে।
 - **ট্রান্সপোর্ট লেয়ার** —— `Psr18Transport` Token ইনজেকশন, স্ট্যাটাস কোড চেক, JSON ডিকোড ও এক্সেপশন ম্যাপিং সামলায়, পুরো প্যাকেজের একমাত্র আউটবাউন্ড পয়েন্ট।
@@ -615,7 +642,9 @@ try {
 ![consul-php লাইফসাইকেল](./images/lifecycle.svg)
 
 - **সেবা ইনস্ট্যান্স লাইফসাইকেল** —— `register()` → passing (`heartbeat()` নিয়মিত রিনিউ) → warning → critical → অটো বা ম্যানুয়াল ডিরেজিস্ট্রেশন; হার্টবিট স্বাভাবিক হলে critical থেকে passing-এ ফেরা যায়, নতুন করে রেজিস্ট্রেশন লাগে না।
-- **কনফিগ হট-রিলোড লাইফসাইকেল** —— `watch()` blocking query শুরু করে (ডিফল্ট 30s, `X-Consul-Index` সহ) → পরিবর্তন শনাক্ত → `onChange` কলব্যাক + `ConfigChangedEvent`; ব্লকিং ব্যর্থ হলে অটো নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড (ডিফল্ট 10s), টানা 5 বার সফলে আবার লং পোলিংয়ে ফেরে; `stop()` অন্য প্রসেস / করউটিন থেকে গ্রেসফুলি বন্ধ করা যায়।
+- **কনফিগ হট-রিলোড লাইফসাইকেল** —— `watch()` blocking query শুরু করে (ডিফল্ট 30s, `X-Consul-Index` সহ) → পরিবর্তন শনাক্ত → `onChange` কলব্যাক + `ConfigChangedEvent`; ব্লকিং ব্যর্থ হলে অটো নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড (ডিফল্ট 10s), **টানা 5 বার সফলের পর** আবার লং পোলিংয়ে ফেরে (যেকোনো একবার পোলিং ব্যর্থ হলে কাউন্টার শূন্য হয়)।
+  দুটি সেটারেরই 1 সেকেন্ডের নিম্নসীমা আছে (`setBlockingWait` / `setPollInterval`, অবৈধ মানে `InvalidArgumentException` ছোড়ে) —— বিরতি 0 হলে ব্যাকঅফ ছাড়া ব্যস্ত-ওয়েট হয়, আর `wait` ধনাত্মক না হলে Consul ডিফল্ট 5 মিনিট ধরে রাখায় ফিরে যায়।
+  `stop()` উল্টে দেয় **এই ইনস্ট্যান্সের** ফ্ল্যাগ: একই প্রসেসে (Swoole করউটিনসহ) কাজ করে, ক্রস-প্রসেসে সিগন্যাল (`pcntl_signal` + `posix_kill`) বা প্রসেস ম্যানেজার লাগে; ইন-ফ্লাইট রিকোয়েস্ট বন্ধ হতে সর্বোচ্চ একটি wait পিরিয়ড লাগে।
 - **একক রিকোয়েস্ট লাইফসাইকেল** —— API মডিউল → `Psr18Transport` PSR-17 রিকোয়েস্ট তৈরি → `X-Consul-Token` ইনজেকশন → PSR-18 পাঠানো → স্ট্যাটাস কোড চেক → JSON ডিকোড (`getRaw()` সরাসরি র-বাইট দেয়) → অ্যারে রিটার্ন; 401/403/404/5xx ও ট্রান্সপোর্ট ব্যর্থতা আলাদা আলাদা এক্সেপশনে ম্যাপ হয়।
 
 ---

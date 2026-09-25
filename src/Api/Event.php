@@ -25,8 +25,15 @@ class Event
         return $this->transport->put('/v1/event/fire/' . rawurlencode($name), $body, $query);
     }
 
+    /**
+     * 事件列表。上游 event_endpoint.go 的 EventList 走 parseQuery：dc / filter / name，
+     * 外加 parseBlockingQuery 的 index / wait —— 也就是说 events 同样支持阻塞查询。
+     */
     public function list(array $options = []): array
     {
-        return $this->transport->get('/v1/event/list', array_intersect_key($options, array_flip(['name'])));
+        return $this->transport->get(
+            '/v1/event/list',
+            array_intersect_key($options, array_flip(['name', 'dc', 'filter', 'index', 'wait']))
+        );
     }
 }

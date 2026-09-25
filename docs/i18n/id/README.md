@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Tanpa dependensi framework
 
 | | |
 |---|---|
-| **Apa ini** | Klien Consul HTTP API v1 yang ditulis murni dengan PHP: pintu masuk sinkron + Promise, 11 modul API, 3 wrapper |
+| **Apa ini** | Klien Consul HTTP API v1 yang ditulis murni dengan PHP: pintu masuk sinkron + Promise, 18 modul API, 3 wrapper |
 | **Masalah yang dipecahkan** | Membuat aplikasi PHP bisa memakai Consul untuk registrasi/penemuan layanan dan hot reload konfigurasi, tanpa perlu menulis ulang klien untuk setiap framework |
 | **Cara pakai** | `composer require erikwang2013/consul-php`; paket inti tanpa dependensi framework, adaptasi framework sudah menyatu dan ditemukan otomatis |
 | **Framework yang didukung** | Laravel · Hyperf · webman · ThinkPHP —— API-nya identik, bedanya hanya cara memperoleh `$client` |
 | **Konvensi dependensi** | Hanya bergantung pada antarmuka PSR (PSR-18/17/16/14/3); klien HTTP, cache, log, dan event dispatcher semuanya bisa diganti |
-| **Jaminan kualitas** | PHP 8.0 – 8.4 · 338 unit test · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Jaminan kualitas** | PHP 8.0 – 8.4 · 594 unit test · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Kemampuan Inti
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # Pintu masuk sinkron: __get mendistribusikan modul API dan wrapper
 │   │   ├── ConsulAsyncClient.php    # Klien eksekusi tertunda berbasis Promise
 │   │   └── Promise.php              # Implementasi Promise yang ringan
-│   ├── Api/                         # Modul Consul HTTP API v1 (11 buah)
+│   ├── Api/                         # Modul Consul HTTP API v1 (18 buah)
 │   │   ├── Agent.php                # Anggota, info diri, mode maintenance, join / leave
 │   │   ├── Catalog.php              # Katalog layanan dan node: registrasi, deregistrasi, kueri
 │   │   ├── Health.php               # Health check: layanan / node / filter berdasarkan status
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # Status klaster: leader / peers
 │   │   ├── Coordinate.php           # Koordinat jaringan: datacenters / nodes
 │   │   ├── Operator.php             # Operasional Raft / Autopilot / Keyring
-│   │   └── Snapshot.php             # Backup dan restore snapshot (aliran biner)
+│   │   ├── Snapshot.php             # Backup dan restore snapshot (aliran biner)
+│   │   ├── Txn.php                  # Transaksi: multi-kunci atomik / CAS batch
+│   │   ├── ConfigEntry.php          # Config entry: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # Rantai otorisasi service mesh (intentions)
+│   │   ├── Query.php                # Prepared query: failover / penemuan terdekat
+│   │   ├── Peering.php              # Peering klaster
+│   │   ├── DiscoveryChain.php       # Discovery chain mesh: resolusi routing / split / failover
+│   │   ├── ExportedService.php      # Ekspor & impor layanan antar partisi / peering
 │   ├── Service/                     # Registrasi dan penemuan layanan
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // Callback dipanggil saat instance naik/turun
 });
 
-// Hentikan pemantauan (dipanggil dari proses/coroutine lain)
+// Hentikan pemantauan: hanya membalik flag instance ini, jadi harus dipanggil di proses yang sama dengan watch() (coroutine Swoole berbagi memori, ini bisa dilakukan)
+// Antar-proses pakai sinyal (pcntl_signal + posix_kill) atau process manager; permintaan yang sedang berjalan paling lama menunggu satu siklus wait sebelum keluar
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // Callback saat konfigurasi berubah
     });
 $watcher->start(); // memblokir; jalankan di proses/coroutine terpisah
-// $watcher->stop();  // panggil dari proses/coroutine lain untuk menghentikan pemantauan
+// $watcher->stop();  // hanya berlaku bila dipanggil di proses yang sama (termasuk coroutine); antar-proses pakai sinyal, lihat bagian Siklus Hidup di bawah
 ```
 
 **Cara kerja hot reload:** mengutamakan Consul blocking query (long polling `index`); saat jaringan bermasalah otomatis fallback ke polling berkala, dan setelah koneksi pulih otomatis kembali ke long polling. Notifikasi lewat dua kanal: callback + EventDispatcher PSR-14.
@@ -320,7 +328,7 @@ $watcher->start(); // memblokir; jalankan di proses/coroutine terpisah
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null berarti tidak ada
+$entry = $kv->get('key');              // melempar NotFoundException bila kunci tidak ada (Consul mengembalikan 404); null hanya muncul saat respons berupa array kosong
 $all = $kv->all('prefix/');            // daftar rekursif
 $keys = $kv->keys('prefix/');          // hanya nama kunci
 $keys = $kv->keys('prefix/', '/');     // daftar hierarkis berdasarkan pemisah
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+`config` mendukung kunci berikut:
+
+| Kunci | Default | Keterangan |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | Skema `http://` ditambahkan otomatis bila tidak ada (penulisan seperti `127.0.0.1:8500` yang disalin dari variabel lingkungan bisa langsung dipakai) |
+| `token` | — | ACL Token, disuntikkan sebagai `X-Consul-Token` |
+| `cache.enable` / `cache.ttl` | `false` / tidak ada | Dipakai bersama cache PSR-16 yang disuntikkan; berlaku pada `Discovery::healthyInstances()` dan `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (tanpa batas) | Hanya dipakai klien cURL bawaan. **Jangan set `total` lebih kecil dari `blockingWait`**, kalau tidak long polling pasti dianggap timeout lalu fallback |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | Jumlah percobaan ulang saat transport gagal dan backoff pertamanya (bertambah secara eksponensial); hanya berlaku untuk metode idempoten (GET/PUT/DELETE) |
+
 ---
 
 ## Referensi Cepat Modul API
 
 | Properti | Kelas | Metode utama |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` mendukung `cas` `flags` `acquire` `release`) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (mendukung `node_meta` bernilai banyak, `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (mendukung kueri blocking `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (konstanta: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (konstanta: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (mengembalikan byte snapshot mentah lewat `getRaw()`) `restore` (mengirim byte mentah lewat `putRaw()`) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (transaksi multi-kunci atomik) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (rantai otorisasi service mesh) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (prepared query: failover / penemuan terdekat) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (peering klaster) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (mesh discovery chain: hasil resolusi routing / split / failover, mendukung `compile-dc` dan kueri blocking) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (layanan yang diekspor dan diimpor lintas partisi / peering) |
+
+**Dua endpoint yang tidak didukung**: `/v1/agent/metrics/stream` dan `/v1/agent/monitor` adalah antarmuka streaming berkoneksi panjang (yang pertama menyiarkan metrik, yang kedua menyiarkan log real-time). Lapisan transport pustaka ini memakai model request-response, sehingga menyambungkannya hanya menghasilkan pemanggilan yang memblokir selamanya — karena itu keduanya **sengaja tidak disediakan**; bila butuh kemampuan streaming, kirim permintaan langsung ke Agent. `Agent::metrics(['format' => 'prometheus'])` mengembalikan `['format' => 'prometheus', 'body' => <teks mentah>]`, karena format Prometheus bukan JSON.
 
 Wrapper:
 
@@ -594,7 +621,7 @@ try {
 Arah dependensi dari atas ke bawah; setiap lapisan hanya bergantung pada abstraksi lapisan di bawahnya:
 
 - **Lapisan aplikasi / integrasi** —— 4 adaptasi framework menyatu di paket inti `src/Integration/` dan didaftarkan lewat auto-discovery composer; lapisan aplikasi selalu hanya berhadapan dengan satu pintu masuk, `ConsulClient`.
-- **Klien** —— `ConsulClient` mengekspos 11 modul API (`$client->kv`, `$client->health` …) dan 3 wrapper (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) secara seragam melalui `__get`; `ConsulAsyncClient` menyediakan eksekusi tertunda berbasis Promise.
+- **Klien** —— `ConsulClient` mengekspos 18 modul API (`$client->kv`, `$client->health` …) dan 3 wrapper (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) secara seragam melalui `__get`; `ConsulAsyncClient` menyediakan eksekusi tertunda berbasis Promise.
 - **Wrapper** —— `Registry` / `Discovery` / `ConfigCenter` menggabungkan modul API; `Watcher` bergantung pada `X-Consul-Index` yang dikembalikan `getWithHeaders()` untuk menjalankan long polling.
 - **Modul API** —— satu modul mewakili satu kelompok endpoint Consul v1, semuanya keluar-masuk lewat `TransportInterface` yang sama.
 - **Lapisan transport** —— `Psr18Transport` menangani injeksi Token, pemeriksaan status code, decoding JSON, dan pemetaan exception; inilah satu-satunya titik keluar jaringan di seluruh paket.
@@ -615,7 +642,9 @@ Peta kemampuan: registrasi dan penemuan layanan, pusat konfigurasi dan hot reloa
 ![Siklus hidup consul-php](./images/lifecycle.svg)
 
 - **Siklus hidup instance layanan** —— `register()` → passing (perpanjangan berkala lewat `heartbeat()`) → warning → critical → deregistrasi otomatis atau manual; setelah heartbeat pulih, instance bisa kembali dari critical ke passing tanpa perlu registrasi ulang.
-- **Siklus hidup hot reload konfigurasi** —— `watch()` memulai blocking query (default 30s, membawa `X-Consul-Index`) → deteksi perubahan → callback `onChange` + `ConfigChangedEvent`; saat blocking gagal otomatis fallback ke polling berkala (default 10s), dan setelah 5 kali sukses berturut-turut kembali ke long polling; `stop()` bisa keluar dengan rapi dari proses / coroutine lain.
+- **Siklus hidup hot reload konfigurasi** —— `watch()` memulai blocking query (default 30s, membawa `X-Consul-Index`) → deteksi perubahan → callback `onChange` + `ConfigChangedEvent`; saat blocking gagal otomatis fallback ke polling berkala (default 10s), dan **setelah 5 kali sukses berturut-turut** kembali ke long polling (bila satu kali polling gagal, hitungannya direset ke nol).
+  Kedua setter punya batas bawah 1 detik (`setBlockingWait` / `setPollInterval`; nilai tidak sah melempar `InvalidArgumentException`) —— interval 0 akan sibuk menunggu tanpa backoff, dan `wait` yang tidak positif membuat Consul kembali ke masa tahan default 5 menit.
+  `stop()` membalik flag **instance ini sendiri**: berlaku di proses yang sama (termasuk coroutine Swoole), sedangkan antar-proses perlu sinyal (`pcntl_signal` + `posix_kill`) atau process manager; permintaan yang sedang berjalan paling lama menunggu satu siklus `wait` sebelum keluar.
 - **Siklus hidup satu permintaan** —— modul API → `Psr18Transport` menyusun permintaan PSR-17 → menyuntikkan `X-Consul-Token` → dikirim lewat PSR-18 → pemeriksaan status code → decoding JSON (`getRaw()` mengembalikan byte mentah langsung) → mengembalikan array; 401/403/404/5xx dan kegagalan transport dipetakan ke exception masing-masing.
 
 ---

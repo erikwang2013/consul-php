@@ -145,11 +145,67 @@ class KvTest extends TestCase
         $this->assertFalse($this->kv->put('key', 'data'));
     }
 
+    public function testGetForwardsStale(): void
+    {
+        // 归一成字符串 "true"（上游是 b.Get("stale") == "true"），而不是布尔 true 编出来的 stale=1
+        $this->transport->method('get')
+            ->with('/v1/kv/config/app', ['stale' => 'true'])
+            ->willReturn([['Key' => 'config/app']]);
+
+        $this->assertSame('config/app', $this->kv->get('config/app', ['stale' => true])['Key']);
+    }
+
+    public function testGetForwardsConsistent(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/kv/config/app', ['consistent' => 'true'])
+            ->willReturn([]);
+
+        $this->assertNull($this->kv->get('config/app', ['consistent' => true]));
+    }
+
+    public function testGetDropsFalseConsistencyFlags(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/kv/config/app', [])
+            ->willReturn([]);
+
+        $this->assertNull($this->kv->get('config/app', ['stale' => false, 'consistent' => false]));
+    }
+
+    public function testGetCombinesStaleWithOtherOptions(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/kv/config/app', ['dc' => 'dc1', 'stale' => 'true'])
+            ->willReturn([]);
+
+        $this->assertNull($this->kv->get('config/app', ['dc' => 'dc1', 'stale' => true]));
+    }
+
+    public function testGetRawForwardsStale(): void
+    {
+        $this->transport->method('getRaw')
+            ->with('/v1/kv/key', ['stale' => 'true', 'raw' => 'true'])
+            ->willReturn('raw-data');
+
+        $this->assertSame(['body' => 'raw-data'], $this->kv->get('key', ['raw' => true, 'stale' => true]));
+    }
+
+    public function testAllForwardsStale(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/kv/config/', ['stale' => 'true', 'recurse' => 'true'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->kv->all('config/', ['stale' => true]));
+    }
+
     public function testDelete(): void
     {
         $this->transport->expects($this->once())
             ->method('delete')
-            ->with('/v1/kv/key', []);
+            ->with('/v1/kv/key', [])
+            ->willReturn(['body' => true]);
 
         $this->assertTrue($this->kv->delete('key'));
     }
@@ -158,9 +214,38 @@ class KvTest extends TestCase
     {
         $this->transport->expects($this->once())
             ->method('delete')
-            ->with('/v1/kv/config/', ['dc' => 'dc1', 'recurse' => 'true']);
+            ->with('/v1/kv/config/', ['dc' => 'dc1', 'recurse' => 'true'])
+            ->willReturn(['body' => true]);
 
         $this->assertTrue($this->kv->delete('config/', ['dc' => 'dc1', 'recurse' => 'true']));
+    }
+
+    public function testDeleteWithCasReturnsTrueOnSuccess(): void
+    {
+        $this->transport->method('delete')
+            ->with('/v1/kv/key', ['cas' => '42'])
+            ->willReturn(['body' => true]);
+
+        $this->assertTrue($this->kv->delete('key', ['cas' => '42']));
+    }
+
+    public function testDeleteReturnsFalseWhenCasFails(): void
+    {
+        // Consul 在 CAS 不匹配时仍返回 200，但 body 为 false
+        $this->transport->method('delete')
+            ->with('/v1/kv/key', ['cas' => '99'])
+            ->willReturn(['body' => false]);
+
+        $this->assertFalse($this->kv->delete('key', ['cas' => '99']));
+    }
+
+    public function testDeleteReturnsFalseWhenBodyMissing(): void
+    {
+        $this->transport->method('delete')
+            ->with('/v1/kv/key', [])
+            ->willReturn(['headers' => []]);
+
+        $this->assertFalse($this->kv->delete('key'));
     }
 
     public function testKeysReturnsKeyList(): void
@@ -202,5 +287,14 @@ class KvTest extends TestCase
     public function testGetTransport(): void
     {
         $this->assertSame($this->transport, $this->kv->getTransport());
+    }
+    public function testStringFalseIsNotTreatedAsTrue(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/kv/app', [])
+            ->willReturn([]);
+
+        $this->assertNull($this->kv->get('app', ['stale' => 'false']));
     }
 }

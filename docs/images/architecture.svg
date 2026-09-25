@@ -98,28 +98,42 @@
 
     <!-- API 模块 -->
     <text class="gutter" x="32" y="536">API 模块</text>
-    <rect x="122" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="157" y="536" text-anchor="middle">Agent</text>
-    <rect x="198" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="233" y="536" text-anchor="middle">Catalog</text>
-    <rect x="274" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="309" y="536" text-anchor="middle">Health</text>
-    <rect x="350" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="385" y="536" text-anchor="middle">Kv</text>
-    <rect x="426" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="461" y="536" text-anchor="middle">Session</text>
-    <rect x="502" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="537" y="536" text-anchor="middle">Acl</text>
-    <rect x="578" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="613" y="536" text-anchor="middle">Event</text>
-    <rect x="654" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="689" y="536" text-anchor="middle">Status</text>
-    <rect x="730" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="765" y="536" text-anchor="middle">Coordinate</text>
-    <rect x="806" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="841" y="536" text-anchor="middle">Operator</text>
-    <rect x="882" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="917" y="536" text-anchor="middle">Snapshot</text>
+    <rect x="122" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="164" y="511" text-anchor="middle">Agent</text>
+    <rect x="215" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="257" y="511" text-anchor="middle">Catalog</text>
+    <rect x="308" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="350" y="511" text-anchor="middle">Health</text>
+    <rect x="401" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="443" y="511" text-anchor="middle">Kv</text>
+    <rect x="494" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="536" y="511" text-anchor="middle">Session</text>
+    <rect x="587" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="629" y="511" text-anchor="middle">Acl</text>
+    <rect x="680" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="722" y="511" text-anchor="middle">Event</text>
+    <rect x="773" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="815" y="511" text-anchor="middle">Status</text>
+    <rect x="866" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="908" y="511" text-anchor="middle">Coordinate</text>
+    <rect x="122" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="164" y="553" text-anchor="middle">Operator</text>
+    <rect x="215" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="257" y="553" text-anchor="middle">Snapshot</text>
+    <rect x="308" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="350" y="553" text-anchor="middle">Txn</text>
+    <rect x="401" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="443" y="553" text-anchor="middle">ConfigEntry</text>
+    <rect x="494" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="536" y="553" text-anchor="middle">Connect</text>
+    <rect x="587" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="629" y="553" text-anchor="middle">Query</text>
+    <rect x="680" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="722" y="553" text-anchor="middle">Peering</text>
+    <rect x="773" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="815" y="553" text-anchor="middle">DiscoveryChain</text>
+    <rect x="866" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="908" y="553" text-anchor="middle">ExportedService</text>
 
     <path d="M534 578 L540 589 L546 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 
@@ -170,6 +184,6 @@
     <text class="bands" x="44" y="928">异常体系：ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928">PSR-16 缓存：get() / namespace() 自动读写</text>
     <text class="bands" x="44" y="950">PSR-3 日志：NullLogger 兜底</text>
-    <text class="bands" x="500" y="950">质量保障：PHP 8.0–8.4 · PHPStan L5 · 338 项测试</text>
+    <text class="bands" x="500" y="950">质量保障：PHP 8.0–8.4 · PHPStan L5 · 594 项测试</text>
   </g>
 </svg>

@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · フレームワーク非依存
 
 | | |
 |---|---|
-| **何か** | 純粋な PHP で実装した Consul HTTP API v1 クライアント：同期 + Promise の 2 つの入口、11 個の API モジュール、3 個の高レベルラッパー |
+| **何か** | 純粋な PHP で実装した Consul HTTP API v1 クライアント：同期 + Promise の 2 つの入口、18 個の API モジュール、3 個の高レベルラッパー |
 | **解決する課題** | PHP アプリケーションを Consul に接続し、サービスの登録・検出と設定のホットリロードを実現します。フレームワークごとにクライアントを書き直す必要はありません |
 | **使い方** | `composer require erikwang2013/consul-php`。コアパッケージはフレームワーク非依存で、フレームワークアダプタは内蔵かつ自動検出されます |
 | **対応フレームワーク** | Laravel · Hyperf · webman · ThinkPHP —— API は完全に同一で、違うのは `$client` の取得方法だけです |
 | **依存の方針** | PSR インターフェース（PSR-18/17/16/14/3）のみに依存。HTTP クライアント、キャッシュ、ログ、イベントディスパッチャはすべて差し替え可能です |
-| **品質保証** | PHP 8.0 – 8.4 · 338 件のユニットテスト · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **品質保証** | PHP 8.0 – 8.4 · 594 件のユニットテスト · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### 主な機能
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # 同期エントリ：__get で API モジュールと高レベルラッパーを振り分け
 │   │   ├── ConsulAsyncClient.php    # Promise による遅延実行クライアント
 │   │   └── Promise.php              # 軽量な Promise 実装
-│   ├── Api/                         # Consul HTTP API v1 モジュール（11 個）
+│   ├── Api/                         # Consul HTTP API v1 モジュール（18 個）
 │   │   ├── Agent.php                # メンバー、自身の情報、メンテナンスモード、join / leave
 │   │   ├── Catalog.php              # サービスとノードのカタログ：登録、登録解除、照会
 │   │   ├── Health.php               # ヘルスチェック：サービス / ノード / 状態による絞り込み
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # クラスタの状態：leader / peers
 │   │   ├── Coordinate.php           # ネットワーク座標：datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring の運用
-│   │   └── Snapshot.php             # スナップショットのバックアップと復元（バイナリストリーム）
+│   │   ├── Snapshot.php             # スナップショットのバックアップと復元（バイナリストリーム）
+│   │   ├── Txn.php                  # トランザクション：アトミックなマルチキー / 一括 CAS
+│   │   ├── ConfigEntry.php          # 設定項目：mesh / gateway / service-intentions
+│   │   ├── Connect.php              # service mesh の認可チェーン（intentions）
+│   │   ├── Query.php                # プリペアドクエリ：フェイルオーバー / 近接検出
+│   │   ├── Peering.php              # クラスタの peering
+│   │   ├── DiscoveryChain.php       # メッシュ discovery chain：ルート / 分割 / フェイルオーバーの解決
+│   │   ├── ExportedService.php      # パーティション / peering をまたぐサービスのエクスポートとインポート
 │   ├── Service/                     # サービスの登録と検出
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // インスタンスの登録・解除時に呼び出されます
 });
 
-// 監視の停止（別のプロセス / コルーチンから呼び出します）
+// 監視の停止：本インスタンスのフラグを反転させるだけなので、watch() と同じプロセスに置く必要があります（Swoole のコルーチンはメモリを共有するため可能）
+// プロセスをまたぐ場合はシグナル（pcntl_signal + posix_kill）かプロセスマネージャを使ってください。処理中のリクエストは最大で wait 1 周期分待ってから終了します
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // 設定変更時のコールバック
     });
 $watcher->start(); // ブロッキング。独立したプロセス / コルーチンに置いてください
-// $watcher->stop();  // 別のプロセス / コルーチンから呼び出すと監視を停止します
+// $watcher->stop();  // 同一プロセス内（コルーチンを含む）で呼び出したときだけ有効。プロセスをまたぐ場合はシグナルを使います（詳しくは下の「ライフサイクル」）
 ```
 
 **ホットリロードの仕組み：** Consul の blocking query（`index` によるロングポーリング）を優先し、ネットワーク異常時は自動的に定期ポーリングへフォールバック、接続が回復すると自動的にロングポーリングへ戻ります。通知はコールバックと PSR-14 EventDispatcher の 2 系統です。
@@ -320,7 +328,7 @@ $watcher->start(); // ブロッキング。独立したプロセス / コルー�
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null は存在しないことを表します
+$entry = $kv->get('key');              // キーが存在しないときは NotFoundException を投げます（Consul が 404 を返す）。null になるのはレスポンスが空配列のときだけです
 $all = $kv->all('prefix/');            // 再帰的に一覧
 $keys = $kv->keys('prefix/');          // キー名のみ
 $keys = $kv->keys('prefix/', '/');     // 区切り文字で階層的に一覧
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+`config` が対応するキー：
+
+| キー | 既定値 | 説明 |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | scheme が無い場合は自動的に `http://` を補います（`127.0.0.1:8500` のように環境変数からそのまま持ってきた書き方でも使えます）|
+| `token` | — | ACL Token。`X-Consul-Token` として注入されます |
+| `cache.enable` / `cache.ttl` | `false` / なし | 注入した PSR-16 キャッシュと組み合わせて、`Discovery::healthyInstances()` と `ConfigCenter::get()` に作用します |
+| `timeout.connect` / `timeout.total` | `3.0` / `0`（無制限）| 内蔵 cURL クライアントだけが使用します。**`total` を `blockingWait` より小さくしないでください**。ロングポーリングが必ずタイムアウトと判定され、フォールバックしてしまいます |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | 転送失敗時のリトライ回数と初回バックオフ（指数的に増加）。冪等なメソッド（GET/PUT/DELETE）にのみ作用します |
+
 ---
 
 ## API モジュール早見表
 
 | プロパティ | クラス | 主なメソッド |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys`（`put`/`delete` は `cas` `flags` `acquire` `release` に対応）|
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress`（`node_meta` の複数値、`stale`/`consistent`/`max_stale` に対応）|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list`（`index`/`wait` によるブロッキングクエリに対応）|
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring`（定数：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`） |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring`（定数：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`） |
 | `$client->snapshot` | `Api\Snapshot` | `save`（生のスナップショットバイトを返す。`getRaw()` 経由） `restore`（生のバイトを送信。`putRaw()` 経由） |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw`（アトミックなマルチキートランザクション）|
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete`（`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`）|
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck`（service mesh の認可チェーン）|
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain`（プリペアドクエリ：フェイルオーバー / 近接検出）|
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete`（クラスタの peering）|
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read`（mesh discovery chain：ルーティング / トラフィック分割 / フェイルオーバーの解析結果。`compile-dc` とブロッキングクエリに対応）|
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported`（パーティション / peering をまたいでエクスポート・インポートされたサービス）|
+
+**対応しない 2 つのエンドポイント**：`/v1/agent/metrics/stream` と `/v1/agent/monitor` は長接続のストリーミングインターフェースです（前者はメトリクス、後者はリアルタイムログを配信します）。本ライブラリのトランスポート層はリクエスト・レスポンスモデルなので、接続しても永久にブロックされる呼び出しになるだけです。そのため**意図的に提供していません** —— ストリーミングが必要な場合は Agent に直接リクエストを送ってください。`Agent::metrics(['format' => 'prometheus'])` は `['format' => 'prometheus', 'body' => <生のテキスト>]` を返します。Prometheus 形式は JSON ではないためです。
 
 高レベルラッパー：
 
@@ -594,7 +621,7 @@ try {
 依存の向きは上から下へ、各層は 1 つ下の層の抽象だけに依存します：
 
 - **アプリケーション層 / 連携層** —— 4 つのフレームワークアダプタはコアパッケージの `src/Integration/` に内蔵され、composer が自動検出して登録します。アプリケーション層が向き合う入口は常に `ConsulClient` ひとつだけです。
-- **クライアント** —— `ConsulClient` は `__get` を通じて 11 個の API モジュール（`$client->kv`、`$client->health` …）と 3 個の高レベルラッパー（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）を統一的に公開します。`ConsulAsyncClient` は Promise による遅延実行を提供します。
+- **クライアント** —— `ConsulClient` は `__get` を通じて 18 個の API モジュール（`$client->kv`、`$client->health` …）と 3 個の高レベルラッパー（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）を統一的に公開します。`ConsulAsyncClient` は Promise による遅延実行を提供します。
 - **高レベルラッパー** —— `Registry` / `Discovery` / `ConfigCenter` が API モジュールを組み合わせます。`Watcher` は `getWithHeaders()` が返す `X-Consul-Index` を使ってロングポーリングを実現します。
 - **API モジュール** —— 1 つのモジュールが Consul v1 のエンドポイント群に対応し、すべて同一の `TransportInterface` を通って出入りします。
 - **トランスポート層** —— `Psr18Transport` が Token の注入、ステータスコードの検査、JSON のデコード、例外へのマッピングを担当します。パッケージ全体で唯一の外部通信ポイントです。
@@ -615,7 +642,9 @@ try {
 ![consul-php ライフサイクル](./images/lifecycle.svg)
 
 - **サービスインスタンスのライフサイクル** —— `register()` → passing（`heartbeat()` による定期的な更新）→ warning → critical → 自動または手動での登録解除。ハートビートが回復すれば critical から passing に戻れます。再登録は不要です。
-- **設定ホットリロードのライフサイクル** —— `watch()` が blocking query を開始（既定 30 秒、`X-Consul-Index` を付与）→ 変更検出 → `onChange` コールバック + `ConfigChangedEvent`。ブロッキングが失敗すると自動的に定期ポーリングへフォールバック（既定 10 秒）、5 回連続で成功するとロングポーリングへ戻ります。`stop()` は別のプロセス / コルーチンから呼び出すことでグレースフルに終了できます。
+- **設定ホットリロードのライフサイクル** —— `watch()` が blocking query を開始（既定 30 秒、`X-Consul-Index` を付与）→ 変更検出 → `onChange` コールバック + `ConfigChangedEvent`。ブロッキングが失敗すると自動的に定期ポーリングへフォールバック（既定 10 秒）、**5 回連続で成功すると**ロングポーリングへ戻ります（ポーリングが 1 回でも失敗すればカウントは 0 に戻ります）。
+  2 つのセッターには 1 秒の下限があります（`setBlockingWait` / `setPollInterval`、不正な値は `InvalidArgumentException` を投げます）—— 間隔が 0 だとバックオフなしのビジーループになり、`wait` が正でないと Consul が既定の 5 分保持に戻ってしまうためです。
+  `stop()` が反転させるのは**本インスタンス**のフラグです：同一プロセス（Swoole コルーチンを含む）では有効ですが、プロセスをまたぐ場合はシグナル（`pcntl_signal` + `posix_kill`）かプロセスマネージャが必要です。処理中のリクエストは最大で wait 1 周期分待ってから終了します。
 - **単一リクエストのライフサイクル** —— API モジュール → `Psr18Transport` が PSR-17 リクエストを組み立て → `X-Consul-Token` を注入 → PSR-18 で送信 → ステータスコードの検査 → JSON のデコード（`getRaw()` は生バイトをそのまま返却）→ 配列を返却。401/403/404/5xx と転送の失敗は、それぞれ対応する例外にマッピングされます。
 
 ---

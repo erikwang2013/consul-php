@@ -5,6 +5,7 @@ namespace Erikwang2013\Consul\Tests\Config;
 use Erikwang2013\Consul\Api\Kv;
 use Erikwang2013\Consul\Config\ConfigCenter;
 use Erikwang2013\Consul\Config\Watcher;
+use Erikwang2013\Consul\Exception\NotFoundException;
 use Erikwang2013\Consul\Tests\Support\ArrayCache;
 use Erikwang2013\Consul\Transport\TransportInterface;
 use PHPUnit\Framework\TestCase;
@@ -33,15 +34,52 @@ class ConfigCenterTest extends TestCase
         $this->assertSame('mysql.local', $result);
     }
 
-    public function testGetReturnsDefaultWhenMissing(): void
+    public function testGetReturnsDefaultWhenKeyDoesNotExist(): void
     {
+        // 真实 Consul 对不存在的键返回 404，传输层转成 NotFoundException
         $this->kv->method('get')
             ->with('missing/key')
-            ->willReturn(null);
+            ->willThrowException(new NotFoundException('missing/key'));
 
         $result = $this->config->get('missing/key', 'fallback');
 
         $this->assertSame('fallback', $result);
+    }
+
+    public function testGetReturnsDefaultWhenKvReturnsNull(): void
+    {
+        // 兜底分支：传输层返回空结果时 Kv::get() 给出 null
+        $this->kv->method('get')
+            ->with('missing/key')
+            ->willReturn(null);
+
+        $this->assertSame('fallback', $this->config->get('missing/key', 'fallback'));
+    }
+
+    public function testMissingKeyIsNotCached(): void
+    {
+        $cache = new ArrayCache();
+        $config = new ConfigCenter($this->kv, $cache, 300);
+
+        // 首次 404，随后键被创建
+        $this->kv->method('get')->willReturnOnConsecutiveCalls(
+            $this->throwException(new NotFoundException('app/new')),
+            ['Key' => 'app/new', 'Value' => base64_encode('created')]
+        );
+
+        $this->assertSame('fallback', $config->get('app/new', 'fallback'));
+        $this->assertNull($cache->get('consul:config:app/new')); // 默认值不写入缓存
+        $this->assertSame('created', $config->get('app/new'));   // 键出现后立刻可见
+    }
+
+    public function testNamespaceReturnsEmptyArrayWhenPrefixDoesNotExist(): void
+    {
+        // 前缀下没有任何键时 Consul 返回 404
+        $this->kv->method('all')
+            ->with('missing/')
+            ->willThrowException(new NotFoundException('missing/'));
+
+        $this->assertSame([], $this->config->namespace('missing/'));
     }
 
     public function testNamespaceReturnsKeyValueMap(): void

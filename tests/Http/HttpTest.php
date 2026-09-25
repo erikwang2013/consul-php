@@ -148,4 +148,18 @@ class HttpTest extends TestCase
         $this->expectException(\RuntimeException::class);
         (new StreamFactory())->createStreamFromFile('/nonexistent/consul-php-test');
     }
+
+    public function testStreamFactoryRejectsNonResource(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        (new StreamFactory())->createStreamFromResource('not-a-resource');
+    }
+
+    public function testRequestFactoryLeavesHostlessUriWithoutHostHeader(): void
+    {
+        $request = (new RequestFactory())->createRequest('GET', '/v1/status/leader');
+
+        $this->assertFalse($request->hasHeader('Host'));
+        $this->assertSame('/v1/status/leader', (string) $request->getUri());
+    }
 }

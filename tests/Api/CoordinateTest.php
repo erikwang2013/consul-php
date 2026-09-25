@@ -142,4 +142,62 @@ class CoordinateTest extends TestCase
         $this->assertSame($coord, $result['Coord']);
         $this->assertSame(0.5, $result['Coord']['Error']);
     }
+
+    public function testUpdate(): void
+    {
+        $body = [
+            'Node'    => 'web01',
+            'Segment' => '',
+            'Coord'   => ['Vec' => [0.1, 0.2], 'Error' => 0.5, 'Height' => 1.0],
+        ];
+
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/coordinate/update', $body)
+            ->willReturn([]);
+
+        $this->assertSame([], $this->coordinate->update($body));
+    }
+
+    public function testUpdateWithSegment(): void
+    {
+        $body = [
+            'Node'    => 'web01',
+            'Segment' => 'segment-a',
+            'Coord'   => ['Vec' => [0.3], 'Error' => 0.1, 'Height' => 0.9],
+        ];
+
+        $this->transport->expects($this->once())
+            ->method('put')
+            ->with('/v1/coordinate/update', $body)
+            ->willReturn([]);
+
+        $this->assertSame([], $this->coordinate->update($body));
+    }
+
+    public function testUpdateRequiresNode(): void
+    {
+        $this->transport->expects($this->never())->method('put');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->coordinate->update(['Coord' => ['Vec' => [0.1]]]);
+    }
+
+    public function testUpdateRejectsEmptyNode(): void
+    {
+        $this->transport->expects($this->never())->method('put');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->coordinate->update(['Node' => '', 'Coord' => ['Vec' => [0.1]]]);
+    }
+
+    public function testUpdateRejectsCoordinatesFieldName(): void
+    {
+        // 上游字段是 Coord。写成 Coordinates 会被服务端静默忽略（Coord 变 null），
+        // 与其发出去让 RPC 拒绝，不如本地直接报错。
+        $this->transport->expects($this->never())->method('put');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->coordinate->update(['Node' => 'web01', 'Coordinates' => ['Vec' => [0.1]]]);
+    }
 }

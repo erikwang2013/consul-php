@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
 | | |
 |---|---|
-| **是什么** | 纯 PHP 实现的 Consul HTTP API v1 客户端：同步 + Promise 双入口，11 个 API 模块，3 个高层封装 |
+| **是什么** | 纯 PHP 实现的 Consul HTTP API v1 客户端：同步 + Promise 双入口，18 个 API 模块，3 个高层封装 |
 | **解决什么** | 让 PHP 应用接入 Consul 做服务注册发现与配置热更新，无需为每个框架重写一套客户端 |
 | **怎么用** | `composer require erikwang2013/consul-php`，核心包零框架依赖，框架适配内置并自动发现 |
 | **支持框架** | Laravel · Hyperf · webman · ThinkPHP —— API 完全一致，只差获取 `$client` 的方式 |
 | **依赖约定** | 只依赖 PSR 接口（PSR-18/17/16/14/3），HTTP 客户端、缓存、日志、事件分发器均可替换 |
-| **质量保障** | PHP 8.0 – 8.4 · 338 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **质量保障** | PHP 8.0 – 8.4 · 594 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### 核心能力
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # 同步入口：__get 分发 API 模块与高层封装
 │   │   ├── ConsulAsyncClient.php    # Promise 延迟执行客户端
 │   │   └── Promise.php              # 轻量 Promise 实现
-│   ├── Api/                         # Consul HTTP API v1 模块（11 个）
+│   ├── Api/                         # Consul HTTP API v1 模块（18 个）
 │   │   ├── Agent.php                # 成员、自身信息、维护模式、join / leave
 │   │   ├── Catalog.php              # 服务与节点目录：注册、注销、查询
 │   │   ├── Health.php               # 健康检查：服务 / 节点 / 按状态过滤
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # 集群状态：leader / peers
 │   │   ├── Coordinate.php           # 网络坐标：datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring 运维
-│   │   └── Snapshot.php             # 快照备份与恢复（二进制流）
+│   │   ├── Snapshot.php             # 快照备份与恢复（二进制流）
+│   │   ├── Txn.php                  # 事务：原子多键 / 批量 CAS
+│   │   ├── ConfigEntry.php          # 配置项：mesh / gateway / service-intentions
+│   │   ├── Connect.php              # service mesh 授权链（intentions）
+│   │   ├── Query.php                # 预备查询：故障转移 / 就近发现
+│   │   ├── Peering.php              # 集群 peering
+│   │   ├── DiscoveryChain.php       # mesh discovery chain：路由 / 分流 / 故障转移解析
+│   │   └── ExportedService.php      # 跨分区 / peering 的服务导出与导入
 │   ├── Service/                     # 服务注册与发现
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // 实例上下线时回调
 });
 
-// 停止监听（在另一进程/协程中调用）
+// 停止监听：只翻转本实例的标志位，需与 watch() 处于同一进程（Swoole 协程共享内存，可行）
+// 跨进程请用信号（pcntl_signal + posix_kill）或进程管理器；在途请求最长要等一个 wait 周期才退出
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // 配置变更回调
     });
 $watcher->start(); // 阻塞，放入独立进程/协程
-// $watcher->stop();  // 在另一进程/协程中调用以停止监听
+// $watcher->stop();  // 同一进程内（含协程）调用才生效；跨进程用信号，详见下方 生命周期
 ```
 
 **热更新原理：** 优先 Consul blocking query（`index` 长轮询），网络异常时自动降级为定时轮询，连接恢复后自动切回长轮询。回调 + PSR-14 EventDispatcher 双通道通知。
@@ -320,7 +328,7 @@ $watcher->start(); // 阻塞，放入独立进程/协程
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null 表示不存在
+$entry = $kv->get('key');              // 键不存在时抛 NotFoundException（Consul 返回 404）；null 仅出现在响应为空数组时
 $all = $kv->all('prefix/');            // 递归列出
 $keys = $kv->keys('prefix/');          // 仅键名
 $keys = $kv->keys('prefix/', '/');     // 按分隔符层级列出
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+`config` 支持的键：
+
+| 键 | 默认 | 说明 |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | 缺 scheme 时自动补 `http://`（`127.0.0.1:8500` 这种从环境变量抄来的写法可直接用）|
+| `token` | — | ACL Token，注入为 `X-Consul-Token` |
+| `cache.enable` / `cache.ttl` | `false` / 无 | 配合注入的 PSR-16 缓存，作用于 `Discovery::healthyInstances()` 与 `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0`（不限）| 仅内置 cURL 客户端使用。**`total` 别设得比 `blockingWait` 小**，否则长轮询必然被判超时并降级 |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | 传输失败时的重试次数与首次退避（指数增长）；只对幂等方法（GET/PUT/DELETE）生效 |
+
 ---
 
 ## API 模块速查
 
 | 属性 | 类 | 主要方法 |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys`（`put`/`delete` 支持 `cas` `flags` `acquire` `release`）|
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress`（支持 `node_meta` 多值、`stale`/`consistent`/`max_stale`）|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list`（支持 `index`/`wait` 阻塞查询）|
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring`（常量：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`） |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring`（常量：`KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`）|
 | `$client->snapshot` | `Api\Snapshot` | `save`（返回原始快照字节，通过 `getRaw()`） `restore`（发送原始字节，通过 `putRaw()`） |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw`（原子多键事务）|
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete`（`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`）|
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck`（service mesh 授权链）|
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain`（预备查询：故障转移 / 就近发现）|
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete`（集群 peering）|
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read`（mesh discovery chain：路由 / 分流 / 故障转移的解析结果，支持 `compile-dc` 与阻塞查询）|
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported`（跨分区 / peering 被导出与被导入的服务）|
+
+**不支持的两个端点**：`/v1/agent/metrics/stream` 与 `/v1/agent/monitor` 是长连接流式接口（前者推指标、后者推实时日志），本库的传输层是请求-响应模型，接入只能得到永久阻塞的调用，因此**刻意不提供**——需要流式能力时请直接对 Agent 发请求。`Agent::metrics(['format' => 'prometheus'])` 返回 `['format' => 'prometheus', 'body' => <原始文本>]`，因为 Prometheus 格式不是 JSON。
 
 高层封装：
 
@@ -594,7 +621,7 @@ try {
 依赖方向自上而下，每一层只依赖下一层的抽象：
 
 - **应用层 / 集成层** —— 4 个框架适配内置在核心包 `src/Integration/`，由 composer 自动发现注册；应用层始终只面对 `ConsulClient` 一个入口。
-- **客户端** —— `ConsulClient` 通过 `__get` 统一暴露 11 个 API 模块（`$client->kv`、`$client->health` …）与 3 个高层封装（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）；`ConsulAsyncClient` 提供 Promise 延迟执行。
+- **客户端** —— `ConsulClient` 通过 `__get` 统一暴露 18 个 API 模块（`$client->kv`、`$client->health` …）与 3 个高层封装（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）；`ConsulAsyncClient` 提供 Promise 延迟执行。
 - **高层封装** —— `Registry` / `Discovery` / `ConfigCenter` 组合 API 模块；`Watcher` 依赖 `getWithHeaders()` 返回的 `X-Consul-Index` 实现长轮询。
 - **API 模块** —— 一个模块对应一组 Consul v1 端点，全部经同一个 `TransportInterface` 出入。
 - **传输层** —— `Psr18Transport` 负责 Token 注入、状态码检查、JSON 解码与异常映射，是全包唯一的出网点。
@@ -615,7 +642,9 @@ try {
 ![consul-php 生命周期](docs/images/lifecycle.svg)
 
 - **服务实例生命周期** —— `register()` → passing（`heartbeat()` 周期续期）→ warning → critical → 自动或主动注销；心跳恢复可从 critical 回到 passing，无需重新注册。
-- **配置热更新生命周期** —— `watch()` 启动 blocking query（默认 30s，携带 `X-Consul-Index`）→ 变更检测 → `onChange` 回调 + `ConfigChangedEvent`；阻塞失败时自动降级为定时轮询（默认 10s），连续 5 次成功后切回长轮询；`stop()` 可从另一进程 / 协程优雅退出。
+- **配置热更新生命周期** —— `watch()` 启动 blocking query（默认 30s，携带 `X-Consul-Index`）→ 变更检测 → `onChange` 回调 + `ConfigChangedEvent`；阻塞失败时自动降级为定时轮询（默认 10s），**连续 5 次成功后**切回长轮询（任一次轮询失败则计数清零）。
+  两个 setter 都有 1 秒下界（`setBlockingWait` / `setPollInterval`，非法值抛 `InvalidArgumentException`）——间隔为 0 会无退避忙等，`wait` 非正会让 Consul 退回默认 5 分钟持有。
+  `stop()` 翻转的是**本实例**的标志位：同进程（含 Swoole 协程）有效，跨进程需用信号（`pcntl_signal` + `posix_kill`）或进程管理器；在途请求最长等一个 wait 周期才退出。
 - **单次请求生命周期** —— API 模块 → `Psr18Transport` 组装 PSR-17 请求 → 注入 `X-Consul-Token` → PSR-18 发送 → 状态码检查 → JSON 解码（`getRaw()` 直返原始字节）→ 返回数组；401/403/404/5xx 与传输失败分别映射为对应异常。
 
 ---

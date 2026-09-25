@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · ядро без зависимосте
 
 | | |
 |---|---|
-| **Что это** | Клиент Consul HTTP API v1 на чистом PHP: синхронный вход + Promise, 11 модулей API, 3 высокоуровневые обёртки |
+| **Что это** | Клиент Consul HTTP API v1 на чистом PHP: синхронный вход + Promise, 18 модулей API, 3 высокоуровневые обёртки |
 | **Какую задачу решает** | Позволяет PHP-приложению подключиться к Consul для регистрации и обнаружения сервисов и горячего обновления конфигурации, без переписывания клиента под каждый фреймворк |
 | **Как использовать** | `composer require erikwang2013/consul-php`: ядро без зависимостей от фреймворков, адаптеры встроены и обнаруживаются автоматически |
 | **Поддерживаемые фреймворки** | Laravel · Hyperf · webman · ThinkPHP —— API полностью идентичен, отличается только способ получения `$client` |
 | **Соглашения о зависимостях** | Только интерфейсы PSR (PSR-18/17/16/14/3): HTTP-клиент, кэш, логи и диспетчер событий заменяемы |
-| **Гарантия качества** | PHP 8.0 – 8.4 · 338 модульных тестов · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Гарантия качества** | PHP 8.0 – 8.4 · 594 модульных тестов · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Ключевые возможности
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # синхронный вход: __get раздаёт модули API и обёртки
 │   │   ├── ConsulAsyncClient.php    # клиент с отложенным выполнением Promise
 │   │   └── Promise.php              # лёгкая реализация Promise
-│   ├── Api/                         # модули Consul HTTP API v1 (11 штук)
+│   ├── Api/                         # модули Consul HTTP API v1 (18 штук)
 │   │   ├── Agent.php                # участники, данные о себе, режим обслуживания, join / leave
 │   │   ├── Catalog.php              # каталог сервисов и узлов: регистрация, дерегистрация, запросы
 │   │   ├── Health.php               # проверки здоровья: сервис / узел / фильтр по статусу
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # состояние кластера: leader / peers
 │   │   ├── Coordinate.php           # сетевые координаты: datacenters / nodes
 │   │   ├── Operator.php             # эксплуатация Raft / Autopilot / Keyring
-│   │   └── Snapshot.php             # резервная копия и восстановление (бинарный поток)
+│   │   ├── Snapshot.php             # резервная копия и восстановление (бинарный поток)
+│   │   ├── Txn.php                  # транзакции: атомарные множественные ключи / пакетный CAS
+│   │   ├── ConfigEntry.php          # записи конфигурации: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # цепочка авторизации service mesh (intentions)
+│   │   ├── Query.php                # подготовленные запросы: отказоустойчивость / поиск ближайших
+│   │   ├── Peering.php              # peering кластеров
+│   │   ├── DiscoveryChain.php       # Discovery chain меша: разрешение маршрутов / разбиений / переключения
+│   │   ├── ExportedService.php      # Экспорт и импорт сервисов между партициями / peerings
 │   ├── Service/                     # регистрация и обнаружение сервисов
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // callback при появлении и уходе экземпляров
 });
 
-// Остановка наблюдения (вызывается из другого процесса / корутины)
+// Остановка наблюдения: переключается только флаг данного экземпляра, поэтому вызывать её нужно в том же процессе, что и watch() (в корутинах Swoole память общая — это работает)
+// Из другого процесса шлите сигнал (pcntl_signal + posix_kill) или используйте менеджер процессов; запрос в полёте завершится не раньше, чем истечёт один цикл ожидания
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // callback при изменении конфигурации
     });
 $watcher->start(); // блокирует, выносите в отдельный процесс / корутину
-// $watcher->stop();  // вызывается из другого процесса / корутины, чтобы остановить наблюдение
+// $watcher->stop();  // срабатывает только при вызове в том же процессе (включая корутины); из другого процесса — сигнал, см. «Жизненные циклы» ниже
 ```
 
 **Как работает горячее обновление:** сначала идёт Consul blocking query (длинный опрос по `index`), при сбое сети происходит автоматический переход на периодический опрос, а после восстановления связи — возврат к длинному опросу. Уведомления идут по двум каналам: callback + PSR-14 EventDispatcher.
@@ -320,7 +328,7 @@ $watcher->start(); // блокирует, выносите в отдельный
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null означает, что ключа нет
+$entry = $kv->get('key');              // если ключа нет, бросается NotFoundException (Consul возвращает 404); null — только когда ответ пришёл пустым массивом
 $all = $kv->all('prefix/');            // рекурсивный список
 $keys = $kv->keys('prefix/');          // только имена ключей
 $keys = $kv->keys('prefix/', '/');     // иерархия по разделителю
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+Ключи, которые понимает `config`:
+
+| Ключ | По умолчанию | Описание |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | если схема не указана, подставляется `http://` (запись вида `127.0.0.1:8500`, скопированная из переменной окружения, работает сразу)|
+| `token` | — | ACL Token, добавляется как `X-Consul-Token` |
+| `cache.enable` / `cache.ttl` | `false` / нет | вместе с внедрённым кэшем PSR-16 действует на `Discovery::healthyInstances()` и `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (без ограничения)| только для встроенного клиента на cURL. **Не ставьте `total` меньше `blockingWait`**, иначе длинный опрос гарантированно упадёт по таймауту и уйдёт в деградацию |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | число повторов при сбое транспорта и первая задержка (далее растёт экспоненциально); только для идемпотентных методов (GET/PUT/DELETE) |
+
 ---
 
 ## Шпаргалка по модулям API
 
 | Свойство | Класс | Основные методы |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` поддерживают `cas` `flags` `acquire` `release`)|
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (поддерживают несколько значений `node_meta`, а также `stale`/`consistent`/`max_stale`)|
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (поддерживают блокирующие запросы с `index`/`wait`)|
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (константы: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (константы: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`)|
 | `$client->snapshot` | `Api\Snapshot` | `save` (возвращает сырые байты снимка через `getRaw()`) `restore` (отправляет сырые байты через `putRaw()`) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (атомарная транзакция по нескольким ключам)|
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`)|
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (цепочка авторизации service mesh)|
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (подготовленные запросы: отказоустойчивость / поиск ближайших)|
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (peering кластеров)|
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (mesh discovery chain: результат разбора маршрутов / разделения трафика / отказоустойчивости, поддерживает `compile-dc` и блокирующие запросы)|
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (сервисы, экспортированные и импортированные между разделами / через peering)|
+
+**Два неподдерживаемых эндпоинта**: `/v1/agent/metrics/stream` и `/v1/agent/monitor` — это потоковые интерфейсы с длительным соединением (первый отдаёт метрики, второй — логи в реальном времени). Транспорт библиотеки построен по модели «запрос — ответ», поэтому такие вызовы просто зависли бы навсегда, и мы **намеренно их не реализуем** — если нужно потоковое чтение, обращайтесь к агенту напрямую. `Agent::metrics(['format' => 'prometheus'])` возвращает `['format' => 'prometheus', 'body' => <сырой текст>]`, поскольку формат Prometheus — не JSON.
 
 Высокоуровневые обёртки:
 
@@ -594,7 +621,7 @@ try {
 Зависимости идут сверху вниз, каждый слой зависит только от абстракций следующего слоя:
 
 - **Уровень приложения / интеграции** —— 4 адаптера фреймворков встроены в ядро `src/Integration/` и регистрируются через автообнаружение composer; приложение всегда работает только с одной точкой входа — `ConsulClient`.
-- **Клиент** —— `ConsulClient` через `__get` единообразно открывает 11 модулей API (`$client->kv`, `$client->health` …) и 3 высокоуровневые обёртки (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`); `ConsulAsyncClient` даёт отложенное выполнение Promise.
+- **Клиент** —— `ConsulClient` через `__get` единообразно открывает 18 модулей API (`$client->kv`, `$client->health` …) и 3 высокоуровневые обёртки (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`); `ConsulAsyncClient` даёт отложенное выполнение Promise.
 - **Высокоуровневые обёртки** —— `Registry` / `Discovery` / `ConfigCenter` комбинируют модули API; `Watcher` использует `X-Consul-Index` из `getWithHeaders()` для длинного опроса.
 - **Модули API** —— один модуль соответствует одной группе эндпоинтов Consul v1, все они ходят через один и тот же `TransportInterface`.
 - **Транспортный уровень** —— `Psr18Transport` отвечает за внедрение Token, проверку кода ответа, разбор JSON и отображение исключений; это единственная точка выхода в сеть во всём пакете.
@@ -615,7 +642,9 @@ try {
 ![Жизненный цикл consul-php](./images/lifecycle.svg)
 
 - **Жизненный цикл экземпляра сервиса** —— `register()` → passing (`heartbeat()` продлевает периодически) → warning → critical → автоматическая или ручная дерегистрация; после восстановления heartbeat можно вернуться из critical в passing без повторной регистрации.
-- **Жизненный цикл горячего обновления конфигурации** —— `watch()` запускает blocking query (по умолчанию 30 с, с `X-Consul-Index`) → обнаружение изменений → callback `onChange` + `ConfigChangedEvent`; при сбое блокировки происходит автоматический переход на периодический опрос (по умолчанию 10 с), а после 5 успехов подряд — возврат к длинному опросу; `stop()` позволяет корректно выйти из другого процесса / корутины.
+- **Жизненный цикл горячего обновления конфигурации** —— `watch()` запускает blocking query (по умолчанию 30 с, с `X-Consul-Index`) → обнаружение изменений → callback `onChange` + `ConfigChangedEvent`; при сбое блокировки происходит автоматический переход на периодический опрос (по умолчанию 10 с), а **после 5 успехов подряд** — возврат к длинному опросу (любой сбой опроса обнуляет счётчик).
+  У обоих сеттеров есть нижняя граница в 1 секунду (`setBlockingWait` / `setPollInterval`; недопустимое значение бросает `InvalidArgumentException`) — интервал 0 приводит к занятому ожиданию без пауз, а неположительный `wait` заставляет Consul вернуться к удержанию по умолчанию в 5 минут.
+  `stop()` переключает флаг **данного экземпляра**: в одном процессе (включая корутины Swoole) этого достаточно, а из другого процесса нужен сигнал (`pcntl_signal` + `posix_kill`) или менеджер процессов; запрос в полёте завершится не раньше, чем истечёт один цикл ожидания.
 - **Жизненный цикл одного запроса** —— модуль API → `Psr18Transport` собирает запрос PSR-17 → внедряет `X-Consul-Token` → отправляет через PSR-18 → проверяет код ответа → разбирает JSON (`getRaw()` возвращает сырые байты) → возвращает массив; 401/403/404/5xx и сбои транспорта отображаются в соответствующие исключения.
 
 ---

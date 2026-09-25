@@ -42,7 +42,7 @@ README 已翻译为 12 种语言，每份含本地化的四张设计图（`docs/
 |------|------|------|
 | 项目宠物 Consu | [images/pet.svg](images/pet.svg) | 项目形象：天线=健康检查，胸前脉线=服务状态，腰牌=ACL Token；终端版见 `composer pet` / `Consul\Support\Pet` |
 | 架构设计 | [images/architecture.svg](images/architecture.svg) | 应用层 → 集成层 → 客户端 → 高层封装 → API 模块 → 传输层 → PSR 抽象 → Consul Agent |
-| 功能设计 | [images/features.svg](images/features.svg) | 11 个 API 模块 + 3 个高层封装 + 4 框架适配的能力地图 |
+| 功能设计 | [images/features.svg](images/features.svg) | 18 个 API 模块 + 3 个高层封装 + 4 框架适配的能力地图 |
 | 生命周期 | [images/lifecycle.svg](images/lifecycle.svg) | 服务实例状态迁移 · 配置热更新降级恢复 · 单次请求链路 |
 
 ---

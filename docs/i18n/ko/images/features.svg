@@ -19,7 +19,7 @@
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="24" y="48">consul-php 기능 설계</text>
-    <text class="sub" x="24" y="74">11개 API 모듈 + 3개 고수준 래퍼 + 4개 프레임워크 어댑터: 기능 맵과 대응 진입점</text>
+    <text class="sub" x="24" y="74">18개 API 모듈 + 3개 고수준 래퍼 + 4개 프레임워크 어댑터: 기능 맵과 대응 진입점</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="42" y="140">서비스 등록</text>
@@ -133,7 +133,7 @@
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
     <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776">PHP 8.0+, 코어 패키지 프레임워크 의존성 제로</text>
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Consul HTTP API v1 완전 지원</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11개 API 모듈 + 3개 고수준 래퍼</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">18개 API 모듈 + 3개 고수준 래퍼</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:10.5px">PSR 인터페이스에만 의존, HTTP 클라이언트 교체 가능</text>
     <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309개 단위 테스트 · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>

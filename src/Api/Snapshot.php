@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Erikwang2013\Consul\Api;
 
+use Erikwang2013\Consul\Support\Boolean;
 use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Snapshot
@@ -18,7 +19,7 @@ class Snapshot
     public function save(array $options = []): string
     {
         $query = array_intersect_key($options, array_flip(['dc']));
-        if (!empty($options['stale'])) {
+        if (Boolean::isTrue($options['stale'] ?? false)) {
             $query['stale'] = 'true';
         }
         return $this->transport->getRaw('/v1/snapshot', $query);

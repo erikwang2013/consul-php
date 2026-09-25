@@ -13,6 +13,11 @@ use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
+/**
+ * 服务发现：健康实例查询、负载均衡选点、watch 监听。
+ *
+ * 生命周期说明：watch() 的循环与 stop() 都只对同进程内共享该实例的调用者生效。
+ */
 class Discovery
 {
     private Health $health;
@@ -100,6 +105,12 @@ class Discovery
         }
     }
 
+    /**
+     * 请求停止 watch() 循环（在循环的下一次条件判断时生效）。
+     *
+     * 只翻转本实例的内存标志位：同进程/同协程内共享该实例时有效，跨进程无法感知。
+     * 跨进程停止请用信号（pcntl_signal + posix_kill）或交给进程管理器。
+     */
     public function stop(): void
     {
         $this->running = false;

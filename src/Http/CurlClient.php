@@ -23,8 +23,17 @@ final class CurlClient implements ClientInterface
     /** @var array<int, mixed> */
     private array $options;
 
-    /** @param array<int, mixed> $options 额外的 curl_setopt 选项，键为 CURLOPT_* 常量 */
-    public function __construct(float $connectTimeout = 3.0, float $timeout = 30.0, array $options = [])
+    /** @var \CurlShareHandle|resource|null 跨请求共享 DNS 与连接缓存 */
+    private $share = null;
+
+    /**
+     * @param float $connectTimeout 连接超时（秒）
+     * @param float $timeout        总超时（秒）；0 = 不限制，与 Guzzle 默认一致。
+     *                              Consul 的阻塞查询会按 wait 持有连接（默认 30s + jitter），
+     *                              总超时若小于它，长轮询必然被判为失败并降级。
+     * @param array<int, mixed> $options 额外的 curl_setopt 选项，键为 CURLOPT_* 常量
+     */
+    public function __construct(float $connectTimeout = 3.0, float $timeout = 0.0, array $options = [])
     {
         $this->connectTimeout = $connectTimeout;
         $this->timeout = $timeout;
@@ -54,7 +63,10 @@ final class CurlClient implements ClientInterface
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_ENCODING => '',
             CURLOPT_CONNECTTIMEOUT_MS => (int) round($this->connectTimeout * 1000),
-            CURLOPT_TIMEOUT_MS => (int) round($this->timeout * 1000),
+            // 不设总超时时，用低速阈值兜住"连上了但永远不返回"的连接：
+            // 10 分钟内几乎零字节才中断，任何正常的阻塞查询都不会被它误杀
+            CURLOPT_LOW_SPEED_LIMIT => 1,
+            CURLOPT_LOW_SPEED_TIME => 600,
             CURLOPT_HEADERFUNCTION => static function ($_, string $line) use (&$headers, &$statusLine): int {
                 $trimmed = trim($line);
                 if ($trimmed === '') {
@@ -100,6 +112,17 @@ final class CurlClient implements ClientInterface
             $curlOptions[CURLOPT_POSTFIELDS] = $payload;
         }
 
+        if ($this->timeout > 0) {
+            $curlOptions[CURLOPT_TIMEOUT_MS] = (int) round($this->timeout * 1000);
+        }
+
+        // 复用连接与 DNS 缓存：每个请求仍用独立句柄（协程下不会互相踩），
+        // 只共享 libcurl 的连接池，省掉重复的 TCP/TLS 握手
+        $share = $this->shareHandle();
+        if ($share !== null && \defined('CURLOPT_SHARE')) {
+            $curlOptions[CURLOPT_SHARE] = $share;
+        }
+
         curl_setopt_array($handle, $curlOptions + $this->options);
 
         try {
@@ -112,7 +135,11 @@ final class CurlClient implements ClientInterface
         }
 
         if ($ok === false || $errno !== 0) {
-            throw new HttpClientException(sprintf('cURL 请求失败[%d]：%s', $errno, $error !== '' ? $error : '未知错误'));
+            throw new NetworkException(
+                sprintf('cURL 请求失败[%d]：%s', $errno, $error !== '' ? $error : '未知错误'),
+                $request,
+                $errno
+            );
         }
 
         $version = '1.1';
@@ -135,5 +162,30 @@ final class CurlClient implements ClientInterface
         }
 
         return new Response($status, $responseHeaders, $body, $version, $reason !== '' ? $reason : null);
+    }
+
+    /**
+     * 懒初始化的 share 句柄。
+     *
+     * `CURL_LOCK_DATA_CONNECT` 需要 libcurl ≥ 7.57，常量缺失时静默降级为不共享——
+     * 复用是优化，不是正确性前提。
+     *
+     * @return \CurlShareHandle|resource|null
+     */
+    private function shareHandle()
+    {
+        if ($this->share !== null) {
+            return $this->share;
+        }
+
+        if (!\function_exists('curl_share_init') || !\defined('CURL_LOCK_DATA_CONNECT')) {
+            return null;
+        }
+
+        $share = curl_share_init();
+        curl_share_setopt($share, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
+        curl_share_setopt($share, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
+
+        return $this->share = $share;
     }
 }

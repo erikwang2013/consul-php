@@ -88,28 +88,42 @@
 
     <path d="M 466 474L 460 485L 454 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="968" y="536" text-anchor="end">وحدات API</text>
-    <rect x="808" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="843" y="536" text-anchor="middle">Agent</text>
-    <rect x="732" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="767" y="536" text-anchor="middle">Catalog</text>
-    <rect x="656" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="691" y="536" text-anchor="middle">Health</text>
-    <rect x="580" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="615" y="536" text-anchor="middle">Kv</text>
-    <rect x="504" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="539" y="536" text-anchor="middle">Session</text>
-    <rect x="428" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="463" y="536" text-anchor="middle">Acl</text>
-    <rect x="352" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="387" y="536" text-anchor="middle">Event</text>
-    <rect x="276" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="311" y="536" text-anchor="middle">Status</text>
-    <rect x="200" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="235" y="536" text-anchor="middle">Coordinate</text>
-    <rect x="124" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="159" y="536" text-anchor="middle">Operator</text>
-    <rect x="48" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
-    <text class="mini" x="83" y="536" text-anchor="middle">Snapshot</text>
+    <rect x="793" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="836" y="511" text-anchor="middle">Agent</text>
+    <rect x="700" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="743" y="511" text-anchor="middle">Catalog</text>
+    <rect x="607" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="650" y="511" text-anchor="middle">Health</text>
+    <rect x="514" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="557" y="511" text-anchor="middle">Kv</text>
+    <rect x="421" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="464" y="511" text-anchor="middle">Session</text>
+    <rect x="328" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="371" y="511" text-anchor="middle">Acl</text>
+    <rect x="235" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="278" y="511" text-anchor="middle">Event</text>
+    <rect x="142" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="185" y="511" text-anchor="middle">Status</text>
+    <rect x="49" y="488" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="92" y="511" text-anchor="middle">Coordinate</text>
+    <rect x="793" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="836" y="553" text-anchor="middle">Operator</text>
+    <rect x="700" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="743" y="553" text-anchor="middle">Snapshot</text>
+    <rect x="607" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="650" y="553" text-anchor="middle">Txn</text>
+    <rect x="514" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="557" y="553" text-anchor="middle">ConfigEntry</text>
+    <rect x="421" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="464" y="553" text-anchor="middle">Connect</text>
+    <rect x="328" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="371" y="553" text-anchor="middle">Query</text>
+    <rect x="235" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="278" y="553" text-anchor="middle">Peering</text>
+    <rect x="142" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="185" y="553" text-anchor="middle" style="font-size:9.7px">DiscoveryChain</text>
+    <rect x="49" y="530" width="85" height="36" rx="10" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="92" y="553" text-anchor="middle" style="font-size:9.2px">ExportedService</text>
 
     <path d="M 466 578L 460 589L 454 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="968" y="640" style="font-size:12.7px" text-anchor="end">طبقة النقل</text>
@@ -152,6 +166,6 @@
     <text class="bands" x="956" y="928" text-anchor="end">نظام الاستثناءات: ConsulException → Client / Server / Request(401·403·404)</text>
     <text class="bands" x="500" y="928" text-anchor="end">تخزين PSR-16: get() / namespace() تلقائيًا</text>
     <text class="bands" x="956" y="950" text-anchor="end">سجلات PSR-3: NullLogger احتياطي</text>
-    <text class="bands" x="500" y="950" text-anchor="end">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 338 اختبار</text>
+    <text class="bands" x="500" y="950" text-anchor="end">ضمان الجودة: PHP 8.0–8.4 · PHPStan L5 · 594 اختبار</text>
   </g>
 </svg>

@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · शून्य फ़्रेमव�
 
 | | |
 |---|---|
-| **यह क्या है** | शुद्ध PHP में लिखा Consul HTTP API v1 क्लाइंट: सिंक + Promise, दो एंट्री; 11 API मॉड्यूल; 3 उच्च-स्तरीय रैपर |
+| **यह क्या है** | शुद्ध PHP में लिखा Consul HTTP API v1 क्लाइंट: सिंक + Promise, दो एंट्री; 18 API मॉड्यूल; 3 उच्च-स्तरीय रैपर |
 | **क्या समस्या हल करता है** | PHP अनुप्रयोगों को Consul से जोड़कर सेवा पंजीकरण-खोज और कॉन्फ़िगरेशन का हॉट अपडेट देना — हर फ़्रेमवर्क के लिए अलग क्लाइंट लिखने की ज़रूरत नहीं |
 | **कैसे उपयोग करें** | `composer require erikwang2013/consul-php` — मुख्य पैकेज में शून्य फ़्रेमवर्क निर्भरता, फ़्रेमवर्क अडैप्टर अंतर्निहित और स्वतः खोजे जाते हैं |
 | **समर्थित फ़्रेमवर्क** | Laravel · Hyperf · webman · ThinkPHP —— API पूरी तरह एक जैसा, अंतर केवल `$client` पाने के तरीके का |
 | **निर्भरता नीति** | केवल PSR इंटरफ़ेस पर निर्भर (PSR-18/17/16/14/3); HTTP क्लाइंट, कैश, लॉग और इवेंट डिस्पैचर सभी बदले जा सकते हैं |
-| **गुणवत्ता आश्वासन** | PHP 8.0 – 8.4 · 338 यूनिट टेस्ट · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **गुणवत्ता आश्वासन** | PHP 8.0 – 8.4 · 594 यूनिट टेस्ट · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### मुख्य क्षमताएँ
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # सिंक एंट्री: __get से API मॉड्यूल और उच्च-स्तरीय रैपर का वितरण
 │   │   ├── ConsulAsyncClient.php    # Promise आधारित डेफ़र्ड-एक्ज़ीक्यूशन क्लाइंट
 │   │   └── Promise.php              # हल्का Promise कार्यान्वयन
-│   ├── Api/                         # Consul HTTP API v1 मॉड्यूल (11)
+│   ├── Api/                         # Consul HTTP API v1 मॉड्यूल (18)
 │   │   ├── Agent.php                # सदस्य, स्वयं की जानकारी, मेंटेनेंस मोड, join / leave
 │   │   ├── Catalog.php              # सेवा और नोड कैटलॉग: रजिस्टर, डीरजिस्टर, क्वेरी
 │   │   ├── Health.php               # health check: सेवा / नोड / स्थिति के अनुसार फ़िल्टर
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # क्लस्टर स्थिति: leader / peers
 │   │   ├── Coordinate.php           # नेटवर्क निर्देशांक: datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring संचालन
-│   │   └── Snapshot.php             # स्नैपशॉट बैकअप और रिस्टोर (बाइनरी स्ट्रीम)
+│   │   ├── Snapshot.php             # स्नैपशॉट बैकअप और रिस्टोर (बाइनरी स्ट्रीम)
+│   │   ├── Txn.php                  # लेन-देन: परमाणु रूप से कई key / बैच CAS
+│   │   ├── ConfigEntry.php          # कॉन्फ़िगरेशन प्रविष्टि: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # service mesh प्राधिकरण श्रृंखला (intentions)
+│   │   ├── Query.php                # तैयार क्वेरी: फ़ेलओवर / निकटतम खोज
+│   │   ├── Peering.php              # क्लस्टर peering
+│   │   ├── DiscoveryChain.php       # mesh discovery chain: रूटिंग / स्प्लिट / फ़ेलओवर रिज़ॉल्यूशन
+│   │   ├── ExportedService.php      # पार्टिशन / peering के बीच सेवा निर्यात-आयात
 │   ├── Service/                     # सेवा पंजीकरण और खोज
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -105,7 +112,7 @@ consul-php/
 │   ├── superpowers/specs/           # डिज़ाइन दस्तावेज़
 │   ├── superpowers/plans/           # कार्यान्वयन योजना
 │   └── reports/                     # कवरेज रिपोर्ट और टेस्ट रिपोर्ट
-├── scripts/i18n-svg.php             # i18n build / verify
+├── scripts/i18n-svg.php             # बहुभाषी संसाधन जनरेटर (extract / build / verify)
 ├── scripts/pet.php                  # composer pet एंट्री: टर्मिनल में पालतू को बुलाएँ
 ├── composer.json                    # निर्भरताएँ और फ़्रेमवर्क ऑटो-डिस्कवरी की घोषणाएँ
 ├── phpunit.xml.dist                 # टेस्ट कॉन्फ़िगरेशन
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // इंस्टेंस के ऑनलाइन/ऑफ़लाइन होने पर कॉलबैक
 });
 
-// निगरानी बंद करें (किसी अन्य प्रोसेस/कोरूटीन से कॉल करें)
+// निगरानी बंद करना: केवल इसी इंस्टेंस का फ़्लैग बदलता है, इसलिए watch() के साथ एक ही प्रोसेस में होना ज़रूरी है (Swoole कोरूटीन स्मृति साझा करते हैं, यह संभव है)
+// क्रॉस-प्रोसेस के लिए सिग्नल (pcntl_signal + posix_kill) या प्रोसेस मैनेजर इस्तेमाल करें; अंदर चल रहा request बाहर निकलने से पहले अधिकतम एक wait चक्र तक इंतज़ार कर सकता है
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // कॉन्फ़िगरेशन बदलने पर कॉलबैक
     });
 $watcher->start(); // ब्लॉकिंग, इसे अलग प्रोसेस/कोरूटीन में रखें
-// $watcher->stop();  // निगरानी रोकने के लिए अन्य प्रोसेस/कोरूटीन से कॉल करें
+// $watcher->stop();  // केवल एक ही प्रोसेस (कोरूटीन सहित) में कॉल करने पर असर होता है; क्रॉस-प्रोसेस के लिए सिग्नल, विस्तार नीचे जीवनचक्र में
 ```
 
 **हॉट अपडेट का सिद्धांत:** पहले Consul blocking query (`index` लॉन्ग पोलिंग) का उपयोग होता है; नेटवर्क त्रुटि पर स्वतः नियमित पोलिंग पर डाउनग्रेड हो जाता है, और कनेक्शन बहाल होने पर स्वतः लॉन्ग पोलिंग पर लौट आता है। कॉलबैक + PSR-14 EventDispatcher की द्वि-चैनल सूचना।
@@ -320,7 +328,7 @@ $watcher->start(); // ब्लॉकिंग, इसे अलग प्रो
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null का अर्थ है मौजूद नहीं
+$entry = $kv->get('key');              // key मौजूद न हो तो NotFoundException फेंकता है (Consul 404 लौटाता है); null केवल तब आता है जब रिस्पॉन्स खाली array हो
 $all = $kv->all('prefix/');            // पुनरावर्ती सूची
 $keys = $kv->keys('prefix/');          // केवल key के नाम
 $keys = $kv->keys('prefix/', '/');     // विभाजक के अनुसार स्तर-वार सूची
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+`config` में समर्थित key:
+
+| key | डिफ़ॉल्ट | विवरण |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | scheme न हो तो `http://` स्वतः जुड़ जाता है (`127.0.0.1:8500` जैसा environment variable से लिया गया रूप सीधे काम करता है) |
+| `token` | — | ACL Token, `X-Consul-Token` के रूप में इंजेक्ट होता है |
+| `cache.enable` / `cache.ttl` | `false` / कोई नहीं | इंजेक्ट किए गए PSR-16 कैश के साथ मिलकर `Discovery::healthyInstances()` और `ConfigCenter::get()` पर लागू होता है |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (कोई सीमा नहीं) | केवल अंतर्निहित cURL क्लाइंट पर लागू। **`total` को `blockingWait` से छोटा न रखें**, वरना लॉन्ग पोलिंग ज़रूर टाइमआउट मानी जाएगी और डाउनग्रेड हो जाएगी |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | ट्रांसपोर्ट विफलता पर रिट्राई की संख्या और पहला बैकऑफ़ (घातांकीय वृद्धि); केवल idempotent मेथड (GET/PUT/DELETE) पर लागू |
+
 ---
 
 ## API मॉड्यूल त्वरित संदर्भ
 
 | प्रॉपर्टी | क्लास | मुख्य मेथड |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` में `cas` `flags` `acquire` `release` समर्थित) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (`node_meta` के बहु-मान, `stale`/`consistent`/`max_stale` समर्थित) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (`index`/`wait` ब्लॉकिंग क्वेरी समर्थित) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (कॉन्स्टेंट: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (कॉन्स्टेंट: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (`getRaw()` से रॉ स्नैपशॉट बाइट्स लौटाता है) `restore` (`putRaw()` से रॉ बाइट्स भेजता है) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (परमाणु रूप से कई key वाला लेन-देन) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (service mesh प्राधिकरण श्रृंखला) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (तैयार क्वेरी: फ़ेलओवर / निकटतम खोज) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (क्लस्टर peering) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (mesh discovery chain: रूटिंग / विभाजन / फ़ेलओवर का हल किया गया परिणाम, `compile-dc` और ब्लॉकिंग क्वेरी समर्थित) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (क्रॉस-पार्टीशन / peering में निर्यात और आयात की गई सेवाएँ) |
+
+**दो एंडपॉइंट समर्थित नहीं हैं**: `/v1/agent/metrics/stream` और `/v1/agent/monitor` लंबे कनेक्शन वाले स्ट्रीमिंग इंटरफ़ेस हैं (पहला मेट्रिक्स, दूसरा रीयल-टाइम लॉग भेजता है); इस लाइब्रेरी की ट्रांसपोर्ट परत request-response मॉडल पर आधारित है, इसलिए इन्हें जोड़ने पर केवल हमेशा के लिए ब्लॉक रहने वाला कॉल मिलेगा — इसीलिए ये **जानबूझकर उपलब्ध नहीं कराए गए हैं**। स्ट्रीमिंग की ज़रूरत हो तो सीधे Agent पर request भेजें। `Agent::metrics(['format' => 'prometheus'])` `['format' => 'prometheus', 'body' => <रॉ टेक्स्ट>]` लौटाता है, क्योंकि Prometheus फ़ॉर्मैट JSON नहीं है।
 
 उच्च-स्तरीय रैपर:
 
@@ -594,7 +621,7 @@ try {
 निर्भरता की दिशा ऊपर से नीचे है, हर परत केवल नीचे की परत के एब्स्ट्रैक्शन पर निर्भर करती है:
 
 - **अनुप्रयोग परत / एकीकरण परत** —— 4 फ़्रेमवर्क अडैप्टर मुख्य पैकेज की `src/Integration/` में अंतर्निहित हैं और composer द्वारा स्वतः खोजे-रजिस्टर होते हैं; अनुप्रयोग परत को हमेशा केवल एक ही एंट्री `ConsulClient` दिखती है।
-- **क्लाइंट** —— `ConsulClient` `__get` के ज़रिए 11 API मॉड्यूल (`$client->kv`, `$client->health` …) और 3 उच्च-स्तरीय रैपर (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) एक समान रूप से उजागर करता है; `ConsulAsyncClient` Promise आधारित डेफ़र्ड-एक्ज़ीक्यूशन देता है।
+- **क्लाइंट** —— `ConsulClient` `__get` के ज़रिए 18 API मॉड्यूल (`$client->kv`, `$client->health` …) और 3 उच्च-स्तरीय रैपर (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) एक समान रूप से उजागर करता है; `ConsulAsyncClient` Promise आधारित डेफ़र्ड-एक्ज़ीक्यूशन देता है।
 - **उच्च-स्तरीय रैपर** —— `Registry` / `Discovery` / `ConfigCenter` API मॉड्यूल को संयोजित करते हैं; `Watcher` लॉन्ग पोलिंग के लिए `getWithHeaders()` से मिले `X-Consul-Index` पर निर्भर करता है।
 - **API मॉड्यूल** —— एक मॉड्यूल Consul v1 के एक एंडपॉइंट समूह से मेल खाता है, और सब एक ही `TransportInterface` से होकर आते-जाते हैं।
 - **ट्रांसपोर्ट परत** —— `Psr18Transport` Token इंजेक्शन, स्टेटस कोड जाँच, JSON डिकोडिंग और अपवाद मैपिंग संभालता है, और पूरे पैकेज का एकमात्र नेटवर्क निकास बिंदु है।
@@ -615,7 +642,9 @@ try {
 ![consul-php जीवनचक्र](./images/lifecycle.svg)
 
 - **सेवा इंस्टेंस का जीवनचक्र** —— `register()` → passing (`heartbeat()` समय-समय पर रिन्यू करता है) → warning → critical → स्वतः या सक्रिय रूप से डीरजिस्टर; heartbeat बहाल होने पर critical से वापस passing में आ सकते हैं, दोबारा रजिस्टर करने की ज़रूरत नहीं।
-- **कॉन्फ़िगरेशन हॉट अपडेट का जीवनचक्र** —— `watch()` blocking query शुरू करता है (डिफ़ॉल्ट 30s, `X-Consul-Index` के साथ) → परिवर्तन का पता लगाना → `onChange` कॉलबैक + `ConfigChangedEvent`; ब्लॉकिंग विफल होने पर स्वतः नियमित पोलिंग पर डाउनग्रेड (डिफ़ॉल्ट 10s), लगातार 5 सफलताओं के बाद फिर लॉन्ग पोलिंग पर वापस; `stop()` से किसी अन्य प्रोसेस / कोरूटीन से सुचारु रूप से बाहर निकल सकते हैं।
+- **कॉन्फ़िगरेशन हॉट अपडेट का जीवनचक्र** —— `watch()` blocking query शुरू करता है (डिफ़ॉल्ट 30s, `X-Consul-Index` के साथ) → परिवर्तन का पता लगाना → `onChange` कॉलबैक + `ConfigChangedEvent`; ब्लॉकिंग विफल होने पर स्वतः नियमित पोलिंग पर डाउनग्रेड (डिफ़ॉल्ट 10s), और **लगातार 5 सफलताओं के बाद** फिर लॉन्ग पोलिंग पर वापस (बीच में कोई भी पोलिंग विफल हो तो काउंटर शून्य हो जाता है)।
+  दोनों setter की न्यूनतम सीमा 1 सेकंड है (`setBlockingWait` / `setPollInterval`, अमान्य मान पर `InvalidArgumentException`) —— अंतराल 0 होने पर बिना बैकऑफ़ busy-wait होगा, और `wait` ग़ैर-धनात्मक होने पर Consul अपनी डिफ़ॉल्ट 5 मिनट की होल्ड पर लौट जाता है।
+  `stop()` **इसी इंस्टेंस** का फ़्लैग बदलता है: एक ही प्रोसेस (Swoole कोरूटीन सहित) में असर करता है, क्रॉस-प्रोसेस के लिए सिग्नल (`pcntl_signal` + `posix_kill`) या प्रोसेस मैनेजर चाहिए; अंदर चल रहा request बाहर निकलने से पहले अधिकतम एक wait चक्र तक इंतज़ार कर सकता है।
 - **एकल request का जीवनचक्र** —— API मॉड्यूल → `Psr18Transport` PSR-17 request बनाता है → `X-Consul-Token` इंजेक्ट → PSR-18 से भेजना → स्टेटस कोड जाँच → JSON डिकोडिंग (`getRaw()` सीधे रॉ बाइट्स लौटाता है) → array रिटर्न; 401/403/404/5xx और ट्रांसपोर्ट विफलता क्रमशः संबंधित अपवाद में मैप होते हैं।
 
 ---

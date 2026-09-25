@@ -103,6 +103,124 @@ class CatalogTest extends TestCase
         $this->assertSame([], $result);
     }
 
+    public function testRegisterMapsAllFieldsToConsulNames(): void
+    {
+        $check = ['Node' => 'node1', 'CheckID' => 'node-ttl', 'TTL' => '30s'];
+        $this->transport->method('put')
+            ->with('/v1/catalog/register', $this->callback(function ($payload) use ($check) {
+                return $payload === [
+                    'Node'             => 'node1',
+                    'Address'          => '10.0.0.1',
+                    'ID'               => 'node-uuid',
+                    'TaggedAddresses'  => ['lan' => '10.0.0.1', 'wan' => '1.2.3.4'],
+                    'Service'          => [
+                        'Service'             => 'web',
+                        'Address'             => '10.0.0.2',
+                        'Port'                => 8080,
+                        'ID'                  => 'web-1',
+                        'Kind'                => 'connect-proxy',
+                        'Tags'                => ['v1'],
+                        'Meta'                => ['env' => 'prod'],
+                        'Weights'             => ['Passing' => 10, 'Warning' => 1],
+                        'EnableTagOverride'   => true,
+                        'Proxy'               => ['DestinationServiceName' => 'api'],
+                        'Check'               => ['TTL' => '10s'],
+                    ],
+                    'Check'            => $check,
+                ];
+            }))
+            ->willReturn([]);
+
+        $result = $this->catalog->register(
+            [
+                'node'             => 'node1',
+                'address'          => '10.0.0.1',
+                'id'               => 'node-uuid',
+                'tagged_addresses' => ['lan' => '10.0.0.1', 'wan' => '1.2.3.4'],
+            ],
+            [
+                'service'             => 'web',
+                'address'             => '10.0.0.2',
+                'port'                => 8080,
+                'id'                  => 'web-1',
+                'kind'                => 'connect-proxy',
+                'tags'                => ['v1'],
+                'meta'                => ['env' => 'prod'],
+                'weights'             => ['Passing' => 10, 'Warning' => 1],
+                'enable_tag_override' => true,
+                'proxy'               => ['DestinationServiceName' => 'api'],
+                'check'               => ['TTL' => '10s'],
+            ],
+            $check
+        );
+
+        $this->assertSame([], $result);
+    }
+
+    public function testRegisterConnectProxyService(): void
+    {
+        // mesh / gateway 注册靠 Kind + Proxy + Connect，旧的固定白名单表达不了这些字段
+        $this->transport->method('put')
+            ->with('/v1/catalog/register', $this->callback(function ($payload) {
+                return $payload['Service']['Kind'] === 'connect-proxy'
+                    && $payload['Service']['Proxy'] === ['DestinationServiceName' => 'web']
+                    && $payload['Service']['Connect'] === ['SidecarService' => ['Port' => 8080]];
+            }))
+            ->willReturn([]);
+
+        $result = $this->catalog->register(
+            ['node' => 'node1', 'address' => '10.0.0.1'],
+            [
+                'service' => 'web-proxy',
+                'port'    => 21000,
+                'kind'    => 'connect-proxy',
+                'proxy'   => ['DestinationServiceName' => 'web'],
+                'connect' => ['SidecarService' => ['Port' => 8080]],
+            ]
+        );
+
+        $this->assertSame([], $result);
+    }
+
+    public function testRegisterServiceCheckDoesNotBecomeNodeCheck(): void
+    {
+        $this->transport->method('put')
+            ->with('/v1/catalog/register', $this->callback(function ($payload) {
+                return $payload['Service']['Check'] === ['TTL' => '10s']
+                    && !isset($payload['Check']);
+            }))
+            ->willReturn([]);
+
+        $result = $this->catalog->register(
+            ['node' => 'node1', 'address' => '10.0.0.1'],
+            ['service' => 'web', 'check' => ['TTL' => '10s']]
+        );
+
+        $this->assertSame([], $result);
+    }
+
+    public function testRegisterWithoutPortOmitsPort(): void
+    {
+        $this->transport->method('put')
+            ->with('/v1/catalog/register', $this->callback(function ($payload) {
+                return !array_key_exists('Port', $payload['Service']);
+            }))
+            ->willReturn([]);
+
+        $result = $this->catalog->register(
+            ['node' => 'node1', 'address' => '10.0.0.1'],
+            ['service' => 'web']
+        );
+
+        $this->assertSame([], $result);
+    }
+
+    public function testRegisterRejectsMissingRequiredFields(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->catalog->register(['node' => 'node1'], ['service' => 'web']);
+    }
+
     public function testDeregister(): void
     {
         $this->transport->expects($this->once())
@@ -192,6 +310,24 @@ class CatalogTest extends TestCase
         $this->assertSame([], $result);
     }
 
+    public function testDatacenters(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/datacenters')
+            ->willReturn(['dc1', 'dc2']);
+
+        $this->assertSame(['dc1', 'dc2'], $this->catalog->datacenters());
+    }
+
+    public function testDatacentersReturnsEmptyArray(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/datacenters')
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->datacenters());
+    }
+
     public function testNodes(): void
     {
         $this->transport->method('get')
@@ -201,6 +337,86 @@ class CatalogTest extends TestCase
         $result = $this->catalog->nodes(['dc' => 'dc1']);
 
         $this->assertCount(1, $result);
+    }
+
+    public function testNodesForwardsStale(): void
+    {
+        // 归一成字符串 "true"（上游是 b.Get("stale") == "true"），布尔 true 会编成 stale=1 而读不到
+        $this->transport->method('get')
+            ->with('/v1/catalog/nodes', ['stale' => 'true'])
+            ->willReturn([['Node' => 'node1']]);
+
+        $this->assertCount(1, $this->catalog->nodes(['stale' => true]));
+    }
+
+    public function testServicesForwardsConsistent(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/services', ['consistent' => 'true'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->services(['consistent' => true]));
+    }
+
+    public function testServiceForwardsMaxStale(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/service/web', ['max_stale' => '10s'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->service('web', ['max_stale' => '10s']));
+    }
+
+    public function testNodesDropFalseConsistencyFlags(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/nodes', [])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->nodes(['stale' => false, 'consistent' => false]));
+    }
+
+    public function testNodesWithNodeMetaSendsRepeatedKeys(): void
+    {
+        // node-meta 是重复键参数：模块以数组交给传输层展开（http_build_query 会编成 node-meta[0]=，服务端读不到）
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/catalog/nodes', ['node-meta' => ['rack=2', 'zone=a']])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->nodes(['node_meta' => ['rack=2', 'zone=a']]));
+    }
+
+    public function testNodeWithSingleNodeMeta(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/node/node1', ['node-meta' => ['rack=2']])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->node('node1', ['node_meta' => 'rack=2']));
+    }
+
+    public function testServiceWithStaleAndNodeMeta(): void
+    {
+        // 一致性参数归一成字符串 'true'，node-meta 以数组交给传输层展开成重复键
+        $this->transport->method('get')
+            ->with('/v1/catalog/service/web', ['dc' => 'dc1', 'stale' => 'true', 'node-meta' => ['rack=2', 'zone=a']])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->service('web', [
+            'dc'        => 'dc1',
+            'stale'     => true,
+            'node_meta' => ['rack=2', 'zone=a'],
+        ]));
+    }
+
+    public function testNodesWithEmptyNodeMetaFallsBackToArrayQuery(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/nodes', [])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->nodes(['node_meta' => []]));
     }
 
     public function testNodesReturnsEmptyArray(): void
@@ -258,5 +474,44 @@ class CatalogTest extends TestCase
         $result = $this->catalog->nodeServices('web node/1');
 
         $this->assertSame([], $result);
+    }
+
+    public function testGatewayServices(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/gateway-services/my-gw', [])
+            ->willReturn([['Gateway' => 'my-gw', 'GatewayKind' => 'ingress', 'Service' => 'web']]);
+
+        $result = $this->catalog->gatewayServices('my-gw');
+
+        $this->assertSame('web', $result[0]['Service']);
+    }
+
+    public function testGatewayServicesForwardsOptions(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/gateway-services/my-gw', ['dc' => 'dc2'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->gatewayServices('my-gw', ['dc' => 'dc2']));
+    }
+
+    public function testGatewayServicesDropsUnknownOptions(): void
+    {
+        // 与 Catalog 其他读端点共用白名单：未识别参数不发出
+        $this->transport->method('get')
+            ->with('/v1/catalog/gateway-services/my-gw', ['dc' => 'dc1'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->gatewayServices('my-gw', ['dc' => 'dc1', 'bogus' => 'x']));
+    }
+
+    public function testGatewayServicesUrlEncodesGatewayName(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/catalog/gateway-services/my%20gw%2F1', [])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->catalog->gatewayServices('my gw/1'));
     }
 }

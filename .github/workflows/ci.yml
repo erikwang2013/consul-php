@@ -14,7 +14,8 @@ jobs:
           coverage: none
       - run: composer install --no-progress
       - run: vendor/bin/phpunit
-      - run: vendor/bin/phpstan analyse
+      # 默认 128M 内存下并行分析会静默产出"分析不完整"的结果，显式抬高
+      - run: vendor/bin/phpstan analyse --memory-limit=1G
 
       # 改了 docs/images/ 或生成器却忘了重新生成 12 种语言的图，这里会红
       - name: i18n 生成一致性

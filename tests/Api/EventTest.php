@@ -123,6 +123,64 @@ class EventTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    public function testListWithBlockingQuery(): void
+    {
+        // 上游 EventList 走 parseBlockingQuery，events 支持阻塞查询
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/event/list', ['index' => '10', 'wait' => '5m'])
+            ->willReturn([['ID' => 'evt-2', 'Name' => 'deploy']]);
+
+        $result = $this->event->list(['index' => '10', 'wait' => '5m']);
+
+        $this->assertSame('deploy', $result[0]['Name']);
+    }
+
+    public function testListWithDcAndFilter(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/event/list', ['dc' => 'dc2', 'filter' => 'Name==deploy'])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->event->list(['dc' => 'dc2', 'filter' => 'Name==deploy']));
+    }
+
+    public function testListWithAllOptions(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/event/list', [
+                'name' => 'deploy',
+                'dc' => 'dc2',
+                'filter' => 'Name==deploy',
+                'index' => '42',
+                'wait' => '30s',
+            ])
+            ->willReturn([['ID' => 'evt-3']]);
+
+        $result = $this->event->list([
+            'name' => 'deploy',
+            'dc' => 'dc2',
+            'filter' => 'Name==deploy',
+            'index' => '42',
+            'wait' => '30s',
+        ]);
+
+        $this->assertCount(1, $result);
+    }
+
+    public function testListIgnoresUnknownOptions(): void
+    {
+        // ns / partition 是企业版概念，CE 下不应发出
+        $this->transport->expects($this->once())
+            ->method('get')
+            ->with('/v1/event/list', [])
+            ->willReturn([]);
+
+        $this->assertSame([], $this->event->list(['unknown' => 'x', 'ns' => 'prod']));
+    }
+
     public function testListReturnsEmptyArray(): void
     {
         $this->transport->method('get')

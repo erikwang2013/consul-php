@@ -19,7 +19,7 @@
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="24" y="48">consul-php Funktionsdesign</text>
-    <text class="sub" x="24" y="74">11 API-Module + 3 High-Level-Wrapper + 4 Framework-Adapter: Fähigkeitskarte und Einstiegspunkte</text>
+    <text class="sub" x="24" y="74">18 API-Module + 3 High-Level-Wrapper + 4 Framework-Adapter: Fähigkeitskarte und Einstiegspunkte</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="42" y="140">Service-Registrierung</text>
@@ -133,9 +133,9 @@
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
     <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:9.9px">PHP 8.0+, Kernpaket ohne Framework-Abhängigkeiten</text>
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:11.2px">Vollständige Abdeckung der Consul HTTP API v1</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11 API-Module + 3 High-Level-Wrapper</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">18 API-Module + 3 High-Level-Wrapper</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:11.9px">Nur PSR-Interfaces, HTTP-Client austauschbar</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 Unit-Tests · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">594 Unit-Tests · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="44" y="920" style="font-size:11.4px">Eine API, vier Frameworks</text>
     <text class="cl" x="200" y="920" style="font-size:10.2px">Laravel · Hyperf · webman · ThinkPHP — Kernpaket ohne Abhängigkeiten, Framework-Adapter integriert, ein composer require genügt</text>

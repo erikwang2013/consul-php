@@ -7,14 +7,21 @@ namespace Erikwang2013\Consul\Client;
 use Erikwang2013\Consul\Api\Acl;
 use Erikwang2013\Consul\Api\Agent;
 use Erikwang2013\Consul\Api\Catalog;
+use Erikwang2013\Consul\Api\ConfigEntry;
+use Erikwang2013\Consul\Api\Connect;
 use Erikwang2013\Consul\Api\Coordinate;
+use Erikwang2013\Consul\Api\DiscoveryChain;
 use Erikwang2013\Consul\Api\Event;
+use Erikwang2013\Consul\Api\ExportedService;
 use Erikwang2013\Consul\Api\Health;
 use Erikwang2013\Consul\Api\Kv;
 use Erikwang2013\Consul\Api\Operator;
+use Erikwang2013\Consul\Api\Peering;
+use Erikwang2013\Consul\Api\Query;
 use Erikwang2013\Consul\Api\Session;
 use Erikwang2013\Consul\Api\Snapshot;
 use Erikwang2013\Consul\Api\Status;
+use Erikwang2013\Consul\Api\Txn;
 use Erikwang2013\Consul\Config\ConfigCenter;
 use Erikwang2013\Consul\Exception\ConsulException;
 use Erikwang2013\Consul\Http\CurlClient;
@@ -30,6 +37,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
@@ -45,6 +53,13 @@ use Throwable;
  * @property Coordinate $coordinate
  * @property Operator $operator
  * @property Snapshot $snapshot
+ * @property Txn $txn
+ * @property ConfigEntry $configEntry
+ * @property Connect $connect
+ * @property Query $query
+ * @property Peering $peering
+ * @property DiscoveryChain $discoveryChain
+ * @property ExportedService $exportedService
  */
 class ConsulClient
 {
@@ -61,6 +76,13 @@ class ConsulClient
     private ?Coordinate $coordinate = null;
     private ?Operator $operator = null;
     private ?Snapshot $snapshot = null;
+    private ?Txn $txn = null;
+    private ?ConfigEntry $configEntry = null;
+    private ?Connect $connect = null;
+    private ?Query $query = null;
+    private ?Peering $peering = null;
+    private ?DiscoveryChain $discoveryChain = null;
+    private ?ExportedService $exportedService = null;
     private ?Registry $serviceRegistry = null;
     private ?Discovery $serviceDiscovery = null;
     private ?ConfigCenter $configCenter = null;
@@ -83,7 +105,7 @@ class ConsulClient
         $this->cacheTtl = $config['cache']['ttl'] ?? null;
 
         if ($httpClient === null) {
-            $httpClient = $this->discoverHttpClient();
+            $httpClient = $this->discoverHttpClient($config['timeout'] ?? []);
         }
         if ($requestFactory === null) {
             $requestFactory = $this->discoverRequestFactory();
@@ -98,7 +120,9 @@ class ConsulClient
             $streamFactory,
             $baseUri,
             $token,
-            $logger
+            $logger,
+            (int) ($config['retry']['times'] ?? 0),
+            (int) ($config['retry']['delay_ms'] ?? 50)
         );
 
         $this->cache = $cache;
@@ -119,6 +143,13 @@ class ConsulClient
             'coordinate' => $this->coordinate ??= new Coordinate($this->transport),
             'operator'  => $this->operator ??= new Operator($this->transport),
             'snapshot'  => $this->snapshot ??= new Snapshot($this->transport),
+            'txn'       => $this->txn ??= new Txn($this->transport),
+            'configEntry' => $this->configEntry ??= new ConfigEntry($this->transport),
+            'connect'   => $this->connect ??= new Connect($this->transport),
+            'query'     => $this->query ??= new Query($this->transport),
+            'peering'   => $this->peering ??= new Peering($this->transport),
+            'discoveryChain' => $this->discoveryChain ??= new DiscoveryChain($this->transport),
+            'exportedService' => $this->exportedService ??= new ExportedService($this->transport),
             default     => throw new ConsulException("Unknown API module: {$name}"),
         };
     }
@@ -159,8 +190,19 @@ class ConsulClient
      * 优先用 php-http/discovery 找到的 PSR-18 实现（Guzzle、Swoole 适配器等），
      * 找不到就退回内置 cURL 客户端——原生 PHP 下零额外依赖也能跑。
      */
-    private function discoverHttpClient(): ClientInterface
+    /**
+     * @param array<string, mixed>|int|float|string $timeout 内置客户端使用的超时。
+     *        数组形如 ['connect' => 3.0, 'total' => 30.0]；直接给数字则视为总超时（秒）。
+     */
+    private function discoverHttpClient($timeout = []): ClientInterface
     {
+        if (is_int($timeout) || is_float($timeout) || (is_string($timeout) && is_numeric($timeout))) {
+            $timeout = ['total' => (float) $timeout];
+        }
+        if (!is_array($timeout)) {
+            throw new InvalidArgumentException('config.timeout 需要是数组（connect / total）或数字（总超时秒数）');
+        }
+
         try {
             return $this->discover(
                 'Http\Discovery\Psr18ClientDiscovery',
@@ -169,7 +211,11 @@ class ConsulClient
             );
         } catch (Throwable $e) {
             if (extension_loaded('curl')) {
-                return new CurlClient();
+                // 总超时默认 0：Consul 阻塞查询会按 wait 持有连接，设小了长轮询必然降级
+                return new CurlClient(
+                    (float) ($timeout['connect'] ?? 3.0),
+                    (float) ($timeout['total'] ?? 0.0)
+                );
             }
 
             throw new RuntimeException(

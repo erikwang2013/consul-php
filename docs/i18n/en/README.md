@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · zero framework dependencies
 
 | | |
 |---|---|
-| **What it is** | A pure PHP client for the Consul HTTP API v1: synchronous + Promise entry points, 11 API modules, 3 high-level wrappers |
+| **What it is** | A pure PHP client for the Consul HTTP API v1: synchronous + Promise entry points, 18 API modules, 3 high-level wrappers |
 | **What it solves** | Lets PHP applications use Consul for service registration/discovery and hot config reload, without rewriting a client for every framework |
 | **How to use** | `composer require erikwang2013/consul-php` — zero framework dependencies in the core package, framework adapters built in and auto-discovered |
 | **Supported frameworks** | Laravel · Hyperf · webman · ThinkPHP —— identical API, only the way you obtain `$client` differs |
 | **Dependencies** | Only PSR interfaces (PSR-18/17/16/14/3); the HTTP client, cache, logger and event dispatcher are all replaceable |
-| **Quality** | PHP 8.0 – 8.4 · 338 unit tests · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **Quality** | PHP 8.0 – 8.4 · 594 unit tests · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### Key features
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # Synchronous entry: __get dispatches API modules and high-level wrappers
 │   │   ├── ConsulAsyncClient.php    # Promise-based deferred client
 │   │   └── Promise.php              # Lightweight Promise implementation
-│   ├── Api/                         # Consul HTTP API v1 modules (11)
+│   ├── Api/                         # Consul HTTP API v1 modules (18)
 │   │   ├── Agent.php                # members, self, maintenance mode, join / leave
 │   │   ├── Catalog.php              # Service and node catalog: register, deregister, query
 │   │   ├── Health.php               # Health checks: service / node / filter by state
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # Cluster status: leader / peers
 │   │   ├── Coordinate.php           # Network coordinates: datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring operations
-│   │   └── Snapshot.php             # Snapshot backup and restore (binary stream)
+│   │   ├── Snapshot.php             # Snapshot backup and restore (binary stream)
+│   │   ├── Txn.php                  # Transactions: atomic multi-key / batch CAS
+│   │   ├── ConfigEntry.php          # Config entries: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # Service mesh authorization chain (intentions)
+│   │   ├── Query.php                # Prepared queries: failover / nearest discovery
+│   │   ├── Peering.php              # Cluster peering
+│   │   ├── DiscoveryChain.php       # mesh discovery chain: routing / splitting / failover resolution
+│   │   └── ExportedService.php      # service export and import across partitions / peerings
 │   ├── Service/                     # Service registration and discovery
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -105,7 +112,7 @@ consul-php/
 │   ├── superpowers/specs/           # Design documents
 │   ├── superpowers/plans/           # Implementation plans
 │   └── reports/                     # Coverage and test reports
-├── scripts/i18n-svg.php             # i18n build / verify
+├── scripts/i18n-svg.php             # i18n resource generator (extract / build / verify)
 ├── scripts/pet.php                  # composer pet entry: summon the project pet in the terminal
 ├── composer.json                    # Dependencies and framework auto-discovery declarations
 ├── phpunit.xml.dist                 # Test configuration
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // called when an instance comes up or goes down
 });
 
-// stop watching (call from another process/coroutine)
+// stopping the watch: only flips this instance's flag, so it has to run in the same process as watch() (Swoole coroutines share memory, so that works)
+// across processes use a signal (pcntl_signal + posix_kill) or a process manager; in-flight requests take up to one wait period to exit
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // config change callback
     });
 $watcher->start(); // blocks; put it in a dedicated process/coroutine
-// $watcher->stop();  // call from another process/coroutine to stop watching
+// $watcher->stop();  // only takes effect when called inside the same process (coroutines included); across processes use a signal, see Lifecycle below
 ```
 
 **How hot reload works:** Consul blocking query (`index` long polling) is preferred; on network errors it automatically falls back to interval polling, and switches back to long polling once the connection recovers. Notifications are delivered over two channels: the callback and the PSR-14 EventDispatcher.
@@ -320,7 +328,7 @@ $watcher->start(); // blocks; put it in a dedicated process/coroutine
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null means the key does not exist
+$entry = $kv->get('key');              // throws NotFoundException when the key does not exist (Consul returns 404); null only occurs when the response is an empty array
 $all = $kv->all('prefix/');            // list recursively
 $keys = $kv->keys('prefix/');          // key names only
 $keys = $kv->keys('prefix/', '/');     // list by separator level
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+Keys supported by `config`:
+
+| Key | Default | Description |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | `http://` is prepended automatically when the scheme is missing (so a value copied out of an environment variable, such as `127.0.0.1:8500`, works as is) |
+| `token` | — | ACL Token, injected as `X-Consul-Token` |
+| `cache.enable` / `cache.ttl` | `false` / none | Works together with the injected PSR-16 cache and applies to `Discovery::healthyInstances()` and `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (unlimited) | Only used by the built-in cURL client. **Do not set `total` lower than `blockingWait`**, otherwise long polling is guaranteed to time out and fall back to polling |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | Number of retries on transport failure and the first backoff (growing exponentially); only applies to idempotent methods (GET/PUT/DELETE) |
+
 ---
 
 ## API modules at a glance
 
 | Property | Class | Main methods |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` support `cas` `flags` `acquire` `release`) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (supports multi-value `node_meta`, `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (supports `index`/`wait` blocking queries) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (constants: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (constants: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (returns the raw snapshot bytes via `getRaw()`) `restore` (sends raw bytes via `putRaw()`) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (atomic multi-key transactions) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (service mesh authorization chain) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (prepared queries: failover / nearest discovery) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (cluster peering) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (mesh discovery chain: the resolved result of routing / splitting / failover, supports `compile-dc` and blocking queries) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (services exported to and imported from other partitions / peerings) |
+
+**Two endpoints are not supported**: `/v1/agent/metrics/stream` and `/v1/agent/monitor` are long-lived streaming interfaces (the former pushes metrics, the latter real-time logs). This library's transport layer is a request-response model, so wiring them up could only produce a call that blocks forever; they are therefore **deliberately not provided** — if you need streaming, talk to the Agent directly. `Agent::metrics(['format' => 'prometheus'])` returns `['format' => 'prometheus', 'body' => <raw text>]`, because the Prometheus format is not JSON.
 
 High-level wrappers:
 
@@ -594,7 +621,7 @@ try {
 Dependencies point downwards, and each layer only depends on the abstractions of the layer below:
 
 - **Application layer / integration layer** — 4 framework adapters are built into the core package under `src/Integration/` and registered through composer auto-discovery; the application layer always faces the single `ConsulClient` entry point.
-- **Client** — `ConsulClient` exposes 11 API modules (`$client->kv`, `$client->health`, …) and 3 high-level wrappers (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) uniformly through `__get`; `ConsulAsyncClient` provides deferred Promise execution.
+- **Client** — `ConsulClient` exposes 18 API modules (`$client->kv`, `$client->health`, …) and 3 high-level wrappers (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) uniformly through `__get`; `ConsulAsyncClient` provides deferred Promise execution.
 - **High-level wrappers** — `Registry` / `Discovery` / `ConfigCenter` compose the API modules; `Watcher` implements long polling using the `X-Consul-Index` returned by `getWithHeaders()`.
 - **API modules** — one module maps to a group of Consul v1 endpoints, and all of them go in and out through the same `TransportInterface`.
 - **Transport layer** — `Psr18Transport` handles token injection, status code checks, JSON decoding and exception mapping, and is the only place in the package that touches the network.
@@ -615,7 +642,9 @@ Capability map: service registration and discovery, config center and hot reload
 ![consul-php lifecycle](./images/lifecycle.svg)
 
 - **Service instance lifecycle** — `register()` → passing (`heartbeat()` renews on a schedule) → warning → critical → automatic or explicit deregistration; a recovered heartbeat moves the instance from critical back to passing without re-registering.
-- **Config hot reload lifecycle** — `watch()` starts a blocking query (30s by default, carrying `X-Consul-Index`) → change detection → `onChange` callback + `ConfigChangedEvent`; when blocking fails it automatically falls back to interval polling (10s by default), and switches back to long polling after 5 consecutive successes; `stop()` lets it exit gracefully from another process / coroutine.
+- **Config hot reload lifecycle** — `watch()` starts a blocking query (30s by default, carrying `X-Consul-Index`) → change detection → `onChange` callback + `ConfigChangedEvent`; when blocking fails it automatically falls back to interval polling (10s by default) and switches back to long polling **after 5 consecutive successes** (any single failed poll resets the counter to zero).
+  Both setters have a 1-second lower bound (`setBlockingWait` / `setPollInterval`; an invalid value throws `InvalidArgumentException`) — an interval of 0 would busy-wait with no backoff, and a non-positive `wait` makes Consul fall back to its default 5-minute hold.
+  `stop()` flips **this instance's** flag: it works within the same process (Swoole coroutines included), and across processes you need a signal (`pcntl_signal` + `posix_kill`) or a process manager; in-flight requests take up to one wait period to exit.
 - **Single request lifecycle** — API module → `Psr18Transport` builds a PSR-17 request → injects `X-Consul-Token` → sends it over PSR-18 → checks the status code → decodes JSON (`getRaw()` returns raw bytes directly) → returns an array; 401/403/404/5xx and transport failures are mapped to their matching exceptions.
 
 ---

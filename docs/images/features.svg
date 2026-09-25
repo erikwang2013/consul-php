@@ -19,7 +19,7 @@
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="24" y="48">consul-php 功能设计</text>
-    <text class="sub" x="24" y="74">11 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口</text>
+    <text class="sub" x="24" y="74">18 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口</text>
 
     <!-- ===== 行 1 ===== -->
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
@@ -141,9 +141,9 @@
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
     <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776">PHP 8.0+，核心包零框架依赖</text>
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">完整覆盖 Consul HTTP API v1</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11 个 API 模块 + 3 个高层封装</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">18 个 API 模块 + 3 个高层封装</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842">只依赖 PSR 接口，HTTP 客户端可换</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 项单元测试 · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">594 项单元测试 · PHPStan L5</text>
 
     <!-- 汇总条 -->
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>

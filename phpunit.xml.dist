@@ -8,12 +8,13 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <!-- 全量统计 src，不再排除 src/Integration：排除会让报告里的百分比虚高。
+         依赖框架的适配器（Laravel/Hyperf/webman/ThinkPHP）在本测试环境里加载不了，
+         按 0% 如实计入；ClientFactory、NativeService 等能测的部分按实际覆盖计入。
+         要"可测子集"的口径时，再参照 phpstan.neon 的 excludePaths 自行排除。 -->
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src</directory>
         </include>
-        <exclude>
-            <directory suffix=".php">src/Integration</directory>
-        </exclude>
     </coverage>
 </phpunit>

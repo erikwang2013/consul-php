@@ -2,5 +2,10 @@ parameters:
     level: 5
     paths:
         - src/
+    # 只排除真正依赖框架（Laravel/Hyperf/webman/ThinkPHP）的胶水代码，
+    # ClientFactory 与 Native 是零框架依赖的，要照常分析
     excludePaths:
-        - src/Integration/
+        - src/Integration/Laravel
+        - src/Integration/Hyperf
+        - src/Integration/Webman
+        - src/Integration/Thinkphp

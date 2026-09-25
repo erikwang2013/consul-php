@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · keine Framework-Abhängigkeiten
 
 | | |
 |---|---|
-| **Was ist das** | Ein in reinem PHP implementierter Client für die Consul HTTP API v1: synchroner Einstieg + Promise, 11 API-Module, 3 High-Level-Wrapper |
+| **Was ist das** | Ein in reinem PHP implementierter Client für die Consul HTTP API v1: synchroner Einstieg + Promise, 18 API-Module, 3 High-Level-Wrapper |
 | **Wofür** | Damit PHP-Anwendungen Consul für Service-Registrierung/-Discovery und Hot-Reload der Konfiguration nutzen können, ohne pro Framework einen eigenen Client zu schreiben |
 | **Wie** | `composer require erikwang2013/consul-php` – Kernpaket ohne Framework-Abhängigkeiten, Framework-Adapter integriert und automatisch erkannt |
 | **Unterstützte Frameworks** | Laravel · Hyperf · webman · ThinkPHP — identische API, nur der Zugriff auf `$client` unterscheidet sich |
 | **Abhängigkeiten** | Nur PSR-Interfaces (PSR-18/17/16/14/3); HTTP-Client, Cache, Logging und EventDispatcher sind austauschbar |
-| **Qualitätssicherung** | PHP 8.0 – 8.4 · 338 Unit-Tests · PHPStan Level 5 · PHP CS Fixer (PSR-12) |
+| **Qualitätssicherung** | PHP 8.0 – 8.4 · 594 Unit-Tests · PHPStan Level 5 · PHP CS Fixer (PSR-12) |
 
 ### Kernfunktionen
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # Synchroner Einstieg: __get verteilt API-Module und High-Level-Wrapper
 │   │   ├── ConsulAsyncClient.php    # Client mit verzögerter Promise-Ausführung
 │   │   └── Promise.php              # Leichtgewichtige Promise-Implementierung
-│   ├── Api/                         # Module der Consul HTTP API v1 (11 Stück)
+│   ├── Api/                         # Module der Consul HTTP API v1 (18 Stück)
 │   │   ├── Agent.php                # Mitglieder, eigene Info, Wartungsmodus, join / leave
 │   │   ├── Catalog.php              # Service- und Knoten-Katalog: registrieren, abmelden, abfragen
 │   │   ├── Health.php               # Health-Checks: Service / Knoten / Filter nach Status
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # Cluster-Status: leader / peers
 │   │   ├── Coordinate.php           # Netzkoordinaten: datacenters / nodes
 │   │   ├── Operator.php             # Raft / Autopilot / Keyring-Betrieb
-│   │   └── Snapshot.php             # Snapshot sichern und wiederherstellen (Binärstrom)
+│   │   ├── Snapshot.php             # Snapshot sichern und wiederherstellen (Binärstrom)
+│   │   ├── Txn.php                  # Transaktionen: atomar über mehrere Schlüssel / Batch-CAS
+│   │   ├── ConfigEntry.php          # Konfigurationseinträge: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # Autorisierungskette im Service Mesh (intentions)
+│   │   ├── Query.php                # Prepared Queries: Failover / Near-Discovery
+│   │   ├── Peering.php              # Cluster-Peering
+│   │   ├── DiscoveryChain.php       # Mesh-Discovery-Chain: Routing / Split / Failover-Auflösung
+│   │   ├── ExportedService.php      # Service-Export & -Import über Partitionen / Peerings
 │   ├── Service/                     # Service-Registrierung und -Discovery
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // Callback, wenn Instanzen dazukommen oder wegfallen
 });
 
-// Beobachtung beenden (aus einem anderen Prozess / einer anderen Coroutine aufrufen)
+// Beobachtung beenden: setzt nur das Flag dieser Instanz, muss also im selben Prozess wie watch() laufen (Swoole-Coroutinen teilen den Speicher, das funktioniert)
+// Über Prozessgrenzen hinweg ein Signal nutzen (pcntl_signal + posix_kill) oder den Prozessmanager; laufende Anfragen brauchen bis zu eine wait-Periode, bis sie beendet sind
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // Callback bei Konfigurationsänderungen
     });
 $watcher->start(); // blockiert, in einen eigenen Prozess / eine eigene Coroutine legen
-// $watcher->stop();  // aus einem anderen Prozess / einer anderen Coroutine aufrufen, um die Beobachtung zu beenden
+// $watcher->stop();  // wirkt nur innerhalb desselben Prozesses (inkl. Coroutinen); über Prozessgrenzen hinweg ein Signal nutzen, siehe unten Lebenszyklus
 ```
 
 **Funktionsweise des Hot-Reloads:** Bevorzugt wird die Consul blocking query (Long-Polling über `index`); bei Netzwerkfehlern wird automatisch auf regelmäßiges Polling degradiert, sobald die Verbindung wieder steht, wird automatisch auf das Long-Polling zurückgeschaltet. Benachrichtigt wird über zwei Kanäle: Callback und PSR-14 EventDispatcher.
@@ -320,7 +328,7 @@ $watcher->start(); // blockiert, in einen eigenen Prozess / eine eigene Coroutin
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null bedeutet: nicht vorhanden
+$entry = $kv->get('key');              // fehlt der Schlüssel, wird eine NotFoundException geworfen (Consul liefert 404); null gibt es nur bei einer leeren Antwortliste
 $all = $kv->all('prefix/');            // rekursiv auflisten
 $keys = $kv->keys('prefix/');          // nur Schlüsselnamen
 $keys = $kv->keys('prefix/', '/');     // hierarchisch nach Trennzeichen auflisten
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+Von `config` unterstützte Schlüssel:
+
+| Schlüssel | Standard | Beschreibung |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | ergänzt ein fehlendes Schema automatisch um `http://` (Angaben wie `127.0.0.1:8500` aus einer Umgebungsvariable funktionieren direkt) |
+| `token` | — | ACL-Token, wird als `X-Consul-Token` injiziert |
+| `cache.enable` / `cache.ttl` | `false` / keiner | wirkt zusammen mit dem injizierten PSR-16-Cache auf `Discovery::healthyInstances()` und `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (unbegrenzt) | gilt nur für den eingebauten cURL-Client. **`total` nicht kleiner als `blockingWait` setzen**, sonst läuft das Long-Polling zwangsläufig in einen Timeout und wird degradiert |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | Anzahl der Wiederholungen und erster Backoff bei Transportfehlern (exponentiell wachsend); gilt nur für idempotente Methoden (GET/PUT/DELETE) |
+
 ---
 
 ## API-Modul-Übersicht
 
 | Eigenschaft | Klasse | Wichtigste Methoden |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` unterstützen `cas` `flags` `acquire` `release`) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (unterstützt mehrfache `node_meta`, `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (unterstützt blockierende Abfragen über `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (Konstanten: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (Konstanten: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (liefert die rohen Snapshot-Bytes über `getRaw()`) `restore` (sendet rohe Bytes über `putRaw()`) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (atomare Transaktion über mehrere Schlüssel) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / Gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (Autorisierungskette im Service Mesh) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (Prepared Queries: Failover / Near-Discovery) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (Cluster-Peering) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (Mesh Discovery Chain: aufgelöste Routen / Splits / Failover, unterstützt `compile-dc` und blockierende Abfragen) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (über Partitionen / Peering hinweg exportierte und importierte Services) |
+
+**Die zwei nicht unterstützten Endpunkte**: `/v1/agent/metrics/stream` und `/v1/agent/monitor` sind Streaming-Schnittstellen über dauerhafte Verbindungen (die erste schiebt Metriken, die zweite Echtzeit-Logs). Die Transportschicht dieser Bibliothek folgt dem Request-Response-Modell; ein Anschluss würde nur dauerhaft blockierende Aufrufe liefern, deshalb werden sie **bewusst nicht angeboten** – wer Streaming braucht, spricht den Agent direkt an. `Agent::metrics(['format' => 'prometheus'])` liefert `['format' => 'prometheus', 'body' => <Roh-Text>]`, weil das Prometheus-Format kein JSON ist.
 
 High-Level-Wrapper:
 
@@ -594,7 +621,7 @@ try {
 Die Abhängigkeiten laufen von oben nach unten, jede Schicht kennt nur die Abstraktion der darunterliegenden:
 
 - **Anwendungsschicht / Integrationsschicht** — 4 Framework-Adapter sind im Kernpaket unter `src/Integration/` enthalten und werden von composer automatisch erkannt und registriert; die Anwendungsschicht sieht immer nur einen Einstiegspunkt: `ConsulClient`.
-- **Client** — `ConsulClient` stellt über `__get` einheitlich 11 API-Module bereit (`$client->kv`, `$client->health` …) sowie 3 High-Level-Wrapper (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`); `ConsulAsyncClient` bietet die verzögerte Promise-Ausführung.
+- **Client** — `ConsulClient` stellt über `__get` einheitlich 18 API-Module bereit (`$client->kv`, `$client->health` …) sowie 3 High-Level-Wrapper (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`); `ConsulAsyncClient` bietet die verzögerte Promise-Ausführung.
 - **High-Level-Wrapper** — `Registry` / `Discovery` / `ConfigCenter` kombinieren die API-Module; `Watcher` nutzt den von `getWithHeaders()` gelieferten `X-Consul-Index` für das Long-Polling.
 - **API-Module** — ein Modul entspricht einer Gruppe von Consul-v1-Endpunkten, alle laufen über dieselbe `TransportInterface`.
 - **Transportschicht** — `Psr18Transport` ist für Token-Injektion, Prüfung des Statuscodes, JSON-Dekodierung und Exception-Mapping zuständig und der einzige Netzwerkausgang des gesamten Pakets.
@@ -615,7 +642,9 @@ Die Fähigkeitskarte: Service-Registrierung/-Discovery, Konfigurationszentrum un
 ![Lebenszyklus von consul-php](./images/lifecycle.svg)
 
 - **Lebenszyklus einer Service-Instanz** — `register()` → passing (regelmäßige Verlängerung durch `heartbeat()`) → warning → critical → automatisches oder aktives Abmelden; erholt sich der Heartbeat, geht es von critical zurück auf passing, ohne Neuregistrierung.
-- **Lebenszyklus des Konfig-Hot-Reloads** — `watch()` startet die blocking query (standardmäßig 30s, mit `X-Consul-Index`) → Änderungserkennung → `onChange`-Callback + `ConfigChangedEvent`; schlägt das Blockieren fehl, wird automatisch auf regelmäßiges Polling degradiert (standardmäßig 10s), nach 5 Erfolgen in Folge wird wieder auf Long-Polling geschaltet; `stop()` beendet die Beobachtung sauber aus einem anderen Prozess / einer anderen Coroutine.
+- **Lebenszyklus des Konfig-Hot-Reloads** — `watch()` startet die blocking query (standardmäßig 30s, mit `X-Consul-Index`) → Änderungserkennung → `onChange`-Callback + `ConfigChangedEvent`; schlägt das Blockieren fehl, wird automatisch auf regelmäßiges Polling degradiert (standardmäßig 10s), **nach 5 Erfolgen in Folge** wird wieder auf Long-Polling umgeschaltet (schlägt eine Polling-Runde fehl, wird der Zähler auf null gesetzt).
+  Beide Setter haben eine Untergrenze von 1 Sekunde (`setBlockingWait` / `setPollInterval`, ungültige Werte werfen eine `InvalidArgumentException`) – ein Intervall von 0 wäre ein geschäftiges Warten ohne Backoff, ein nicht positives `wait` lässt Consul auf die standardmäßige Haltezeit von 5 Minuten zurückfallen.
+  `stop()` setzt das Flag **dieser Instanz**: im selben Prozess (inkl. Swoole-Coroutinen) wirksam, über Prozessgrenzen hinweg braucht es ein Signal (`pcntl_signal` + `posix_kill`) oder den Prozessmanager; laufende Anfragen beenden sich erst nach höchstens einer wait-Periode.
 - **Lebenszyklus einer einzelnen Anfrage** — API-Modul → `Psr18Transport` baut die PSR-17-Anfrage zusammen → `X-Consul-Token` injizieren → über PSR-18 senden → Statuscode prüfen → JSON dekodieren (`getRaw()` liefert direkt die Rohbytes) → Array zurückgeben; 401/403/404/5xx und Transportfehler werden jeweils auf die passende Exception abgebildet.
 
 ---

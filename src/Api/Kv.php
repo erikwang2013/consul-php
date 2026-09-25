@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Erikwang2013\Consul\Api;
 
+use Erikwang2013\Consul\Support\Boolean;
 use Erikwang2013\Consul\Transport\TransportInterface;
 
 class Kv
@@ -45,8 +46,9 @@ class Kv
 
     public function delete(string $key, array $options = []): bool
     {
-        $this->transport->delete('/v1/kv/' . $this->encodeKey($key), $options);
-        return true;
+        $response = $this->transport->delete('/v1/kv/' . $this->encodeKey($key), $options);
+        // 与 put() 一致：DELETE /v1/kv/:key?cas=N 在 CAS 失败时仍返回 200，body 为 false
+        return ($response['body'] ?? null) === true;
     }
 
     public function keys(string $prefix = '', string $separator = ''): array
@@ -80,6 +82,15 @@ class Kv
     private function buildQuery(array $options): array
     {
         $query = array_intersect_key($options, array_flip(['dc', 'index', 'wait', 'ns', 'partition', 'cas']));
+
+        // 一致性参数（上游 agent/http.go 的 parseConsistency）：stale 跟随者读降延迟、consistent 走 leader。
+        // 归一成字符串 "true"——上游是 `b.Get("stale") == "true"`，布尔 true 会被编成 stale=1 而读不到。
+        foreach (['stale', 'consistent'] as $flag) {
+            if (Boolean::isTrue($options[$flag] ?? false)) {
+                $query[$flag] = 'true';
+            }
+        }
+
         if (isset($options['raw'])) {
             $query['raw'] = 'true';
         }

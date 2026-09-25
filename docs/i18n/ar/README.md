@@ -16,12 +16,12 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · بلا اعتماد على أطر ال
 
 | | |
 |---|---|
-| **ما هو** | عميل Consul HTTP API v1 مكتوب بلغة PHP خالصة: مدخلان متزامن و Promise، و11 وحدة API، و3 تغليفات عالية المستوى |
+| **ما هو** | عميل Consul HTTP API v1 مكتوب بلغة PHP خالصة: مدخلان متزامن و Promise، و18 وحدة API، و3 تغليفات عالية المستوى |
 | **ما الذي يحلّه** | يُمكّن تطبيقات PHP من الاتصال بـ Consul لتسجيل الخدمات واكتشافها وتحديث الإعدادات لحظيًا، دون إعادة كتابة عميل لكل إطار عمل |
 | **كيف يُستخدم** | `composer require erikwang2013/consul-php`، الحزمة الأساسية بلا اعتماد على أطر العمل، ودعم الأطر مدمج ويُكتشف تلقائيًا |
 | **الأطر المدعومة** | Laravel · Hyperf · webman · ThinkPHP —— واجهة API متطابقة تمامًا، والفرق فقط في طريقة الحصول على `$client` |
 | **اصطلاح الاعتماديات** | يعتمد على واجهات PSR فقط (PSR-18/17/16/14/3)، ويمكن استبدال عميل HTTP والتخزين المؤقت والسجلات وموزّع الأحداث |
-| **ضمان الجودة** | PHP 8.0 – 8.4 · 338 اختبار وحدة · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+| **ضمان الجودة** | PHP 8.0 – 8.4 · 594 اختبار وحدة · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
 ### القدرات الأساسية
 
@@ -60,7 +60,7 @@ consul-php/
 │   │   ├── ConsulClient.php         # المدخل المتزامن: __get يوزّع وحدات API والتغليفات العالية
 │   │   ├── ConsulAsyncClient.php    # عميل Promise للتنفيذ المؤجَّل
 │   │   └── Promise.php              # تنفيذ Promise خفيف
-│   ├── Api/                         # وحدات Consul HTTP API v1 (11 وحدة)
+│   ├── Api/                         # وحدات Consul HTTP API v1 (18 وحدة)
 │   │   ├── Agent.php                # الأعضاء، معلومات العقدة، وضع الصيانة، join / leave
 │   │   ├── Catalog.php              # دليل الخدمات والعقد: التسجيل، إلغاء التسجيل، الاستعلام
 │   │   ├── Health.php               # فحص السلامة: خدمة / عقدة / تصفية حسب الحالة
@@ -71,7 +71,14 @@ consul-php/
 │   │   ├── Status.php               # حالة العنقود: leader / peers
 │   │   ├── Coordinate.php           # الإحداثيات الشبكية: datacenters / nodes
 │   │   ├── Operator.php             # عمليات Raft / Autopilot / Keyring
-│   │   └── Snapshot.php             # نسخ احتياطي واستعادة اللقطات (تدفق ثنائي)
+│   │   ├── Snapshot.php             # نسخ احتياطي واستعادة اللقطات (تدفق ثنائي)
+│   │   ├── Txn.php                  # المعاملات: مفاتيح متعددة ذرّية / CAS دفعي
+│   │   ├── ConfigEntry.php          # مدخلات الإعدادات: mesh / gateway / service-intentions
+│   │   ├── Connect.php              # سلسلة تفويض service mesh (intentions)
+│   │   ├── Query.php                # استعلامات مُعدّة مسبقًا: التحويل عند الفشل / الاكتشاف الأقرب
+│   │   ├── Peering.php              # peering العنقود
+│   │   ├── DiscoveryChain.php       # سلسلة اكتشاف mesh: تحليل التوجيه / التقسيم / التحويل عند الفشل
+│   │   └── ExportedService.php      # تصدير واستيراد الخدمات عبر الأقسام / peering
 │   ├── Service/                     # تسجيل الخدمات واكتشافها
 │   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
 │   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
@@ -278,7 +285,8 @@ $discovery->watch('user-service', function (array $instances) {
     // يُستدعى عند دخول أو خروج نسخة
 });
 
-// إيقاف المراقبة (يُستدعى من عملية / coroutine أخرى)
+// إيقاف المراقبة: يقلب راية هذا الكائن فقط، فيلزم أن يكون في العملية نفسها التي يعمل فيها watch() (ذاكرة Swoole coroutine مشتركة، وهذا ممكن)
+// وعبر العمليات استخدم الإشارات (pcntl_signal + posix_kill) أو مدير العمليات؛ والطلب الجاري ينتظر دورة wait واحدة كحد أقصى قبل الخروج
 $discovery->stop();
 ```
 
@@ -307,7 +315,7 @@ $watcher
         // استدعاء عند تغيّر الإعدادات
     });
 $watcher->start(); // حاجب، ضعه في عملية / coroutine مستقلة
-// $watcher->stop();  // يُستدعى من عملية / coroutine أخرى لإيقاف المراقبة
+// $watcher->stop();  // لا يسري إلا داخل العملية نفسها (بما فيها الـ coroutine)؛ وعبر العمليات استخدم الإشارات، راجع قسم دورة الحياة أدناه
 ```
 
 **مبدأ التحديث اللحظي:** يفضّل Consul blocking query (الاستقصاء الطويل عبر `index`)، وعند خطأ الشبكة يُخفَّض تلقائيًا إلى استقصاء دوري، وبعد استعادة الاتصال يرجع تلقائيًا إلى الاستقصاء الطويل. الإشعار يمر عبر قناتين: الاستدعاء (callback) و PSR-14 EventDispatcher.
@@ -320,7 +328,7 @@ $watcher->start(); // حاجب، ضعه في عملية / coroutine مستقلة
 $kv = $client->kv;
 
 $kv->put('key', 'value');
-$entry = $kv->get('key');              // null يعني غير موجود
+$entry = $kv->get('key');              // يُطلق NotFoundException عند غياب المفتاح (Consul يعيد 404)؛ ولا يكون null إلا عندما يكون الرد مصفوفة فارغة
 $all = $kv->all('prefix/');            // سرد تعاودي
 $keys = $kv->keys('prefix/');          // أسماء المفاتيح فقط
 $keys = $kv->keys('prefix/', '/');     // سرد هرمي حسب الفاصل
@@ -532,23 +540,42 @@ $client = new ConsulClient(
 );
 ```
 
+المفاتيح التي يدعمها `config`:
+
+| المفتاح | الافتراضي | الوصف |
+|---|---|---|
+| `base_uri` | `http://127.0.0.1:8500` | تُضاف `http://` تلقائيًا عند غياب `scheme` (فالكتابة المنسوخة من متغير بيئة مثل `127.0.0.1:8500` تعمل مباشرةً)|
+| `token` | — | ACL Token، يُحقن في `X-Consul-Token` |
+| `cache.enable` / `cache.ttl` | `false` / بلا | بالتعاون مع تخزين PSR-16 المؤقت المحقون، ويعملان على `Discovery::healthyInstances()` و `ConfigCenter::get()` |
+| `timeout.connect` / `timeout.total` | `3.0` / `0` (بلا حد) | يستخدمهما عميل cURL المدمج وحده. **لا تجعل `total` أصغر من `blockingWait`**، وإلا عُدّ الاستقصاء الطويل متجاوزًا للمهلة حتمًا وتم تخفيضه |
+| `retry.times` / `retry.delay_ms` | `0` / `50` | عدد محاولات الإعادة وتأخير التباعد الأول عند فشل النقل (بنمو أُسّي)؛ ويعملان مع الطرق المتكافئة (idempotent) فقط (GET/PUT/DELETE) |
+
 ---
 
 ## مرجع سريع لوحدات API
 
 | الخاصية | الفئة | أهم الطرق |
 |------|-----|---------|
-| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` |
-| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` |
-| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` |
-| `$client->health` | `Api\Health` | `service` `node` `checks` `state` |
+| `$client->kv` | `Api\Kv` | `get` `put` `delete` `all` `keys` (`put`/`delete` تدعمان `cas` `flags` `acquire` `release`) |
+| `$client->agent` | `Api\Agent` | `members` `self` `registerService` `deregisterService` `checks` `services` `service` `healthServiceByName` `healthServiceById` `checkRegister` `checkUpdate` `checkDeregister` `checkPass/Fail/Warn` `maintenance` `join` `forceLeave` `leave` `reload` `host` `version` `metrics` `connectAuthorize` `connectCaRoots` `connectCaLeaf` `updateToken` |
+| `$client->catalog` | `Api\Catalog` | `register` `deregister` `nodes` `services` `service` `node` `nodeServices` `connect` `datacenters` `gatewayServices` |
+| `$client->health` | `Api\Health` | `service` `node` `checks` `state` `connect` `ingress` (تدعمان `node_meta` متعددة القيم، و `stale`/`consistent`/`max_stale`) |
 | `$client->session` | `Api\Session` | `create` `destroy` `renew` `info` `all` `node` |
-| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `login` `logout` `bootstrap` |
-| `$client->event` | `Api\Event` | `fire` `list` |
+| `$client->acl` | `Api\Acl` | `token*` `policy*` `role*` `authMethod*` `bindingRule*` `login` `logout` `bootstrap` `replication` `translate` |
+| `$client->event` | `Api\Event` | `fire` `list` (تدعمان الاستعلام الحاجب `index`/`wait`) |
 | `$client->status` | `Api\Status` | `leader` `peers` |
-| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` |
-| `$client->operator` | `Api\Operator` | `raftConfig` `autopilotConfig` `keyring` (الثوابت: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
+| `$client->coordinate` | `Api\Coordinate` | `datacenters` `nodes` `node` `update` |
+| `$client->operator` | `Api\Operator` | `raftConfig` `raftPeer` `raftTransferLeader` `autopilotConfig` `autopilotHealth` `autopilotState` `features` `feature` `keyring` (الثوابت: `KEYRING_LIST` `KEYRING_INSTALL` `KEYRING_USE` `KEYRING_REMOVE`) |
 | `$client->snapshot` | `Api\Snapshot` | `save` (يعيد بايتات اللقطة الخام عبر `getRaw()`) `restore` (يرسل بايتات خام عبر `putRaw()`) |
+| `$client->txn` | `Api\Txn` | `apply` + `set` `cas` `lock` `unlock` `get` `getTree` `delete` `deleteTree` `deleteCas` `checkIndex` `checkSession` `checkNotExists` `raw` (معاملة ذرّية متعددة المفاتيح) |
+| `$client->configEntry` | `Api\ConfigEntry` | `set` `get` `list` `delete` (`service-defaults` / `proxy-defaults` / `mesh` / gateway / `service-intentions` / `exported-services`) |
+| `$client->connect` | `Api\Connect` | `intentions` `intentionCreate` `intentionRead` `intentionUpdate` `intentionDelete` `intentionMatch` `intentionCheck` (سلسلة تفويض service mesh) |
+| `$client->query` | `Api\Query` | `list` `create` `read` `update` `delete` `execute` `explain` (استعلامات مُعدّة مسبقًا: التحويل عند الفشل / الاكتشاف الأقرب) |
+| `$client->peering` | `Api\Peering` | `generateToken` `establish` `list` `read` `delete` (peering العنقود) |
+| `$client->discoveryChain` | `Api\DiscoveryChain` | `read` (سلسلة اكتشاف mesh: نتيجة تحليل التوجيه / التقسيم / التحويل عند الفشل، وتدعم `compile-dc` والاستعلام الحاجب) |
+| `$client->exportedService` | `Api\ExportedService` | `exported` `imported` (الخدمات المُصدَّرة والمستوردة عبر الأقسام / peering) |
+
+**نقطتا نهاية غير مدعومتين**: إن `/v1/agent/metrics/stream` و `/v1/agent/monitor` واجهتان متدفقتان باتصال طويل (الأولى تدفع المقاييس، والثانية تدفع السجلات اللحظية)، وطبقة النقل في هذه الحزمة مبنية على نموذج الطلب-الرد، فاستدعاؤهما لا يعطي إلا حجبًا دائمًا، ولذلك **لا نوفّرهما عمدًا** —— وإذا احتجت إلى قدرات التدفق فوجّه الطلبات إلى Agent مباشرة. وتُعيد `Agent::metrics(['format' => 'prometheus'])` القيمة `['format' => 'prometheus', 'body' => <النص الخام>]`، لأن صيغة Prometheus ليست JSON.
 
 التغليفات عالية المستوى:
 
@@ -594,7 +621,7 @@ try {
 اتجاه الاعتماديات من الأعلى إلى الأسفل، وكل طبقة تعتمد فقط على تجريدات الطبقة الأدنى منها:
 
 - **طبقة التطبيق / طبقة الدمج** —— دعم الأطر الأربعة مدمج في الحزمة الأساسية `src/Integration/` ويُكتشف ويُسجَّل تلقائيًا عبر composer؛ وطبقة التطبيق تتعامل دائمًا مع مدخل واحد فقط هو `ConsulClient`.
-- **العميل** —— `ConsulClient` يكشف عبر `__get` إحدى عشرة وحدة API (`$client->kv`، `$client->health` …) و3 تغليفات عالية المستوى (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`)؛ و`ConsulAsyncClient` يوفّر التنفيذ المؤجَّل عبر Promise.
+- **العميل** —— `ConsulClient` يكشف عبر `__get` ثماني عشرة وحدة API (`$client->kv`، `$client->health` …) و3 تغليفات عالية المستوى (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`)؛ و`ConsulAsyncClient` يوفّر التنفيذ المؤجَّل عبر Promise.
 - **التغليفات عالية المستوى** —— `Registry` / `Discovery` / `ConfigCenter` تجمع وحدات API؛ و`Watcher` يعتمد على `X-Consul-Index` الذي يعيده `getWithHeaders()` لتنفيذ الاستقصاء الطويل.
 - **وحدات API** —— كل وحدة تقابل مجموعة من نقاط نهاية Consul v1، وكلها تمر عبر `TransportInterface` نفسه.
 - **طبقة النقل** —— `Psr18Transport` مسؤولة عن حقن Token وفحص رمز الحالة وفك ترميز JSON وتحويل الاستثناءات، وهي نقطة الخروج الشبكية الوحيدة في الحزمة كلها.
@@ -615,7 +642,9 @@ try {
 ![دورة حياة consul-php](./images/lifecycle.svg)
 
 - **دورة حياة نسخة الخدمة** —— `register()` → passing (تجديد دوري عبر `heartbeat()`) → warning → critical → إلغاء تسجيل تلقائي أو يدوي؛ وعند تعافي النبضة يمكن العودة من critical إلى passing دون إعادة التسجيل.
-- **دورة حياة التحديث اللحظي للإعدادات** —— `watch()` يبدأ blocking query (افتراضيًا 30s، مع `X-Consul-Index`) → كشف التغيير → استدعاء `onChange` + `ConfigChangedEvent`؛ وعند فشل الحجب يُخفَّض تلقائيًا إلى استقصاء دوري (افتراضيًا 10s)، وبعد 5 نجاحات متتالية يرجع إلى الاستقصاء الطويل؛ و`stop()` يسمح بالخروج بسلاسة من عملية / coroutine أخرى.
+- **دورة حياة التحديث اللحظي للإعدادات** —— `watch()` يبدأ blocking query (افتراضيًا 30s، مع `X-Consul-Index`) → كشف التغيير → استدعاء `onChange` + `ConfigChangedEvent`؛ وعند فشل الحجب يُخفَّض تلقائيًا إلى استقصاء دوري (افتراضيًا 10s)، ويعود إلى الاستقصاء الطويل **بعد 5 نجاحات متتالية** (وأي فشل في دورة استقصاء واحدة يصفّر العدّاد).
+  ولكلا الضابطين حدّ أدنى قدره ثانية واحدة (`setBlockingWait` / `setPollInterval`، والقيمة غير الصالحة تُطلق `InvalidArgumentException`) —— فالفاصل 0 يعني انتظارًا حارًّا (busy wait) بلا تهدئة، وقيمة `wait` غير موجبة تجعل Consul يتراجع إلى المدة الافتراضية 5 دقائق.
+  و`stop()` يقلب راية **هذا الكائن**: يسري داخل العملية نفسها (بما فيها Swoole coroutine)، وعبر العمليات يلزم استخدام الإشارات (`pcntl_signal` + `posix_kill`) أو مدير العمليات؛ والطلب الجاري ينتظر دورة wait واحدة كحد أقصى قبل الخروج.
 - **دورة حياة الطلب الواحد** —— وحدة API → `Psr18Transport` يبني طلب PSR-17 → حقن `X-Consul-Token` → الإرسال عبر PSR-18 → فحص رمز الحالة → فك ترميز JSON (`getRaw()` يعيد البايتات الخام مباشرة) → إعادة مصفوفة؛ وتُحوَّل حالات 401/403/404/5xx وفشل النقل إلى الاستثناءات المقابلة.
 
 ---

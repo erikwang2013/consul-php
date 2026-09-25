@@ -47,24 +47,6 @@ class AclTest extends TestCase
         $this->assertSame(42, $result['ReplicatedIndex']);
     }
 
-    public function testTranslate(): void
-    {
-        $this->transport->method('get')
-            ->with('/v1/acl/rules/translate/abc-123')
-            ->willReturn(['body' => 'node "" { policy = "read" }']);
-
-        $this->assertStringContainsString('policy = "read"', $this->acl->translate('abc-123')['body']);
-    }
-
-    public function testTranslateEncodesAccessorId(): void
-    {
-        $this->transport->method('get')
-            ->with('/v1/acl/rules/translate/a%20b%2Fc')
-            ->willReturn(['body' => '']);
-
-        $this->assertSame('', $this->acl->translate('a b/c')['body']);
-    }
-
     public function testTokenList(): void
     {
         $this->transport->method('get')
@@ -271,6 +253,62 @@ class AclTest extends TestCase
             ->with('/v1/acl/auth-method/kubernetes');
 
         $this->acl->authMethodDelete('kubernetes');
+    }
+
+    public function testBindingRuleList(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/acl/binding-rules')
+            ->willReturn([['ID' => 'rule-1']]);
+
+        $this->assertCount(1, $this->acl->bindingRuleList());
+    }
+
+    public function testBindingRuleCreate(): void
+    {
+        $rule = ['AuthMethod' => 'kubernetes', 'BindType' => 'role', 'BindName' => 'dev'];
+        $this->transport->method('put')
+            ->with('/v1/acl/binding-rule', $rule)
+            ->willReturn(['ID' => 'rule-1'] + $rule);
+
+        $this->assertSame('rule-1', $this->acl->bindingRuleCreate($rule)['ID']);
+    }
+
+    public function testBindingRuleRead(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/acl/binding-rule/rule-1')
+            ->willReturn(['ID' => 'rule-1', 'BindName' => 'dev']);
+
+        $this->assertSame('dev', $this->acl->bindingRuleRead('rule-1')['BindName']);
+    }
+
+    public function testBindingRuleReadEncodesId(): void
+    {
+        $this->transport->method('get')
+            ->with('/v1/acl/binding-rule/a%2Fb')
+            ->willReturn([]);
+
+        $this->assertSame([], $this->acl->bindingRuleRead('a/b'));
+    }
+
+    public function testBindingRuleUpdate(): void
+    {
+        $rule = ['AuthMethod' => 'kubernetes', 'BindType' => 'role', 'BindName' => 'ops'];
+        $this->transport->method('put')
+            ->with('/v1/acl/binding-rule/rule-1', $rule)
+            ->willReturn(['ID' => 'rule-1'] + $rule);
+
+        $this->assertSame('ops', $this->acl->bindingRuleUpdate('rule-1', $rule)['BindName']);
+    }
+
+    public function testBindingRuleDelete(): void
+    {
+        $this->transport->expects($this->once())
+            ->method('delete')
+            ->with('/v1/acl/binding-rule/rule-1');
+
+        $this->acl->bindingRuleDelete('rule-1');
     }
 
     public function testLogin(): void

@@ -19,7 +19,7 @@
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="976" y="48" text-anchor="end">تصميم وظائف consul-php</text>
-    <text class="sub" x="976" y="74" text-anchor="end">11 وحدة API + 3 تغليفات + دعم 4 أطر: خريطة القدرات والمداخل</text>
+    <text class="sub" x="976" y="74" text-anchor="end">18 وحدة API + 3 تغليفات + دعم 4 أطر: خريطة القدرات والمداخل</text>
     <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="972" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="958" y="140" text-anchor="end">تسجيل الخدمات</text>
@@ -133,9 +133,9 @@
     <text class="capi" x="316" y="746" text-anchor="end">composer require erikwang2013/consul-php</text>
     <circle cx="312" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="776" style="font-size:11.7px" text-anchor="end">PHP 8.0+، الحزمة الأساسية بلا اعتماد على أطر</text>
     <circle cx="312" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="798" text-anchor="end">تغطية كاملة لـ Consul HTTP API v1</text>
-    <circle cx="312" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="820" text-anchor="end">11 وحدة API + 3 تغليفات عالية المستوى</text>
+    <circle cx="312" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="820" text-anchor="end">18 وحدة API + 3 تغليفات عالية المستوى</text>
     <circle cx="312" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="842" style="font-size:8.9px" text-anchor="end">يعتمد على واجهات PSR فقط، وعميل HTTP قابل للاستبدال</text>
-    <circle cx="312" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="864" text-anchor="end">338 اختبار وحدة · PHPStan L5</text>
+    <circle cx="312" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="300" y="864" text-anchor="end">594 اختبار وحدة · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="956" y="920" style="font-size:12.4px" text-anchor="end">واجهة API واحدة، وأربعة أطر</text>
     <text class="cl" x="800" y="920" style="font-size:11px" text-anchor="end">Laravel · Hyperf · webman · ThinkPHP —— الحزمة الأساسية بلا اعتماديات، ودعم الأطر مدمج، ويكفي أمر composer require واحد</text>

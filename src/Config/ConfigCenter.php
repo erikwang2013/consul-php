@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Erikwang2013\Consul\Config;
 
 use Erikwang2013\Consul\Api\Kv;
+use Erikwang2013\Consul\Exception\NotFoundException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\SimpleCache\CacheInterface;
 
@@ -38,8 +39,14 @@ class ConfigCenter
             }
         }
 
-        $result = $this->kv->get($key);
+        try {
+            $result = $this->kv->get($key);
+        } catch (NotFoundException) {
+            // Consul 对不存在的键返回 404（传输层转成 NotFoundException），这才是"键不存在"的正常路径
+            return $default;
+        }
 
+        // 兜底：传输层返回空结果时 Kv::get() 也会给出 null
         if ($result === null) {
             return $default;
         }
@@ -68,7 +75,13 @@ class ConfigCenter
             }
         }
 
-        $result = $this->kv->all($prefix);
+        try {
+            $result = $this->kv->all($prefix);
+        } catch (NotFoundException) {
+            // 前缀下没有任何键时 Consul 返回 404，语义等同"空命名空间"
+            $result = [];
+        }
+
         $config = [];
 
         foreach ($result as $item) {

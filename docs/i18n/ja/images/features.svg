@@ -19,7 +19,7 @@
   <rect width="1000" height="970" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="24" y="48">consul-php 機能設計</text>
-    <text class="sub" x="24" y="74">11 個の API モジュール + 3 個の高レベルラッパー + 4 フレームワーク対応：ケイパビリティマップと対応する入口</text>
+    <text class="sub" x="24" y="74">18 個の API モジュール + 3 個の高レベルラッパー + 4 フレームワーク対応：ケイパビリティマップと対応する入口</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="42" y="140">サービス登録</text>
@@ -133,9 +133,9 @@
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
     <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:10.9px">PHP 8.0+、コアパッケージはフレームワーク非依存</text>
     <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">Consul HTTP API v1 を完全にカバー</text>
-    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.1px">11 個の API モジュール + 3 個の高レベルラッパー</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:11.1px">18 個の API モジュール + 3 個の高レベルラッパー</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8px">PSR インターフェースのみに依存、HTTP クライアントは差し替え可能</text>
-    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">338 件のユニットテスト · PHPStan L5</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">594 件のユニットテスト · PHPStan L5</text>
     <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
     <text class="ct" x="44" y="920" style="font-size:11px">同じ API、4 フレームワーク</text>
     <text class="cl" x="200" y="920" style="font-size:10.1px">Laravel · Hyperf · webman · ThinkPHP —— コアパッケージはフレームワーク非依存、アダプタは内蔵、composer require ひとつで使えます</text>

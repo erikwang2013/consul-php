@@ -12,6 +12,6 @@ use RuntimeException;
  *
  * 按 PSR-18 要求实现 ClientExceptionInterface；HTTP 4xx/5xx 不算传输错误，不走这里。
  */
-final class HttpClientException extends RuntimeException implements ClientExceptionInterface
+class HttpClientException extends RuntimeException implements ClientExceptionInterface
 {
 }
