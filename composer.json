@@ -41,6 +41,9 @@
             "Erikwang2013\\Consul\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "pet": "@php scripts/pet.php"
+    },
     "extra": {
         "laravel": {
             "providers": [

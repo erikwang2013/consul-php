@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-label="consul-php Lebenszyklusdiagramm">
+  <title>consul-php Lebenszyklus: Service-Instanz · Konfig-Hot-Reload · Einzelanfrage</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .lt { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .chip { font-size: 11px; fill: #8B93A7; }
+    .bt { font-size: 12.5px; font-weight: 600; fill: #E8ECF5; }
+    .bs { font-size: 10.5px; fill: #98A1B5; }
+    .al { font-size: 10.5px; fill: #8B93A7; }
+    .note { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5A6288"/>
+    </marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#35D07F"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="990" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48" style="font-size:19.1px">consul-php Lebenszyklus</text>
+    <text class="sub" x="24" y="74" style="font-size:9.4px">Drei zentrale Lebenszyklen: Statuswechsel der Service-Instanz · Konfig-Hot-Reload (Long-Polling und Degradierung) · Verarbeitung einer Anfrage</text>
+    <rect x="24" y="100" width="952" height="232" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="lt" x="58" y="136" style="font-size:10.2px">① Service-Instanz-Lebenszyklus · Service\Registry</text>
+    <text class="chip" x="956" y="136" text-anchor="end">register → heartbeat → deregister</text>
+
+    <rect x="24" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="99" y="214" text-anchor="middle" style="font-size:9px">nicht registriert</text>
+    <text class="bs" x="99" y="236" text-anchor="middle" style="font-size:7.6px">Service nicht im Consul-Katalog</text>
+
+    <rect x="224" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0" style="font-size:9.1px">passing – gesund</text>
+    <text class="bs" x="299" y="236" text-anchor="middle" style="font-size:7.6px">TTL-Heartbeat OK</text>
+    <text class="bs" x="299" y="252" text-anchor="middle" style="font-size:7.6px">von der Service Discovery wählbar</text>
+    <path d="M274 180 C274 158 324 158 324 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
+    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92" style="font-size:7.6px">heartbeat() verlängert</text>
+
+    <rect x="424" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066" style="font-size:9px">warning – Warnung</text>
+    <text class="bs" x="499" y="236" text-anchor="middle" style="font-size:7.6px">Check meldet einen Fehlerstatus</text>
+    <text class="bs" x="499" y="252" text-anchor="middle" style="font-size:7.6px">bleibt im Katalog, bei Bedarf filterbar</text>
+
+    <rect x="624" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
+    <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F" style="font-size:9px">critical – kritisch</text>
+    <text class="bs" x="699" y="236" text-anchor="middle" style="font-size:7.6px">Heartbeat-Timeout / Prüfung fehlgeschlagen</text>
+    <text class="bs" x="699" y="252" text-anchor="middle" style="font-size:7.6px">healthyInstances liefert sie nicht mehr</text>
+
+    <rect x="824" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="899" y="214" text-anchor="middle" style="font-size:9px">abgemeldet</text>
+    <text class="bs" x="899" y="236" text-anchor="middle" style="font-size:7.6px">sauberes Abmelden oder automatische Bereinigung</text>
+
+    <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
+    <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="397" y="212" text-anchor="middle" style="font-size:7.6px">Check meldet Warnung</text>
+    <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="597" y="212" text-anchor="middle" style="font-size:7.6px">Heartbeat-Timeout</text>
+    <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="797" y="212" text-anchor="middle" style="font-size:7.6px">automatische oder aktive Abmeldung</text>
+
+    <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
+    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92" style="font-size:7.9px">heartbeat() normalisiert → zurück zu passing, ohne Neuregistrierung</text>
+    <rect x="24" y="352" width="952" height="320" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="372" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="lt" x="58" y="388" style="font-size:10.1px">② Lebenszyklus des Konfig-Hot-Reloads · Config\Watcher</text>
+    <text class="chip" x="956" y="388" text-anchor="end" style="font-size:7.9px">blocking query zuerst, bei Fehlern automatisch degradieren und erholen</text>
+
+    <rect x="24" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="99" y="432" text-anchor="middle">① watch(prefix)</text>
+    <text class="bs" x="99" y="452" text-anchor="middle" style="font-size:7.6px">Watcher startet</text>
+
+    <rect x="200" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
+    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4" style="font-size:9px">② blocking query – blockierendes Long-Polling</text>
+    <text class="bs" x="365" y="452" text-anchor="middle" style="font-size:8.5px">Standard 30s Timeout mit X-Consul-Index-Cursor</text>
+
+    <rect x="556" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="641" y="432" text-anchor="middle" style="font-size:9px">③ Änderungserkennung</text>
+    <text class="bs" x="641" y="452" text-anchor="middle" style="font-size:7.6px">index rückt vor + Snapshot-Vergleich</text>
+
+    <rect x="752" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="864" y="432" text-anchor="middle" style="font-size:9px">④ Benachrichtigung ↺</text>
+    <text class="bs" x="864" y="452" text-anchor="middle" style="font-size:8.4px">onChange-Callback + PSR-14-Events</text>
+
+    <path d="M174 438 H196" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M530 438 H552" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M726 438 H748" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="864" y="494" text-anchor="middle" style="font-size:7.6px">keine Änderung: index rückt vor, zurück zu ②</text>
+
+    <path d="M250 470 V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="262" y="506" style="font-size:7.6px">blocking fehlgeschlagen / Timeout</text>
+
+    <rect x="214" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066" style="font-size:9px">⑤ Degradierung auf Polling</text>
+    <text class="bs" x="314" y="582" text-anchor="middle" style="font-size:9px">Standard 10s, setPollInterval()</text>
+
+    <rect x="440" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="540" y="562" text-anchor="middle" style="font-size:9px">⑥ 5 Erfolge in Folge</text>
+    <text class="bs" x="540" y="582" text-anchor="middle" style="font-size:7.6px">Zähler erreicht</text>
+
+    <rect x="666" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0" style="font-size:9px">⑦ Blocking Query automatisch wiederhergestellt ↺</text>
+    <text class="bs" x="796" y="582" text-anchor="middle" style="font-size:7.6px">zurück zu ②, Zähler auf null</text>
+
+    <path d="M414 568 H436" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M640 568 H662" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="note" x="44" y="640" style="font-size:7.9px">stop() kann jederzeit aus einem anderen Prozess / einer Coroutine heraus den Watcher sauber beenden; Cache- und Watch-Kanal sind getrennt, der Watcher liest immer die Live-Werte von Consul.</text>
+    <rect x="24" y="692" width="952" height="274" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="lt" x="58" y="728" style="font-size:11.1px">③ Lebenszyklus einer Anfrage · Api → Transport → PSR-18</text>
+    <text class="chip" x="956" y="728" text-anchor="end" style="font-size:7.9px">synchroner Aufruf, ein Roundtrip</text>
+
+    <rect x="24" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="124" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
+    <text class="bs" x="124" y="790" text-anchor="middle" style="font-size:7.6px">Aufrufer startet</text>
+
+    <rect x="250" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="345" y="770" text-anchor="middle" style="font-size:9.1px">② __get-Dispatch</text>
+    <text class="bs" x="345" y="790" text-anchor="middle" style="font-size:7.6px">Modul wird einmalig instanziiert</text>
+
+    <rect x="466" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
+    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7" style="font-size:9.2px">③ Psr18Transport baut die Anfrage</text>
+    <text class="bs" x="616" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
+
+    <rect x="792" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="884" y="770" text-anchor="middle" style="font-size:9px">④ Token injizieren</text>
+    <text class="bs" x="884" y="790" text-anchor="middle">X-Consul-Token</text>
+
+    <path d="M224 772 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M440 772 H462" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M766 772 H788" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <path d="M884 800 V 818 H 124 V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <rect x="24" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="124" y="864" text-anchor="middle" style="font-size:9.1px">⑤ HTTP-Anfrage senden</text>
+    <text class="bs" x="124" y="884" text-anchor="middle" style="font-size:9px">Guzzle / Swoole / individuell · PSR-18</text>
+
+    <rect x="250" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="335" y="864" text-anchor="middle" style="font-size:9px">⑥ Statuscode-Prüfung</text>
+    <text class="bs" x="335" y="884" text-anchor="middle" style="font-size:9.5px">4xx-/5xx-Zweige</text>
+
+    <rect x="446" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="584" y="864" text-anchor="middle" style="font-size:9px">⑦ JSON-Dekodierung</text>
+    <text class="bs" x="584" y="884" text-anchor="middle" style="font-size:9.1px">getRaw liefert Rohbytes (Snapshot)</text>
+
+    <rect x="748" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0" style="font-size:10.3px">⑧ Rückgabe array | string</text>
+    <text class="bs" x="862" y="884" text-anchor="middle" style="font-size:7.6px">geht an den High-Level-Wrapper weiter</text>
+
+    <path d="M224 866 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M420 866 H442" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M722 866 H744" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <text class="note" x="44" y="924" style="font-size:10px">Exception-Zweige: 401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
+    <text class="note" x="44" y="944" style="font-size:8.7px">　　　　　5xx → ServerException · Verbindung / Dekodierung fehlgeschlagen → ClientException (übrige 4xx → ConsulRequestException)</text>
+  </g>
+</svg>

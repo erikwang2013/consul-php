@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="970" viewBox="0 0 1000 970" role="img" aria-label="مخطط تصميم وظائف consul-php">
+  <title>تصميم وظائف consul-php</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cl { font-size: 12px; fill: #A9B2C3; }
+    .capi { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="970" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48" style="font-size:19.9px">تصميم وظائف consul-php</text>
+    <text class="sub" x="24" y="74" style="font-size:12.8px">11 وحدة API + 3 تغليفات + دعم 4 أطر: خريطة القدرات والمداخل</text>
+    <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="140" style="font-size:10.1px">تسجيل الخدمات</text>
+    <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
+    <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:10.2px">أربعة فحوص سلامة: TTL / HTTP / TCP / gRPC</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232" style="font-size:10.5px">heartbeat / heartbeatFail إرسال النبضة</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254" style="font-size:11px">deregister إنهاء سلس</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:8.6px">إلغاء التسجيل تلقائيًا عند مهلة النبضة حسب السياسة</text>
+
+    <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="363" y="140" style="font-size:10.1px">اكتشاف الخدمات</text>
+    <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188" style="font-size:9.4px">healthyInstances() قائمة النسخ السليمة</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:8.6px">selectInstance() اختيار عبر موازنة التحميل</text>
+    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232" style="font-size:9.8px">RoundRobin / Random / استراتيجية مخصصة</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254" style="font-size:8.6px">watch() استدعاء عند دخول/خروج نسخة</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:8.6px">stop() إيقاف سلس عبر العمليات</text>
+
+    <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="140" style="font-size:11.6px">تخزين KV</text>
+    <text class="capi" x="684" y="158">Api\Kv</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188" style="font-size:8.6px">put / get / delete قراءة وكتابة أساسية</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:10px">all() سرد تعاودي · keys() هرمي حسب الفاصل</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:11.5px">وسيط acquire مع Session للقفل</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:9.2px">getRaw / putRaw قناة البايتات الخام</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:8.6px">إدارة شجرة الإعدادات بالجملة عبر بادئة</text>
+    <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="42" y="336" style="font-size:10.1px">مركز الإعدادات</text>
+    <text class="capi" x="42" y="354">Config\ConfigCenter</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384" style="font-size:8.9px">get(key, default) قراءة مفتاح واحد</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:8.6px">namespace(prefix) جلب شجرة الإعدادات كاملة</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428" style="font-size:11.5px">set / delete كتابة وحذف</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:8.9px">تسريع تلقائي بعد حقن تخزين PSR-16</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.6px">قناة Watcher تتجاوز التخزين وتقرأ القيم الحية</text>
+
+    <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="363" y="336" style="font-size:10.1px">التحديث اللحظي للإعدادات</text>
+    <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
+    <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:8.6px">تحويل تلقائي إلى استقصاء دوري عند خطأ الشبكة</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:8.6px">استعادة الاستقصاء الطويل تلقائيًا بعد 5 نجاحات متتالية</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:9.8px">قناتان: استدعاء onChange + أحداث PSR-14</text>
+    <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
+
+    <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="684" y="336" style="font-size:10.1px">فحص السلامة</text>
+    <text class="capi" x="684" y="354">Api\Health</text>
+    <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, [&apos;passing&apos; =&gt; true])</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406" style="font-size:10.5px">node(name) كل فحوص العقدة</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:10.6px">checks(name) كل فحوص الخدمة</text>
+    <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:8.6px">عرض موحّد لنبضة TTL والاستقصاء الخارجي</text>
+    <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="42" y="532" style="font-size:10.1px">الجلسات والأقفال الموزعة</text>
+    <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
+    <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
+    <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
+    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624">Kv::put(..., [&apos;acquire&apos; =&gt; id]) قفل</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:8.6px">سلوك delete: تحرير الموارد تلقائيًا عند الانتهاء</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:8.6px">انتهاء الجلسة يعني انتهاء القفل، دون نبضة إضافية</text>
+
+    <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="363" y="532" style="font-size:10.1px">صلاحيات ACL</text>
+    <text class="capi" x="363" y="550">Api\Acl</text>
+    <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602" style="font-size:11.5px">policy* / role* / authMethod* كاملة</text>
+    <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
+    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646" style="font-size:10.4px">حقن Token تلقائيًا عبر X-Consul-Token</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:9.6px">صلاحيات غير كافية → AccessDeniedException</text>
+
+    <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
+    <text class="ct" x="684" y="532" style="font-size:10.1px">تشغيل العنقود</text>
+    <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580" style="font-size:9.9px">leader / peers حالة العنقود</text>
+    <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
+    <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:11.3px">snapshot save / restore لقطة ثنائية</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668" style="font-size:9.4px">datacenters / nodes إحداثيات الشبكة</text>
+    <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="728" style="font-size:11.3px">دمج الأطر</text>
+    <text class="capi" x="42" y="746">src/Integration</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776" style="font-size:10.3px">Laravel: اكتشاف تلقائي + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:10.4px">Hyperf: ConfigProvider + عميل coroutine</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:10.1px">webman: تثبيت الإضافة + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP：ConsulService + app(&apos;consul&apos;)</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:8.6px">واجهة API متطابقة، والفرق في طريقة الحصول على $client</text>
+
+    <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="363" y="728" style="font-size:10.1px">تصميم الموثوقية</text>
+    <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:9.4px">نظام استثناءات موحّد، وكلها ترث ConsulException</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:8.7px">سجلات PSR-3، و NullLogger كاحتياطي تلقائي</text>
+    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820" style="font-size:11.4px">أحداث PSR-14: ConfigChangedEvent</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:10.6px">ConsulAsyncClient + تنفيذ Promise المؤجَّل</text>
+    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:9.6px">توحيد أخطاء الاتصال/الفك إلى ClientException</text>
+
+    <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="728" style="font-size:10.1px">الخصائص الأساسية</text>
+    <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.6px">PHP 8.0+، الحزمة الأساسية بلا اعتماد على أطر</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:9.6px">تغطية كاملة لـ Consul HTTP API v1</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:8.9px">11 وحدة API + 3 تغليفات عالية المستوى</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8.6px">يعتمد على واجهات PSR فقط، وعميل HTTP قابل للاستبدال</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864" style="font-size:11.2px">309 اختبار وحدة · PHPStan L5</text>
+    <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
+    <text class="ct" x="44" y="920" style="font-size:10.1px">واجهة API واحدة، وأربعة أطر</text>
+    <text class="cl" x="200" y="920" style="font-size:9.3px">Laravel · Hyperf · webman · ThinkPHP —— الحزمة الأساسية بلا اعتماديات، ودعم الأطر مدمج، ويكفي أمر composer require واحد</text>
+    <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
+  </g>
+</svg>

@@ -15,3 +15,9 @@ jobs:
       - run: composer install --no-progress
       - run: vendor/bin/phpunit
       - run: vendor/bin/phpstan analyse
+
+      # 改了 docs/images/ 或生成器却忘了重新生成 12 种语言的图，这里会红
+      - name: i18n 生成一致性
+        run: php scripts/i18n-svg.php build all && git diff --exit-code -- docs/i18n
+      - name: i18n 校验
+        run: php scripts/i18n-svg.php verify all

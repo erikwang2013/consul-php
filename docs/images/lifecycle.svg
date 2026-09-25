@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-label="consul-php 生命周期图">
+  <title>consul-php 生命周期：服务实例 · 配置热更新 · 单次请求</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .lt { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .chip { font-size: 11px; fill: #8B93A7; }
+    .bt { font-size: 12.5px; font-weight: 600; fill: #E8ECF5; }
+    .bs { font-size: 10.5px; fill: #98A1B5; }
+    .al { font-size: 10.5px; fill: #8B93A7; }
+    .note { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5A6288"/>
+    </marker>
+    <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#35D07F"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="990" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48">consul-php 生命周期</text>
+    <text class="sub" x="24" y="74">三个关键生命周期：服务实例状态迁移 · 配置热更新（长轮询与降级恢复）· 单次请求处理链路</text>
+
+    <!-- ==================== ① 服务实例生命周期 ==================== -->
+    <rect x="24" y="100" width="952" height="232" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="120" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="lt" x="58" y="136">① 服务实例生命周期 · Service\Registry</text>
+    <text class="chip" x="956" y="136" text-anchor="end">register → heartbeat → deregister</text>
+
+    <rect x="24" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="99" y="214" text-anchor="middle">未注册</text>
+    <text class="bs" x="99" y="236" text-anchor="middle">服务不在 Consul 目录</text>
+
+    <rect x="224" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="299" y="214" text-anchor="middle" fill="#7FE3B0">passing 健康</text>
+    <text class="bs" x="299" y="236" text-anchor="middle">TTL 心跳正常</text>
+    <text class="bs" x="299" y="252" text-anchor="middle">可被服务发现选中</text>
+    <path d="M274 180 C274 158 324 158 324 180" fill="none" stroke="#35D07F" stroke-width="2" marker-end="url(#arg)"/>
+    <text class="al" x="299" y="154" text-anchor="middle" fill="#5FBF92">heartbeat() 续期</text>
+
+    <rect x="424" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="499" y="214" text-anchor="middle" fill="#F7C066">warning 告警</text>
+    <text class="bs" x="499" y="236" text-anchor="middle">检查返回异常状态</text>
+    <text class="bs" x="499" y="252" text-anchor="middle">仍在目录，可按需过滤</text>
+
+    <rect x="624" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#FF5C5C" stroke-width="1.5"/>
+    <text class="bt" x="699" y="214" text-anchor="middle" fill="#FF8F8F">critical 严重</text>
+    <text class="bs" x="699" y="236" text-anchor="middle">心跳超时 / 探测失败</text>
+    <text class="bs" x="699" y="252" text-anchor="middle">healthyInstances 不再返回</text>
+
+    <rect x="824" y="180" width="150" height="90" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="899" y="214" text-anchor="middle">已注销</text>
+    <text class="bs" x="899" y="236" text-anchor="middle">优雅下线或自动清理</text>
+
+    <path d="M174 225 H220" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="197" y="212" text-anchor="middle">register()</text>
+    <path d="M374 225 H420" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="397" y="212" text-anchor="middle">检查告警</text>
+    <path d="M574 225 H620" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="597" y="212" text-anchor="middle">心跳超时</text>
+    <path d="M774 225 H820" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="797" y="212" text-anchor="middle">自动或主动注销</text>
+
+    <path d="M699 270 V 310 H 303 V 274" fill="none" stroke="#35D07F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arg)"/>
+    <text class="al" x="500" y="304" text-anchor="middle" fill="#5FBF92">heartbeat() 恢复正常 → 重新回到 passing，无需重新注册</text>
+
+    <!-- ==================== ② 配置热更新生命周期 ==================== -->
+    <rect x="24" y="352" width="952" height="320" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="372" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="lt" x="58" y="388">② 配置热更新生命周期 · Config\Watcher</text>
+    <text class="chip" x="956" y="388" text-anchor="end">blocking query 优先，异常自动降级并恢复</text>
+
+    <rect x="24" y="406" width="150" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="99" y="432" text-anchor="middle">① watch(prefix)</text>
+    <text class="bs" x="99" y="452" text-anchor="middle">启动监听</text>
+
+    <rect x="200" y="406" width="330" height="64" rx="14" fill="url(#card)" stroke="#E03875" stroke-width="1.5"/>
+    <text class="bt" x="365" y="432" text-anchor="middle" fill="#F58FB4">② blocking query 阻塞长轮询</text>
+    <text class="bs" x="365" y="452" text-anchor="middle">默认 30s 超时，携带 X-Consul-Index 游标</text>
+
+    <rect x="556" y="406" width="170" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="641" y="432" text-anchor="middle">③ 变更检测</text>
+    <text class="bs" x="641" y="452" text-anchor="middle">index 推进 + 快照比对</text>
+
+    <rect x="752" y="406" width="224" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="864" y="432" text-anchor="middle">④ 通知 ↺</text>
+    <text class="bs" x="864" y="452" text-anchor="middle">onChange 回调 + PSR-14 事件</text>
+
+    <path d="M174 438 H196" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M530 438 H552" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M726 438 H748" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="864" y="494" text-anchor="middle">无变更则 index 推进，继续回到 ②</text>
+
+    <path d="M250 470 V 532" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="al" x="262" y="506">blocking 失败 / 超时</text>
+
+    <rect x="214" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#F5A623" stroke-width="1.5"/>
+    <text class="bt" x="314" y="562" text-anchor="middle" fill="#F7C066">⑤ 降级为定时轮询</text>
+    <text class="bs" x="314" y="582" text-anchor="middle">默认 10s，setPollInterval()</text>
+
+    <rect x="440" y="536" width="200" height="64" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="540" y="562" text-anchor="middle">⑥ 连续 5 次成功</text>
+    <text class="bs" x="540" y="582" text-anchor="middle">计数器达标</text>
+
+    <rect x="666" y="536" width="260" height="64" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="796" y="562" text-anchor="middle" fill="#7FE3B0">⑦ 自动恢复阻塞查询 ↺</text>
+    <text class="bs" x="796" y="582" text-anchor="middle">切回 ②，计数器清零</text>
+
+    <path d="M414 568 H436" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M640 568 H662" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <text class="note" x="44" y="640">stop() 可在任意阶段由另一进程 / 协程调用，优雅退出监听；缓存通道与监听通道分离，Watcher 始终读 Consul 实时值。</text>
+
+    <!-- ==================== ③ 单次请求生命周期 ==================== -->
+    <rect x="24" y="692" width="952" height="274" rx="18" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="lt" x="58" y="728">③ 单次请求生命周期 · Api → Transport → PSR-18</text>
+    <text class="chip" x="956" y="728" text-anchor="end">同步调用，一次往返</text>
+
+    <rect x="24" y="744" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="124" y="770" text-anchor="middle">① $client-&gt;kv-&gt;get()</text>
+    <text class="bs" x="124" y="790" text-anchor="middle">调用方发起</text>
+
+    <rect x="250" y="744" width="190" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="345" y="770" text-anchor="middle">② __get 分发</text>
+    <text class="bs" x="345" y="790" text-anchor="middle">模块实例化并复用</text>
+
+    <rect x="466" y="744" width="300" height="56" rx="14" fill="url(#card)" stroke="#4CC9F0" stroke-width="1.5"/>
+    <text class="bt" x="616" y="770" text-anchor="middle" fill="#8FDCF7">③ Psr18Transport 组装请求</text>
+    <text class="bs" x="616" y="790" text-anchor="middle">RequestFactory + StreamFactory (PSR-17)</text>
+
+    <rect x="792" y="744" width="184" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="884" y="770" text-anchor="middle">④ 注入 Token</text>
+    <text class="bs" x="884" y="790" text-anchor="middle">X-Consul-Token</text>
+
+    <path d="M224 772 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M440 772 H462" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M766 772 H788" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <path d="M884 800 V 818 H 124 V 834" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <rect x="24" y="838" width="200" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="124" y="864" text-anchor="middle">⑤ 发送 HTTP 请求</text>
+    <text class="bs" x="124" y="884" text-anchor="middle">Guzzle / Swoole / 自定义 · PSR-18</text>
+
+    <rect x="250" y="838" width="170" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="335" y="864" text-anchor="middle">⑥ 状态码检查</text>
+    <text class="bs" x="335" y="884" text-anchor="middle">4xx / 5xx 分支</text>
+
+    <rect x="446" y="838" width="276" height="56" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="bt" x="584" y="864" text-anchor="middle">⑦ JSON 解码</text>
+    <text class="bs" x="584" y="884" text-anchor="middle">getRaw 直返原始字节（Snapshot）</text>
+
+    <rect x="748" y="838" width="228" height="56" rx="14" fill="url(#card)" stroke="#35D07F" stroke-width="1.5"/>
+    <text class="bt" x="862" y="864" text-anchor="middle" fill="#7FE3B0">⑧ 返回 array | string</text>
+    <text class="bs" x="862" y="884" text-anchor="middle">交由上层封装继续处理</text>
+
+    <path d="M224 866 H246" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M420 866 H442" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+    <path d="M722 866 H744" fill="none" stroke="#5A6288" stroke-width="2" marker-end="url(#ar)"/>
+
+    <text class="note" x="44" y="924">异常分支：401 → UnauthorizedException · 403 → AccessDeniedException · 404 → NotFoundException</text>
+    <text class="note" x="44" y="944">　　　　　5xx → ServerException · 连接 / 解码失败 → ClientException（其余 4xx → ConsulRequestException）</text>
+  </g>
+</svg>

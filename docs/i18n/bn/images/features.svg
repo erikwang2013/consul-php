@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="970" viewBox="0 0 1000 970" role="img" aria-label="consul-php ফিচার ডিজাইন চিত্র">
+  <title>consul-php ফিচার ডিজাইন</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cl { font-size: 12px; fill: #A9B2C3; }
+    .capi { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="970" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48" style="font-size:19.1px">consul-php ফিচার ডিজাইন</text>
+    <text class="sub" x="24" y="74" style="font-size:9.4px">11টি API মডিউল + 3টি হাই-লেভেল র্যাপার + 4টি ফ্রেমওয়ার্ক অ্যাডাপ্টার: ক্যাপাবিলিটি ম্যাপ ও এন্ট্রি পয়েন্ট</text>
+    <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="140" style="font-size:10.1px">সার্ভিস রেজিস্ট্রেশন</text>
+    <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
+    <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:9.5px">TTL / HTTP / TCP / gRPC — চার ধরনের হেলথ চেক</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232" style="font-size:10px">heartbeat / heartbeatFail হার্টবিট রিপোর্ট</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254" style="font-size:9.1px">deregister গ্রেসফুল অফলাইন</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:8.6px">হার্টবিট টাইমআউটে নীতি অনুযায়ী অটো-ডিরেজিস্টার</text>
+
+    <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="363" y="140" style="font-size:10.1px">সার্ভিস ডিসকভারি</text>
+    <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188" style="font-size:9px">healthyInstances() সুস্থ ইনস্ট্যান্সের তালিকা</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:8.8px">selectInstance() লোড ব্যালেন্সিংয়ে বাছাই</text>
+    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232" style="font-size:10.1px">RoundRobin / Random / কাস্টম স্ট্র্যাটেজি</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254" style="font-size:8.6px">watch() ইনস্ট্যান্স চালু/বন্ধের কলব্যাক</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:8.8px">stop() ক্রস-প্রসেস গ্রেসফুল স্টপ</text>
+
+    <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="140" style="font-size:10.3px">KV স্টোরেজ</text>
+    <text class="capi" x="684" y="158">Api\Kv</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188" style="font-size:10.5px">put / get / delete মূল পড়া-লেখা</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:8.6px">all() রিকার্সিভ লিস্ট · keys() সেপারেটর অনুযায়ী স্তরভাগ</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:9.9px">acquire প্যারামিটার দিয়ে Session লক</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:11.1px">getRaw / putRaw র-বাইট চ্যানেল</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:8.6px">প্রিফিক্স দিয়ে কনফিগ ট্রি ব্যাচ ম্যানেজ</text>
+    <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="42" y="336" style="font-size:10.1px">কনফিগ সেন্টার</text>
+    <text class="capi" x="42" y="354">Config\ConfigCenter</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384" style="font-size:10.8px">get(key, default) একক কী পড়া</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:9.9px">namespace(prefix) পুরো কনফিগ ট্রি আনে</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428" style="font-size:11px">set / delete লেখা ও মোছা</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:8.6px">PSR-16 ক্যাশ ইনজেক্ট করলে অটো-স্পিডআপ</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.6px">Watcher চ্যানেল ক্যাশ এড়িয়ে রিয়েল-টাইম মান পড়ে</text>
+
+    <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="363" y="336" style="font-size:10.1px">কনফিগ হট-রিলোড</text>
+    <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
+    <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:8.6px">নেটওয়ার্ক সমস্যায় অটো নির্দিষ্ট-বিরতি পোলিংয়ে ডিগ্রেড</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:8.6px">টানা 5 বার সফলে অটো লং পোলিংয়ে ফেরে</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:9.1px">onChange কলব্যাক + PSR-14 ইভেন্ট — দুই চ্যানেল</text>
+    <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
+
+    <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="684" y="336" style="font-size:12.7px">হেলথ চেক</text>
+    <text class="capi" x="684" y="354">Api\Health</text>
+    <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, [&apos;passing&apos; =&gt; true])</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406" style="font-size:11.4px">node(name) নোডের সব চেক</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:11.5px">checks(name) সেবার সব চেক</text>
+    <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:8.6px">TTL হার্টবিট ও বাহ্যিক প্রোবের একক ভিউ</text>
+    <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="42" y="532" style="font-size:10.1px">সেশন ও ডিস্ট্রিবিউটেড লক</text>
+    <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
+    <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
+    <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
+    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624" style="font-size:11px">Kv::put(..., [&apos;acquire&apos; =&gt; id]) দিয়ে লক</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:8.6px">delete বিহেভিয়ার: মেয়াদ শেষে রিসোর্স অটো-রিলিজ</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:8.6px">সেশন শেষ হলেই লক শেষ, বাড়তি হার্টবিট লাগে না</text>
+
+    <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="363" y="532" style="font-size:10.1px">ACL পারমিশন</text>
+    <text class="capi" x="363" y="550">Api\Acl</text>
+    <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602" style="font-size:10.3px">policy* / role* / authMethod* সম্পূর্ণ সেট</text>
+    <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
+    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646" style="font-size:8.7px">X-Consul-Token হেডারে Token স্বয়ংক্রিয় ইনজেক্ট</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:9.2px">পারমিশন না থাকলে AccessDeniedException ছোড়ে</text>
+
+    <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
+    <text class="ct" x="684" y="532" style="font-size:10.1px">ক্লাস্টার অপারেশন</text>
+    <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580" style="font-size:9.2px">leader / peers ক্লাস্টার স্টেটাস</text>
+    <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
+    <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:10.2px">snapshot save / restore বাইনারি স্ন্যাপশট</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668" style="font-size:8.6px">datacenters / nodes নেটওয়ার্ক কোঅর্ডিনেট</text>
+    <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="728" style="font-size:10.1px">ফ্রেমওয়ার্ক ইন্টিগ্রেশন</text>
+    <text class="capi" x="42" y="746">src/Integration</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776" style="font-size:10.8px">Laravel: অটো-ডিসকভার + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:10.4px">Hyperf: ConfigProvider + করউটিন ক্লায়েন্ট</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:10.4px">webman: প্লাগইন ইনস্টল + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842" style="font-size:11.9px">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:9.1px">$client পাওয়ার পদ্ধতিই কেবল ভিন্ন, API পুরোপুরি এক</text>
+
+    <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="363" y="728" style="font-size:10.1px">নির্ভরযোগ্যতার ডিজাইন</text>
+    <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:8.6px">একক এক্সেপশন সিস্টেম, সবই ConsulException ইনহেরিট করে</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:9.9px">PSR-3 লগ, NullLogger স্বয়ংক্রিয় ফলব্যাক</text>
+    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820" style="font-size:11.4px">PSR-14 ইভেন্ট: ConfigChangedEvent</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:9.4px">ConsulAsyncClient + Promise বিলম্বিত এক্সিকিউশন</text>
+    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:9.4px">কানেকশন/ডিকোড ত্রুটি ClientException-এ নরমালাইজ</text>
+
+    <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="728" style="font-size:10.2px">মূল বৈশিষ্ট্য</text>
+    <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.6px">PHP 8.0+, কোর প্যাকেজে ফ্রেমওয়ার্ক নির্ভরতা শূন্য</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:10.9px">Consul HTTP API v1 সম্পূর্ণ কভার</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:8.9px">11টি API মডিউল + 3টি হাই-লেভেল র্যাপার</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8.6px">শুধু PSR ইন্টারফেসের উপর নির্ভর, HTTP ক্লায়েন্ট বদলানো যায়</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864" style="font-size:10.8px">309টি ইউনিট টেস্ট · PHPStan L5</text>
+    <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
+    <text class="ct" x="44" y="920" style="font-size:10.1px">একটিই API, চারটি ফ্রেমওয়ার্ক</text>
+    <text class="cl" x="200" y="920" style="font-size:8.6px">Laravel · Hyperf · webman · ThinkPHP —— কোর প্যাকেজে ফ্রেমওয়ার্ক নির্ভরতা শূন্য, ফ্রেমওয়ার্ক অ্যাডাপ্টার বিল্ট-ইন, একটিই composer require যথেষ্ট</text>
+    <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
+  </g>
+</svg>

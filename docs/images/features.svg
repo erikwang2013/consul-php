@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="970" viewBox="0 0 1000 970" role="img" aria-label="consul-php 功能设计图">
+  <title>consul-php 功能设计</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cl { font-size: 12px; fill: #A9B2C3; }
+    .capi { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="970" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48">consul-php 功能设计</text>
+    <text class="sub" x="24" y="74">11 个 API 模块 + 3 个高层封装 + 4 框架适配：能力地图与对应入口</text>
+
+    <!-- ===== 行 1 ===== -->
+    <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="140">服务注册</text>
+    <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
+    <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210">TTL / HTTP / TCP / gRPC 四种健康检查</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232">heartbeat / heartbeatFail 心跳上报</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254">deregister 优雅下线</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276">心跳超时按策略自动注销</text>
+
+    <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="363" y="140">服务发现</text>
+    <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188">healthyInstances() 健康实例列表</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210">selectInstance() 负载均衡选点</text>
+    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232">RoundRobin / Random / 自定义策略</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254">watch() 实例上下线回调</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276">stop() 跨进程优雅停止</text>
+
+    <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="140">KV 存储</text>
+    <text class="capi" x="684" y="158">Api\Kv</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188">put / get / delete 基础读写</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210">all() 递归列举 · keys() 按分隔符分层</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232">acquire 参数配合 Session 加锁</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254">getRaw / putRaw 原始字节通道</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276">前缀批量管理配置树</text>
+
+    <!-- ===== 行 2 ===== -->
+    <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="42" y="336">配置中心</text>
+    <text class="capi" x="42" y="354">Config\ConfigCenter</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384">get(key, default) 单键读取</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406">namespace(prefix) 拉整棵配置树</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428">set / delete 写入与删除</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450">注入 PSR-16 缓存后自动加速</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472">Watcher 通道绕过缓存读实时值</text>
+
+    <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="363" y="336">配置热更新</text>
+    <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
+    <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406">网络异常自动降级定时轮询</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428">连续 5 次成功自动恢复长轮询</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450">onChange 回调 + PSR-14 事件双通道</text>
+    <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
+
+    <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="684" y="336">健康检查</text>
+    <text class="capi" x="684" y="354">Api\Health</text>
+    <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, ['passing' =&gt; true])</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406">node(name) 节点全部检查</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428">checks(name) 服务全部检查</text>
+    <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472">TTL 心跳与外部探测统一视图</text>
+
+    <!-- ===== 行 3 ===== -->
+    <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="42" y="532">会话与分布式锁</text>
+    <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
+    <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
+    <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
+    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624">Kv::put(..., ['acquire' =&gt; id]) 加锁</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646">delete 行为：过期自动释放资源</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668">会话失效即锁失效，无需额外心跳</text>
+
+    <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="363" y="532">ACL 权限</text>
+    <text class="capi" x="363" y="550">Api\Acl</text>
+    <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602">policy* / role* / authMethod* 全套</text>
+    <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
+    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646">Token 经 X-Consul-Token 自动注入</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668">权限不足抛出 AccessDeniedException</text>
+
+    <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
+    <text class="ct" x="684" y="532">集群运维</text>
+    <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580">leader / peers 集群状态</text>
+    <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
+    <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646">snapshot save / restore 二进制快照</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668">datacenters / nodes 网络坐标</text>
+
+    <!-- ===== 行 4 ===== -->
+    <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="728">框架集成</text>
+    <text class="capi" x="42" y="746">src/Integration</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776">Laravel：自动发现 + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798">Hyperf：ConfigProvider + 协程客户端</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820">webman：插件安装 + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP：ConsulService + app('consul')</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864">API 完全一致，只差获取 $client 的方式</text>
+
+    <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="363" y="728">可靠性设计</text>
+    <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776">统一异常体系，全部继承 ConsulException</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798">PSR-3 日志，NullLogger 自动兜底</text>
+    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820">PSR-14 事件：ConfigChangedEvent</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842">ConsulAsyncClient + Promise 延迟执行</text>
+    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864">连接/解码错误归一化为 ClientException</text>
+
+    <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="728">核心特性</text>
+    <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776">PHP 8.0+，核心包零框架依赖</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798">完整覆盖 Consul HTTP API v1</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">11 个 API 模块 + 3 个高层封装</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842">只依赖 PSR 接口，HTTP 客户端可换</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309 项单元测试 · PHPStan L5</text>
+
+    <!-- 汇总条 -->
+    <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
+    <text class="ct" x="44" y="920">一套 API，四种框架</text>
+    <text class="cl" x="200" y="920">Laravel · Hyperf · webman · ThinkPHP —— 核心包零依赖，框架适配内置，一个 composer require 即可用</text>
+    <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
+  </g>
+</svg>

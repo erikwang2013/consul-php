@@ -1,8 +1,34 @@
 # erikwang2013/consul-php
 
+**中文** · [English](docs/i18n/en/README.md) · [日本語](docs/i18n/ja/README.md) · [한국어](docs/i18n/ko/README.md) · [Deutsch](docs/i18n/de/README.md) · [Français](docs/i18n/fr/README.md) · [Español](docs/i18n/es/README.md) · [Português](docs/i18n/pt/README.md) · [Русский](docs/i18n/ru/README.md) · [العربية](docs/i18n/ar/README.md) · [हिन्दी](docs/i18n/hi/README.md) · [বাংলা](docs/i18n/bn/README.md) · [Bahasa Indonesia](docs/i18n/id/README.md)
+
+<img src="./docs/images/pet.svg" alt="consul-php 项目宠物 Consu" width="100%">
+
 PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，内置 Laravel / Hyperf / webman / ThinkPHP 适配，一个 composer require 即可在任何框架下使用。
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
+
+> **项目宠物 Consu** —— 一只只吃心跳、从不掉线的注册中心小助手：天线是健康检查心跳，胸前的脉线是服务状态，腰间挂着 ACL Token。终端里 `composer pet` 可召唤，详见 [项目宠物](#项目宠物-consu)。
+
+---
+
+## 项目简介
+
+| | |
+|---|---|
+| **是什么** | 纯 PHP 实现的 Consul HTTP API v1 客户端：同步 + Promise 双入口，11 个 API 模块，3 个高层封装 |
+| **解决什么** | 让 PHP 应用接入 Consul 做服务注册发现与配置热更新，无需为每个框架重写一套客户端 |
+| **怎么用** | `composer require erikwang2013/consul-php`，核心包零框架依赖，框架适配内置并自动发现 |
+| **支持框架** | Laravel · Hyperf · webman · ThinkPHP —— API 完全一致，只差获取 `$client` 的方式 |
+| **依赖约定** | 只依赖 PSR 接口（PSR-18/17/16/14/3），HTTP 客户端、缓存、日志、事件分发器均可替换 |
+| **质量保障** | PHP 8.0 – 8.4 · 309 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
+
+### 核心能力
+
+- **服务注册发现** —— TTL / HTTP / TCP / gRPC 四种健康检查；healthyInstances / selectInstance；RoundRobin、Random、自定义负载均衡；实例上下线监听
+- **配置中心** —— KV 读写、命名空间树、PSR-16 缓存加速；热更新优先 blocking query 长轮询，网络异常自动降级轮询，连续 5 次成功后自动恢复
+- **集群运维** —— Session 分布式锁、ACL 全套（Token / Policy / Role / AuthMethod）、Status / Operator / Coordinate / Snapshot / Event
+- **可靠性** —— 统一异常体系、PSR-3 日志（NullLogger 兜底）、PSR-14 事件双通道通知、传输层错误归一化
 
 ---
 
@@ -10,12 +36,79 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
 | 文档 | 链接 |
 |------|------|
+| **项目结构** | [项目结构](#项目结构) |
+| **架构设计** | [架构设计](#架构设计) · [architecture.svg](docs/images/architecture.svg) |
+| **功能设计** | [功能设计](#功能设计) · [features.svg](docs/images/features.svg) |
+| **生命周期** | [生命周期](#生命周期) · [lifecycle.svg](docs/images/lifecycle.svg) |
+| **项目宠物** | [Consu](docs/images/pet.svg) |
+| **多语言 README** | [docs/i18n/](docs/i18n/) · [English](docs/i18n/en/README.md) · [日本語](docs/i18n/ja/README.md) · [한국어](docs/i18n/ko/README.md) · [Deutsch](docs/i18n/de/README.md) · [Français](docs/i18n/fr/README.md) · [Español](docs/i18n/es/README.md) · [Português](docs/i18n/pt/README.md) · [Русский](docs/i18n/ru/README.md) · [العربية](docs/i18n/ar/README.md) · [हिन्दी](docs/i18n/hi/README.md) · [বাংলা](docs/i18n/bn/README.md) · [Bahasa Indonesia](docs/i18n/id/README.md) |
 | **文档总目录** | [docs/README.md](docs/README.md) |
 | **Laravel 集成** | 见下方 [Laravel](#laravel) |
 | **Hyperf 集成** | 见下方 [Hyperf](#hyperf) |
 | **webman 集成** | 见下方 [webman](#webman) |
 | **ThinkPHP 集成** | 见下方 [ThinkPHP](#thinkphp) |
 | **设计文档** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](docs/superpowers/specs/2026-05-14-consul-php-design.md) |
+
+---
+
+## 项目结构
+
+```
+consul-php/
+├── src/
+│   ├── Client/                      # 客户端入口
+│   │   ├── ConsulClient.php         # 同步入口：__get 分发 API 模块与高层封装
+│   │   ├── ConsulAsyncClient.php    # Promise 延迟执行客户端
+│   │   └── Promise.php              # 轻量 Promise 实现
+│   ├── Api/                         # Consul HTTP API v1 模块（11 个）
+│   │   ├── Agent.php                # 成员、自身信息、维护模式、join / leave
+│   │   ├── Catalog.php              # 服务与节点目录：注册、注销、查询
+│   │   ├── Health.php               # 健康检查：服务 / 节点 / 按状态过滤
+│   │   ├── Kv.php                   # KV 读写、层级列举、原始字节、会话加锁
+│   │   ├── Session.php              # 会话（分布式锁基础）：创建、续约、销毁
+│   │   ├── Acl.php                  # Token / Policy / Role / AuthMethod
+│   │   ├── Event.php                # 用户事件：fire / list
+│   │   ├── Status.php               # 集群状态：leader / peers
+│   │   ├── Coordinate.php           # 网络坐标：datacenters / nodes
+│   │   ├── Operator.php             # Raft / Autopilot / Keyring 运维
+│   │   └── Snapshot.php             # 快照备份与恢复（二进制流）
+│   ├── Service/                     # 服务注册与发现
+│   │   ├── Registry.php             # register / heartbeat / heartbeatFail / deregister
+│   │   ├── Discovery.php            # healthyInstances / selectInstance / watch / stop
+│   │   └── LoadBalancer/            # RoundRobin、Random、LoadBalancerInterface
+│   ├── Config/                      # 配置中心
+│   │   ├── ConfigCenter.php         # get / namespace / set / delete / watch
+│   │   ├── Watcher.php              # 热更新：长轮询 + 降级轮询 + 自动恢复
+│   │   └── ConfigChangedEvent.php   # PSR-14 配置变更事件
+│   ├── Transport/                   # 传输层
+│   │   ├── TransportInterface.php   # 传输契约（含 getRaw / putRaw / getWithHeaders）
+│   │   └── Psr18Transport.php       # PSR-18 实现：Token 注入、解码、异常映射
+│   ├── Support/                     # 项目宠物 Consu 的终端版（Pet::art / Pet::say）
+│   ├── Exception/                   # 异常体系（ConsulException 及其子类，7 个）
+│   └── Integration/                 # 框架适配（内置，自动发现）
+│       ├── ClientFactory.php        # PSR 依赖自动装配
+│       ├── Laravel/                 # ServiceProvider + Facade + config/consul.php
+│       ├── Hyperf/                  # ConfigProvider + 协程客户端工厂 + config
+│       ├── Webman/                  # 插件安装（Install）+ config/app.php
+│       └── Thinkphp/                # ConsulService + config/consul.php
+├── tests/                           # PHPUnit 用例（Api / Client / Config / Exception /
+│                                    #   Integration / Service / Support / Transport）
+├── docs/
+│   ├── images/                      # 项目宠物与设计图（SVG）
+│   │   ├── pet.svg                  # 项目宠物 Consu
+│   │   ├── architecture.svg         # 架构设计
+│   │   ├── features.svg             # 功能设计
+│   │   └── lifecycle.svg            # 生命周期
+│   ├── i18n/                        # 12 种语言 README 与本地化图（en · ja · ko · de · fr · es · pt · ru · ar · hi · bn · id）
+│   ├── superpowers/specs/           # 设计文档
+│   ├── superpowers/plans/           # 实现计划
+│   └── reports/                     # 覆盖率报告与测试报告
+├── scripts/i18n-svg.php             # 多语言资源生成器（extract / build / verify）
+├── scripts/pet.php                  # composer pet 入口：终端里召唤项目宠物
+├── composer.json                    # 依赖与框架自动发现声明
+├── phpunit.xml.dist                 # 测试配置
+└── phpstan.neon                     # 静态分析配置（level 5）
+```
 
 ---
 
@@ -462,25 +555,76 @@ try {
 
 ---
 
-## 架构
+## 架构设计
 
+![consul-php 架构设计](docs/images/architecture.svg)
+
+依赖方向自上而下，每一层只依赖下一层的抽象：
+
+- **应用层 / 集成层** —— 4 个框架适配内置在核心包 `src/Integration/`，由 composer 自动发现注册；应用层始终只面对 `ConsulClient` 一个入口。
+- **客户端** —— `ConsulClient` 通过 `__get` 统一暴露 11 个 API 模块（`$client->kv`、`$client->health` …）与 3 个高层封装（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）；`ConsulAsyncClient` 提供 Promise 延迟执行。
+- **高层封装** —— `Registry` / `Discovery` / `ConfigCenter` 组合 API 模块；`Watcher` 依赖 `getWithHeaders()` 返回的 `X-Consul-Index` 实现长轮询。
+- **API 模块** —— 一个模块对应一组 Consul v1 端点，全部经同一个 `TransportInterface` 出入。
+- **传输层** —— `Psr18Transport` 负责 Token 注入、状态码检查、JSON 解码与异常映射，是全包唯一的出网点。
+- **PSR 抽象** —— 只依赖 PSR 接口（18/17/16/14/3），HTTP 客户端、缓存、日志、事件分发器均可替换，未注入时自动降级。
+
+---
+
+## 功能设计
+
+![consul-php 功能设计](docs/images/features.svg)
+
+能力地图：服务注册发现、配置中心与热更新、KV / 健康检查 / 会话锁 / ACL / 集群运维、4 框架适配与可靠性设计。每个能力卡片标注了对应的入口类，具体调用方式见上方 [快速开始](#快速开始通用) 与 [API 模块速查](#api-模块速查)。
+
+---
+
+## 生命周期
+
+![consul-php 生命周期](docs/images/lifecycle.svg)
+
+- **服务实例生命周期** —— `register()` → passing（`heartbeat()` 周期续期）→ warning → critical → 自动或主动注销；心跳恢复可从 critical 回到 passing，无需重新注册。
+- **配置热更新生命周期** —— `watch()` 启动 blocking query（默认 30s，携带 `X-Consul-Index`）→ 变更检测 → `onChange` 回调 + `ConfigChangedEvent`；阻塞失败时自动降级为定时轮询（默认 10s），连续 5 次成功后切回长轮询；`stop()` 可从另一进程 / 协程优雅退出。
+- **单次请求生命周期** —— API 模块 → `Psr18Transport` 组装 PSR-17 请求 → 注入 `X-Consul-Token` → PSR-18 发送 → 状态码检查 → JSON 解码（`getRaw()` 直返原始字节）→ 返回数组；401/403/404/5xx 与传输失败分别映射为对应异常。
+
+---
+
+## 项目宠物 Consu
+
+宠物不只是一张插画，终端和代码里都能叫出来：
+
+```bash
+composer pet
 ```
-┌─────────────────────────────────────┐
-│            ConsulClient              │  ← 统一入口（同步 + 异步）
-├─────────────────────────────────────┤
-│  Service\Registry │ Config\Config   │  ← 高层封装
-│  Service\Discovery│   Center        │
-├─────────────────────────────────────┤
-│  Api\Agent │ Api\Kv │ Api\Health   │  ← API 模块（11 个）
-│  Api\Catalog │ Api\Session │ ...    │
-├─────────────────────────────────────┤
-│       Transport\Psr18Transport       │  ← PSR-18 传输层
-│  get/put/post/delete + getRaw       │     Token 注入 · Header 捕获
-│  putRaw + getWithHeaders             │     状态码检查 · JSON 解码
-├─────────────────────────────────────┤
-│   PSR-18 Client  │  PSR-17 Factory   │  ← 用户注入 / 自动发现
-└─────────────────────────────────────┘
+
+```text
+╭───────────────────────────────────────────────────────────────────────────╮
+│ consul-php · PHP Consul 客户端 —— 一次 composer require，四种框架都有心跳 │
+╰──────┬────────────────────────────────────────────────────────────────────╯
+       │
+       ●
+       │
+   ╭───┴───╮
+   │ ◕   ◕ │
+   │  ╰─╯  │
+   ├───────┤
+   │╱╲╱╲╱╲ │
+   ╰┬─────┬╯
+    ╰─┬─┬─╯
 ```
+
+代码中直接调用 `Erikwang2013\Consul\Support\Pet`：
+
+```php
+use Erikwang2013\Consul\Support\Pet;
+
+echo Pet::art();                      // 只有宠物
+echo Pet::say('consul 配置已就绪');    // 头顶气泡 + 宠物
+echo Pet::art(false);                 // 强制纯文本
+```
+
+颜色按终端能力自动判断：非 TTY 或设置了 `NO_COLOR` 时输出纯文本，不污染日志和 CI 输出。
+
+设定与 [pet.svg](docs/images/pet.svg) 一致：天线 = 健康检查心跳（passing 绿），护目镜 = 服务发现，胸前脉线 = 服务状态（Consul 品红），腰牌 = ACL Token。
 
 ---
 

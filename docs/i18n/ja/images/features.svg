@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="970" viewBox="0 0 1000 970" role="img" aria-label="consul-php 機能設計図">
+  <title>consul-php 機能設計</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cl { font-size: 12px; fill: #A9B2C3; }
+    .capi { font-size: 11px; fill: #6E768A; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="970" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="24" y="48">consul-php 機能設計</text>
+    <text class="sub" x="24" y="74" style="font-size:9.4px">11 個の API モジュール + 3 個の高レベルラッパー + 4 フレームワーク対応：ケイパビリティマップと対応する入口</text>
+    <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="140" style="font-size:10.1px">サービス登録</text>
+    <text class="capi" x="42" y="158">Service\Registry · Api\Agent</text>
+    <circle cx="46" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="188">register(name, address, port, options)</text>
+    <circle cx="46" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="210" style="font-size:8.9px">TTL / HTTP / TCP / gRPC の 4 種類のヘルスチェック</text>
+    <circle cx="46" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="232" style="font-size:8.7px">heartbeat / heartbeatFail によるハートビート送信</text>
+    <circle cx="46" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="254" style="font-size:8.6px">deregister グレースフルな登録解除</text>
+    <circle cx="46" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="276" style="font-size:8.6px">ハートビートのタイムアウトでポリシーに従い自動登録解除</text>
+
+    <rect x="345" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="363" y="140" style="font-size:10.1px">サービス検出</text>
+    <text class="capi" x="363" y="158">Service\Discovery · Service\LoadBalancer</text>
+    <circle cx="367" cy="184" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="188" style="font-size:8.8px">healthyInstances() 健全なインスタンスの一覧</text>
+    <circle cx="367" cy="206" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="210" style="font-size:8.6px">selectInstance() ロードバランスによる選択</text>
+    <circle cx="367" cy="228" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="232">RoundRobin / Random / 独自戦略</text>
+    <circle cx="367" cy="250" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="254" style="font-size:8.6px">watch() インスタンスの登録・解除のコールバック</text>
+    <circle cx="367" cy="272" r="2.5" fill="#8B8FE8"/><text class="cl" x="379" y="276" style="font-size:8.6px">stop() プロセスをまたいだグレースフル停止</text>
+
+    <rect x="666" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="124" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="140" style="font-size:10.1px">KV ストレージ</text>
+    <text class="capi" x="684" y="158">Api\Kv</text>
+    <circle cx="688" cy="184" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="188" style="font-size:9.4px">put / get / delete 基本的な読み書き</text>
+    <circle cx="688" cy="206" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="210" style="font-size:8.7px">all() は再帰的に一覧 · keys() は区切り文字で階層化</text>
+    <circle cx="688" cy="228" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="232" style="font-size:8.6px">acquire パラメータと Session によるロック</text>
+    <circle cx="688" cy="250" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="254" style="font-size:11.2px">getRaw / putRaw 生バイトの経路</text>
+    <circle cx="688" cy="272" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="276" style="font-size:8.6px">プレフィックスで設定ツリーを一括管理</text>
+    <rect x="24" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="42" y="336" style="font-size:10.1px">設定センター</text>
+    <text class="capi" x="42" y="354">Config\ConfigCenter</text>
+    <circle cx="46" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="58" y="384" style="font-size:8.8px">get(key, default) 単一キーの読み取り</text>
+    <circle cx="46" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="58" y="406" style="font-size:9.1px">namespace(prefix) で設定ツリー全体を取得</text>
+    <circle cx="46" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="58" y="428" style="font-size:10.3px">set / delete 書き込みと削除</text>
+    <circle cx="46" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="58" y="450" style="font-size:8.6px">PSR-16 キャッシュを注入すると自動で高速化</text>
+    <circle cx="46" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="58" y="472" style="font-size:8.6px">Watcher の経路はキャッシュを迂回してリアルタイム値を読む</text>
+
+    <rect x="345" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="320" width="4" height="20" rx="2" fill="#E03875"/>
+    <text class="ct" x="363" y="336" style="font-size:10.1px">設定のホットリロード</text>
+    <text class="capi" x="363" y="354">Config\Watcher · ConfigChangedEvent</text>
+    <circle cx="367" cy="380" r="2.5" fill="#E03875"/><text class="cl" x="379" y="384">blocking query + X-Consul-Index</text>
+    <circle cx="367" cy="402" r="2.5" fill="#E03875"/><text class="cl" x="379" y="406" style="font-size:8.6px">ネットワーク異常時は自動で定期ポーリングへフォールバック</text>
+    <circle cx="367" cy="424" r="2.5" fill="#E03875"/><text class="cl" x="379" y="428" style="font-size:8.6px">5 回連続で成功すると自動でロングポーリングに復帰</text>
+    <circle cx="367" cy="446" r="2.5" fill="#E03875"/><text class="cl" x="379" y="450" style="font-size:8.6px">onChange コールバック + PSR-14 イベントの 2 系統</text>
+    <circle cx="367" cy="468" r="2.5" fill="#E03875"/><text class="cl" x="379" y="472">setBlockingWait / setPollInterval / stop</text>
+
+    <rect x="666" y="296" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="320" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="684" y="336" style="font-size:10.1px">ヘルスチェック</text>
+    <text class="capi" x="684" y="354">Api\Health</text>
+    <circle cx="688" cy="380" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="384">service(name, [&apos;passing&apos; =&gt; true])</text>
+    <circle cx="688" cy="402" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="406" style="font-size:8.6px">node(name) ノードすべてのチェック</text>
+    <circle cx="688" cy="424" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="428" style="font-size:8.6px">checks(name) サービスすべてのチェック</text>
+    <circle cx="688" cy="446" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="450">state() passing / warning / critical</text>
+    <circle cx="688" cy="468" r="2.5" fill="#35D07F"/><text class="cl" x="700" y="472" style="font-size:8.6px">TTL ハートビートと外部プローブの統一ビュー</text>
+    <rect x="24" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="42" y="532" style="font-size:10.1px">セッションと分散ロック</text>
+    <text class="capi" x="42" y="550">Api\Session + Api\Kv</text>
+    <circle cx="46" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="580">create(TTL · Behavior · LockDelay)</text>
+    <circle cx="46" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="602">renew / destroy / info / all / node</text>
+    <circle cx="46" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="624" style="font-size:10.9px">Kv::put(..., [&apos;acquire&apos; =&gt; id]) でロック</text>
+    <circle cx="46" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="646" style="font-size:8.6px">delete の挙動：期限切れでリソースを自動解放</text>
+    <circle cx="46" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="58" y="668" style="font-size:8.6px">セッションが失効すればロックも失効。追加のハートビートは不要</text>
+
+    <rect x="345" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="516" width="4" height="20" rx="2" fill="#F5A623"/>
+    <text class="ct" x="363" y="532" style="font-size:10.1px">ACL パーミッション</text>
+    <text class="capi" x="363" y="550">Api\Acl</text>
+    <circle cx="367" cy="576" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="580">tokenCreate / Read / Update / Delete</text>
+    <circle cx="367" cy="598" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="602">policy* / role* / authMethod* 一式</text>
+    <circle cx="367" cy="620" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="624">login / logout / bootstrap</text>
+    <circle cx="367" cy="642" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="646" style="font-size:11.3px">Token は X-Consul-Token で自動注入</text>
+    <circle cx="367" cy="664" r="2.5" fill="#F5A623"/><text class="cl" x="379" y="668" style="font-size:8.8px">権限が不足すると AccessDeniedException をスロー</text>
+
+    <rect x="666" y="492" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="516" width="4" height="20" rx="2" fill="#9BA3FF"/>
+    <text class="ct" x="684" y="532" style="font-size:10.1px">クラスタ運用</text>
+    <text class="capi" x="684" y="550">Status · Operator · Coordinate · Snapshot · Event</text>
+    <circle cx="688" cy="576" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="580" style="font-size:9.6px">leader / peers クラスタの状態</text>
+    <circle cx="688" cy="598" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="602">raftConfig / autopilotConfig</text>
+    <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
+    <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646" style="font-size:8.7px">snapshot save / restore バイナリスナップショット</text>
+    <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668" style="font-size:9.5px">datacenters / nodes ネットワーク座標</text>
+    <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
+    <text class="ct" x="42" y="728" style="font-size:10.1px">フレームワーク連携</text>
+    <text class="capi" x="42" y="746">src/Integration</text>
+    <circle cx="46" cy="772" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="776">Laravel：自動検出 + Facade + Artisan</text>
+    <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798" style="font-size:9.1px">Hyperf：ConfigProvider + コルーチンクライアント</text>
+    <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820" style="font-size:8.6px">webman：プラグインのインストール + onWorkerStart</text>
+    <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP：ConsulService + app(&apos;consul&apos;)</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:9.1px">API は完全に同一、違うのは $client の取得方法だけ</text>
+
+    <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
+    <text class="ct" x="363" y="728">信頼性設計</text>
+    <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
+    <circle cx="367" cy="772" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="776" style="font-size:9.4px">統一された例外体系、すべて ConsulException を継承</text>
+    <circle cx="367" cy="794" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="798" style="font-size:8.6px">PSR-3 ログ、NullLogger が自動でフォールバック</text>
+    <circle cx="367" cy="816" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="820" style="font-size:10.7px">PSR-14 イベント：ConfigChangedEvent</text>
+    <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842" style="font-size:10.4px">ConsulAsyncClient + Promise による遅延実行</text>
+    <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:9.3px">接続 / デコードエラーは ClientException に正規化</text>
+
+    <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
+    <text class="ct" x="684" y="728">主な特徴</text>
+    <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
+    <circle cx="688" cy="772" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="776" style="font-size:8.6px">PHP 8.0+、コアパッケージはフレームワーク非依存</text>
+    <circle cx="688" cy="794" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="798" style="font-size:9.9px">Consul HTTP API v1 を完全にカバー</text>
+    <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820" style="font-size:8.6px">11 個の API モジュール + 3 個の高レベルラッパー</text>
+    <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:8.6px">PSR インターフェースのみに依存、HTTP クライアントは差し替え可能</text>
+    <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864" style="font-size:9.4px">309 件のユニットテスト · PHPStan L5</text>
+    <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
+    <text class="ct" x="44" y="920" style="font-size:10.1px">同じ API、4 フレームワーク</text>
+    <text class="cl" x="200" y="920" style="font-size:9.2px">Laravel · Hyperf · webman · ThinkPHP —— コアパッケージはフレームワーク非依存、アダプタは内蔵、composer require ひとつで使えます</text>
+    <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
+  </g>
+</svg>

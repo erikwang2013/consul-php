@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-label="Schéma d&apos;architecture de consul-php">
+  <title>Architecture de consul-php</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .gutter { font-size: 13px; font-weight: 600; fill: #9BA3FF; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cs { font-size: 11.5px; fill: #98A1B5; }
+    .mini { font-size: 10.5px; fill: #A9B2C3; }
+    .band { font-size: 13px; font-weight: 600; fill: #E8ECF5; }
+    .bands { font-size: 11px; fill: #98A1B5; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7E83E6"/>
+      <stop offset="1" stop-color="#E03875"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="990" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="44" y="48" style="font-size:17.3px">Architecture de consul-php</text>
+    <text class="sub" x="44" y="74" style="font-size:9.4px">Dépendances en couches : couche applicative → couche d&apos;intégration → client → surcouches → modules API → couche de transport → abstraction PSR → Consul Agent</text>
+    <text class="gutter" x="32" y="140" style="font-size:9.4px">Couche applicative</text>
+    <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="128">Laravel</text>
+    <text class="cs" x="138" y="150" style="font-size:8.3px">Découverte automatique + Facade</text>
+    <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="128">Hyperf</text>
+    <text class="cs" x="307" y="150" style="font-size:8.3px">Coroutine + injection par annotation</text>
+    <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="128">webman</text>
+    <text class="cs" x="476" y="150" style="font-size:8.3px">Installation automatique du plugin</text>
+    <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="128">ThinkPHP</text>
+    <text class="cs" x="645" y="150" style="font-size:8.3px">Liaison de Service</text>
+    <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="128" style="font-size:11.9px">PHP natif</text>
+    <text class="cs" x="814" y="150">new ConsulClient()</text>
+
+    <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="234" style="font-size:9.4px">Couche d&apos;intégration</text>
+    <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="222">ServiceProvider</text>
+    <text class="cs" x="138" y="244">Facade · consul:watch</text>
+    <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="222">ConfigProvider</text>
+    <text class="cs" x="307" y="244" style="font-size:8.3px">Fabrique de clients coroutine</text>
+    <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="222">Webman Install</text>
+    <text class="cs" x="476" y="244" style="font-size:8.3px">Copie de configuration + Worker</text>
+    <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="222">ConsulService</text>
+    <text class="cs" x="645" y="244">app(&apos;consul&apos;)</text>
+    <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="222">ClientFactory</text>
+    <text class="cs" x="814" y="244" style="font-size:8.3px">Assemblage automatique des dépendances PSR</text>
+
+    <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="328" style="font-size:11.8px">Client</text>
+    <rect x="122" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="316" style="font-size:10.1px">ConsulClient · point d&apos;entrée synchrone</text>
+    <text class="cs" x="138" y="338" style="font-size:8.3px">__get : distribution par propriété magique → $client-&gt;kv / health / catalog …</text>
+    <rect x="543" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="559" y="316" style="font-size:10.1px">ConsulAsyncClient · exécution différée par Promise</text>
+    <text class="cs" x="559" y="338">wrap(fn() =&gt; ...)-&gt;then(...)-&gt;catch(...)-&gt;wait()</text>
+
+    <path d="M534 364 L540 375 L546 364" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="430" style="font-size:9.4px">Surcouches de haut niveau</text>
+    <rect x="122" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="138" y="408">Service\Registry</text>
+    <text class="cs" x="138" y="430">register · heartbeat</text>
+    <text class="cs" x="138" y="450">heartbeatFail · deregister</text>
+    <rect x="403" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="419" y="408">Service\Discovery</text>
+    <text class="cs" x="419" y="430">healthyInstances · watch</text>
+    <text class="cs" x="419" y="450" style="font-size:11.1px">LoadBalancer : RoundRobin / Random</text>
+    <rect x="684" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="700" y="408">Config\ConfigCenter</text>
+    <text class="cs" x="700" y="430">get · namespace · set · delete</text>
+    <text class="cs" x="700" y="450" style="font-size:8.3px">watch() → Config\Watcher : mise à jour à chaud</text>
+
+    <path d="M534 474 L540 485 L546 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="536" style="font-size:9.4px">Modules API</text>
+    <rect x="122" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="157" y="536" text-anchor="middle">Agent</text>
+    <rect x="198" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="233" y="536" text-anchor="middle">Catalog</text>
+    <rect x="274" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="309" y="536" text-anchor="middle">Health</text>
+    <rect x="350" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="385" y="536" text-anchor="middle">Kv</text>
+    <rect x="426" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="461" y="536" text-anchor="middle">Session</text>
+    <rect x="502" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="537" y="536" text-anchor="middle">Acl</text>
+    <rect x="578" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="613" y="536" text-anchor="middle">Event</text>
+    <rect x="654" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="689" y="536" text-anchor="middle">Status</text>
+    <rect x="730" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="765" y="536" text-anchor="middle">Coordinate</text>
+    <rect x="806" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="841" y="536" text-anchor="middle">Operator</text>
+    <rect x="882" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="917" y="536" text-anchor="middle">Snapshot</text>
+
+    <path d="M534 578 L540 589 L546 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="640" style="font-size:9.4px">Couche de transport</text>
+    <rect x="122" y="592" width="520" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="138" y="622">TransportInterface ← Psr18Transport</text>
+    <text class="cs" x="138" y="644">get / put / post / delete · getRaw / putRaw · getWithHeaders</text>
+    <text class="cs" x="138" y="664" style="font-size:8.3px">Injection de X-Consul-Token · contrôle du code de statut · décodage JSON · mapping des exceptions</text>
+    <rect x="650" y="592" width="306" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="666" y="622" style="font-size:10.1px">Capture des en-têtes de réponse</text>
+    <text class="cs" x="666" y="644" style="font-size:8.8px">Exposé par getWithHeaders()</text>
+    <text class="cs" x="666" y="664" style="font-size:9.8px">X-Consul-Index → curseur de blocking query</text>
+
+    <path d="M534 682 L540 693 L546 682" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="738" style="font-size:9.4px">Abstraction PSR</text>
+    <rect x="122" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="728">PSR-18</text>
+    <text class="cs" x="138" y="750">HTTP Client</text>
+    <rect x="291" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="728">PSR-17</text>
+    <text class="cs" x="307" y="750">Request / Stream Factory</text>
+    <rect x="460" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="728">PSR-16</text>
+    <text class="cs" x="476" y="750" style="font-size:8.3px">Cache (optionnel)</text>
+    <rect x="629" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="728">PSR-3</text>
+    <text class="cs" x="645" y="750" style="font-size:8.5px">Logger (optionnel)</text>
+    <rect x="798" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="728">PSR-14</text>
+    <text class="cs" x="814" y="750">EventDispatcher</text>
+
+    <path d="M534 776 L540 787 L546 776" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="gutter" x="32" y="830" style="font-size:9.4px">Backend du cluster</text>
+    <rect x="122" y="790" width="834" height="72" rx="14" fill="#141826" stroke="#41476B"/>
+    <rect x="122" y="790" width="6" height="72" rx="3" fill="url(#accent)"/>
+    <text class="ct" x="148" y="822">Consul Agent · HTTP API v1　/agent　/catalog　/health　/kv　/session　/acl　/operator</text>
+    <text class="cs" x="148" y="844" style="font-size:8.3px">Transfert par l&apos;Agent local → cluster Consul Server (consensus Raft · multi-datacenter · ACL)</text>
+    <rect x="24" y="878" width="952" height="88" rx="16" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="890" width="4" height="18" rx="2" fill="#8B8FE8"/>
+    <text class="band" x="58" y="904" style="font-size:9.4px">Préoccupations transverses</text>
+    <text class="bands" x="44" y="928" style="font-size:8.6px">Hiérarchie d&apos;exceptions : ConsulException → Client / Server / Request (401·403·404)</text>
+    <text class="bands" x="500" y="928" style="font-size:7.9px">Cache PSR-16 : get() / namespace() lecture-écriture automatique</text>
+    <text class="bands" x="44" y="950" style="font-size:7.9px">Journalisation PSR-3 : repli sur NullLogger</text>
+    <text class="bands" x="500" y="950" style="font-size:8.9px">Assurance qualité : PHP 8.0–8.4 · PHPStan L5 · 309 tests</text>
+  </g>
+</svg>

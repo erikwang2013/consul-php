@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-label="consul-php 架构设计图">
+  <title>consul-php 架构设计</title>
+  <style>
+    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
+    .sub { font-size: 13px; fill: #8B93A7; }
+    .gutter { font-size: 13px; font-weight: 600; fill: #9BA3FF; }
+    .ct { font-size: 14px; font-weight: 600; fill: #E8ECF5; }
+    .cs { font-size: 11.5px; fill: #98A1B5; }
+    .mini { font-size: 10.5px; fill: #A9B2C3; }
+    .band { font-size: 13px; font-weight: 600; fill: #E8ECF5; }
+    .bands { font-size: 11px; fill: #98A1B5; }
+  </style>
+
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2030"/>
+      <stop offset="1" stop-color="#161A26"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7E83E6"/>
+      <stop offset="1" stop-color="#E03875"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="990" fill="#0F1117"/>
+  <g class="t">
+    <text class="h1" x="44" y="48">consul-php 架构设计</text>
+    <text class="sub" x="44" y="74">分层依赖：应用层 → 集成层 → 客户端 → 高层封装 → API 模块 → 传输层 → PSR 抽象 → Consul Agent</text>
+
+    <!-- 应用层 -->
+    <text class="gutter" x="32" y="140">应用层</text>
+    <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="128">Laravel</text>
+    <text class="cs" x="138" y="150">自动发现 + Facade</text>
+    <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="128">Hyperf</text>
+    <text class="cs" x="307" y="150">协程 + 注解注入</text>
+    <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="128">webman</text>
+    <text class="cs" x="476" y="150">插件自动安装</text>
+    <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="128">ThinkPHP</text>
+    <text class="cs" x="645" y="150">Service 绑定</text>
+    <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="128">原生 PHP</text>
+    <text class="cs" x="814" y="150">new ConsulClient()</text>
+
+    <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 集成层 -->
+    <text class="gutter" x="32" y="234">集成层</text>
+    <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="222">ServiceProvider</text>
+    <text class="cs" x="138" y="244">Facade · consul:watch</text>
+    <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="222">ConfigProvider</text>
+    <text class="cs" x="307" y="244">协程客户端工厂</text>
+    <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="222">Webman Install</text>
+    <text class="cs" x="476" y="244">配置复制 + Worker</text>
+    <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="222">ConsulService</text>
+    <text class="cs" x="645" y="244">app('consul')</text>
+    <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="222">ClientFactory</text>
+    <text class="cs" x="814" y="244">PSR 依赖自动装配</text>
+
+    <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 客户端 -->
+    <text class="gutter" x="32" y="328">客户端</text>
+    <rect x="122" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="316">ConsulClient · 同步入口</text>
+    <text class="cs" x="138" y="338">__get 魔法属性分发 → $client-&gt;kv / health / catalog …</text>
+    <rect x="543" y="284" width="413" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="559" y="316">ConsulAsyncClient · Promise 延迟执行</text>
+    <text class="cs" x="559" y="338">wrap(fn() =&gt; ...)-&gt;then(...)-&gt;catch(...)-&gt;wait()</text>
+
+    <path d="M534 364 L540 375 L546 364" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 高层封装 -->
+    <text class="gutter" x="32" y="430">高层封装</text>
+    <rect x="122" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="138" y="408">Service\Registry</text>
+    <text class="cs" x="138" y="430">register · heartbeat</text>
+    <text class="cs" x="138" y="450">heartbeatFail · deregister</text>
+    <rect x="403" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="419" y="408">Service\Discovery</text>
+    <text class="cs" x="419" y="430">healthyInstances · watch</text>
+    <text class="cs" x="419" y="450">LoadBalancer：RoundRobin / Random</text>
+    <rect x="684" y="378" width="272" height="92" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="700" y="408">Config\ConfigCenter</text>
+    <text class="cs" x="700" y="430">get · namespace · set · delete</text>
+    <text class="cs" x="700" y="450">watch() → Config\Watcher 热更新</text>
+
+    <path d="M534 474 L540 485 L546 474" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- API 模块 -->
+    <text class="gutter" x="32" y="536">API 模块</text>
+    <rect x="122" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="157" y="536" text-anchor="middle">Agent</text>
+    <rect x="198" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="233" y="536" text-anchor="middle">Catalog</text>
+    <rect x="274" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="309" y="536" text-anchor="middle">Health</text>
+    <rect x="350" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="385" y="536" text-anchor="middle">Kv</text>
+    <rect x="426" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="461" y="536" text-anchor="middle">Session</text>
+    <rect x="502" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="537" y="536" text-anchor="middle">Acl</text>
+    <rect x="578" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="613" y="536" text-anchor="middle">Event</text>
+    <rect x="654" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="689" y="536" text-anchor="middle">Status</text>
+    <rect x="730" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="765" y="536" text-anchor="middle">Coordinate</text>
+    <rect x="806" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="841" y="536" text-anchor="middle">Operator</text>
+    <rect x="882" y="488" width="70" height="86" rx="12" fill="#191E2B" stroke="#2B3145"/>
+    <text class="mini" x="917" y="536" text-anchor="middle">Snapshot</text>
+
+    <path d="M534 578 L540 589 L546 578" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 传输层 -->
+    <text class="gutter" x="32" y="640">传输层</text>
+    <rect x="122" y="592" width="520" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="138" y="622">TransportInterface ← Psr18Transport</text>
+    <text class="cs" x="138" y="644">get / put / post / delete · getRaw / putRaw · getWithHeaders</text>
+    <text class="cs" x="138" y="664">X-Consul-Token 注入 · 状态码检查 · JSON 解码 · 异常映射</text>
+    <rect x="650" y="592" width="306" height="86" rx="14" fill="url(#card)" stroke="#3A4064"/>
+    <text class="ct" x="666" y="622">响应头捕获</text>
+    <text class="cs" x="666" y="644">getWithHeaders() 暴露</text>
+    <text class="cs" x="666" y="664">X-Consul-Index → blocking query 游标</text>
+
+    <path d="M534 682 L540 693 L546 682" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- PSR 抽象 -->
+    <text class="gutter" x="32" y="738">PSR 抽象</text>
+    <rect x="122" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="728">PSR-18</text>
+    <text class="cs" x="138" y="750">HTTP Client</text>
+    <rect x="291" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="307" y="728">PSR-17</text>
+    <text class="cs" x="307" y="750">Request / Stream Factory</text>
+    <rect x="460" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="476" y="728">PSR-16</text>
+    <text class="cs" x="476" y="750">Cache（可选）</text>
+    <rect x="629" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="645" y="728">PSR-3</text>
+    <text class="cs" x="645" y="750">Logger（可选）</text>
+    <rect x="798" y="696" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="814" y="728">PSR-14</text>
+    <text class="cs" x="814" y="750">EventDispatcher</text>
+
+    <path d="M534 776 L540 787 L546 776" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Consul -->
+    <text class="gutter" x="32" y="830">集群后端</text>
+    <rect x="122" y="790" width="834" height="72" rx="14" fill="#141826" stroke="#41476B"/>
+    <rect x="122" y="790" width="6" height="72" rx="3" fill="url(#accent)"/>
+    <text class="ct" x="148" y="822">Consul Agent · HTTP API v1　/agent　/catalog　/health　/kv　/session　/acl　/operator</text>
+    <text class="cs" x="148" y="844">本地 Agent 转发 → Consul Server 集群（Raft 共识 · 多数据中心 · ACL）</text>
+
+    <!-- 横向关注点 -->
+    <rect x="24" y="878" width="952" height="88" rx="16" fill="#131722" stroke="#262B3A"/>
+    <rect x="44" y="890" width="4" height="18" rx="2" fill="#8B8FE8"/>
+    <text class="band" x="58" y="904">横向关注点</text>
+    <text class="bands" x="44" y="928">异常体系：ConsulException → Client / Server / Request(401·403·404)</text>
+    <text class="bands" x="500" y="928">PSR-16 缓存：get() / namespace() 自动读写</text>
+    <text class="bands" x="44" y="950">PSR-3 日志：NullLogger 兜底</text>
+    <text class="bands" x="500" y="950">质量保障：PHP 8.0–8.4 · PHPStan L5 · 309 项测试</text>
+  </g>
+</svg>
