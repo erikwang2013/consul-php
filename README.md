@@ -4,7 +4,7 @@
 
 <img src="./docs/images/pet.svg" alt="consul-php 项目宠物 Consu" width="320">
 
-PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，内置 Laravel / Hyperf / webman / ThinkPHP 适配，一个 composer require 即可在任何框架下使用。
+PHP Consul 客户端，完整覆盖 Consul HTTP API v1，重点支持服务注册发现与配置中心。核心包零框架依赖，内置 Laravel / Hyperf / webman / ThinkPHP / Yii2 / Yii3 适配，一个 composer require 即可在任何框架下使用。
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 
@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | **是什么** | 纯 PHP 实现的 Consul HTTP API v1 客户端：同步 + Promise 双入口，18 个 API 模块，3 个高层封装 |
 | **解决什么** | 让 PHP 应用接入 Consul 做服务注册发现与配置热更新，无需为每个框架重写一套客户端 |
 | **怎么用** | `composer require erikwang2013/consul-php`，核心包零框架依赖，框架适配内置并自动发现 |
-| **支持框架** | Laravel · Hyperf · webman · ThinkPHP —— API 完全一致，只差获取 `$client` 的方式 |
+| **支持框架** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— API 完全一致，只差获取 `$client` 的方式 |
 | **依赖约定** | 只依赖 PSR 接口（PSR-18/17/16/14/3），HTTP 客户端、缓存、日志、事件分发器均可替换 |
 | **质量保障** | PHP 8.0 – 8.4 · 594 项单元测试 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 零框架依赖
 | **Hyperf 集成** | 见下方 [Hyperf](#hyperf) |
 | **webman 集成** | 见下方 [webman](#webman) |
 | **ThinkPHP 集成** | 见下方 [ThinkPHP](#thinkphp) |
+| **Yii2 集成** | 见下方 [Yii2](#yii2) |
+| **Yii3 集成** | 见下方 [Yii3](#yii3) |
 | **设计文档** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](docs/superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + 协程客户端工厂 + config
 │       ├── Webman/                  # 插件安装（Install）+ config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Component + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin（di.php + params.php）+ 客户端工厂
 │       └── Native/                  # 原生 PHP：注册 / 心跳 / 自动注销一站式
 ├── tests/                           # PHPUnit 用例（Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport）
@@ -123,17 +127,17 @@ consul-php/
 
 ## 框架集成一览
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **扩展包** | 内置 | 内置 | 内置 | 内置 |
-| **注入方式** | 自动发现 + `ServiceProvider` | 自动发现 + `ConfigProvider` | 手动 `new` / 插件 | 手动 `bind` 到容器 |
-| **便捷访问** | `Consul` Facade | `#[Inject]` 注解 | — | `app('consul')` 助手 |
-| **配置位置** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **HTTP 客户端** | Guzzle (PSR-18) | Swoole 协程客户端 | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **缓存** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 自行注入 | 自行注入 |
-| **热更新运行** | Artisan 命令 | `AbstractProcess` 协程 | `Worker` 进程 | Timer / Swoole 进程 |
-| **事件监听** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **文档** | [源码](src/Integration/Laravel/) | [源码](src/Integration/Hyperf/) | [源码](src/Integration/Webman/) | [源码](src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **扩展包** | 内置 | 内置 | 内置 | 内置 | 内置 | 内置 |
+| **注入方式** | 自动发现 + `ServiceProvider` | 自动发现 + `ConfigProvider` | 手动 `new` / 插件 | 手动 `bind` 到容器 | `bootstrap` 一行引导 / `components` 注册 | `config-plugin` 自动合并 `di` + `params` |
+| **便捷访问** | `Consul` Facade | `#[Inject]` 注解 | — | `app('consul')` 助手 | `Yii::$app->consul->client` | 构造函数注入 `ConsulClient` |
+| **配置位置** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `config/web.php` 的 `components.consul` | `config/params.php` 的 `erikwang2013/consul-php` |
+| **HTTP 客户端** | Guzzle (PSR-18) | Swoole 协程客户端 | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / 内置 cURL | 容器里的 PSR-18 / 内置 cURL |
+| **缓存** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 自行注入 | 自行注入 | 自行注入 (PSR-16) | 容器里的 PSR-16 自动注入 |
+| **热更新运行** | Artisan 命令 | `AbstractProcess` 协程 | `Worker` 进程 | Timer / Swoole 进程 | 常驻进程 / 队列 Worker | 常驻进程 / 队列 Worker |
+| **事件监听** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | 容器里的 PSR-14 自动注入 |
+| **文档** | [源码](src/Integration/Laravel/) | [源码](src/Integration/Hyperf/) | [源码](src/Integration/Webman/) | [源码](src/Integration/Thinkphp/) | [源码](src/Integration/Yii2/) | [源码](src/Integration/Yii3/) |
 
 ### 同一操作，不同写法
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;`（控制器可直接注入 `ConsulClient`） |
+| Yii3 | 构造函数注入 `ConsulClient`（容器自动装配） |
 
 **服务注册：**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (自动启动) | Swoole 协程 |
 | webman | 在 `onWorkerStart` 中 fork | Worker 进程 |
 | ThinkPHP | Timer::setInterval / Swoole Process | 独立进程 |
+| Yii2 | 常驻进程 / 队列 Worker 里 `configCenter()->watch()` | 独立 PHP 进程 |
+| Yii3 | 常驻进程 / 队列 Worker 里 `configCenter()->watch()` | 独立 PHP 进程 |
 
 ---
 
@@ -194,6 +202,8 @@ composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 - **Hyperf** — 自动发现 `ConfigProvider`，提供协程客户端工厂和 `#[Inject]` 注入
 - **webman** — 自动发现插件，`composer install` 时自动复制配置文件
 - **ThinkPHP** — 在 `app/service` 目录下创建 `ConsulService` 并注册到应用
+- **Yii2** — 应用配置的 `bootstrap` 数组加一行 `Bootstrap` 类（Yii 无 composer 自动发现，bootstrap 是 Yii 官方给扩展准备的引导机制）
+- **Yii3** — 本包已声明 `config-plugin`，装完 `yiisoft/config` 自动合并 `di` + `params`，构造函数注入即可用
 
 ---
 
@@ -524,6 +534,84 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+Yii 没有 composer 自动发现机制，用 Yii 官方给扩展准备的引导机制接入：应用配置的 `bootstrap` 数组加一行，就有了 `Yii::$app->consul`（客户端懒加载，只构造一次）。
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// 需要改配置时，直接注册组件即可 —— Bootstrap 不覆盖已有的 consul 组件
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+不想用 Bootstrap，也可以把集成包里的配置片段合并进应用配置（`components` 与 `container` 一起给全，容器里的 `ConsulClient` 与组件同源）：
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+用法与其它框架完全一致，控制器里也可以直接注入：
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **配置项**：`baseUri` / `token` / `cache`（开关与 TTL）/ `options`（timeout、retry 等，同名键以 `options` 为准）；要完全接管客户端时 `Yii::$app->consul->client = $client`（即 `setClient()`）
+- **缓存**：需自行注入 PSR-16 实现（`psrCache`）。Yii 自带的 `cache` 组件不是 PSR-16——未命中返回 `false` 而非默认值，直接传会让"未命中"被当成"命中"
+- **服务注册**：别放在 web 请求里（每个请求都会注册一次），放自定义 console 命令或常驻进程；常驻进程可用 [NativeService](src/Integration/Native/NativeService.php) 一行拿到「注册 → TTL 心跳 → 退出自动注销」
+
+### Yii3
+
+Yii3 全线走 PSR（PSR-11 容器 + `yiisoft/config` 配置插件）。本包已声明 `config-plugin`，装完就自动把 `di.php` 与 `params.php` 并进应用配置，不用手工注册：
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// 构造函数注入即可 —— 容器里的 PSR-18/17 HTTP 客户端、PSR-3 日志、PSR-16 缓存、
+// PSR-14 事件分发器会自动注入；没绑定的留空走库内默认（discovery → 内置 cURL、NullLogger）
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+配置写在应用自己的 `config/params.php` 里（顶层键是本包包名，与其它 Yii3 包一致），递归覆盖本包默认值：
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **缓存**：Yii3 的 `yiisoft/cache` 本身就是 PSR-16，绑了 `Psr\SimpleCache\CacheInterface` 就自动走缓存（Yii2 的 cache 组件不是 PSR-16，两边行为不同）
+- **绑定错了类型会直接报错**：容器里 `Psr\SimpleCache\CacheInterface` 之类的实现不满足接口时抛 `RuntimeException`，不会拖到传输层才炸出一句莫名的 TypeError
+- **换实现**：想彻底接管客户端（多集群、自定义 HTTP 客户端），在应用的 `config/di.php` 里重新定义 `ConsulClient::class` 即可覆盖本包的定义
+
 ---
 
 ## 自定义 HTTP 客户端
@@ -620,7 +708,7 @@ try {
 
 依赖方向自上而下，每一层只依赖下一层的抽象：
 
-- **应用层 / 集成层** —— 4 个框架适配内置在核心包 `src/Integration/`，由 composer 自动发现注册；应用层始终只面对 `ConsulClient` 一个入口。
+- **应用层 / 集成层** —— 6 个框架适配内置在核心包 `src/Integration/`，由 composer 自动发现注册；应用层始终只面对 `ConsulClient` 一个入口。
 - **客户端** —— `ConsulClient` 通过 `__get` 统一暴露 18 个 API 模块（`$client->kv`、`$client->health` …）与 3 个高层封装（`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`）；`ConsulAsyncClient` 提供 Promise 延迟执行。
 - **高层封装** —— `Registry` / `Discovery` / `ConfigCenter` 组合 API 模块；`Watcher` 依赖 `getWithHeaders()` 返回的 `X-Consul-Index` 实现长轮询。
 - **API 模块** —— 一个模块对应一组 Consul v1 端点，全部经同一个 `TransportInterface` 出入。
@@ -633,7 +721,7 @@ try {
 
 ![consul-php 功能设计](docs/images/features.svg)
 
-能力地图：服务注册发现、配置中心与热更新、KV / 健康检查 / 会话锁 / ACL / 集群运维、4 框架适配与可靠性设计。每个能力卡片标注了对应的入口类，具体调用方式见上方 [快速开始](#快速开始通用) 与 [API 模块速查](#api-模块速查)。
+能力地图：服务注册发现、配置中心与热更新、KV / 健康检查 / 会话锁 / ACL / 集群运维、6 框架适配与可靠性设计。每个能力卡片标注了对应的入口类，具体调用方式见上方 [快速开始](#快速开始通用) 与 [API 模块速查](#api-模块速查)。
 
 ---
 
@@ -659,7 +747,7 @@ composer pet
 
 ```text
 ╭───────────────────────────────────────────────────────────────────────────╮
-│ consul-php · PHP Consul 客户端 —— 一次 composer require，四种框架都有心跳 │
+│ consul-php · PHP Consul 客户端 —— 一次 composer require，六种框架都有心跳 │
 ╰──────┬────────────────────────────────────────────────────────────────────╯
        │
        ●

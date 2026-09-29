@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="970" viewBox="0 0 1000 970" role="img" aria-label="consul-php 기능 설계도">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="992" viewBox="0 0 1000 992" role="img" aria-label="consul-php 기능 설계도">
   <title>consul-php 기능 설계</title>
   <style>
     .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
@@ -16,10 +16,10 @@
     </linearGradient>
   </defs>
 
-  <rect width="1000" height="970" fill="#0F1117"/>
+  <rect width="1000" height="992" fill="#0F1117"/>
   <g class="t">
     <text class="h1" x="24" y="48">consul-php 기능 설계</text>
-    <text class="sub" x="24" y="74">18개 API 모듈 + 3개 고수준 래퍼 + 4개 프레임워크 어댑터: 기능 맵과 대응 진입점</text>
+    <text class="sub" x="24" y="74">18개 API 모듈 + 3개 고수준 래퍼 + 6개 프레임워크 어댑터: 기능 맵과 대응 진입점</text>
     <rect x="24" y="100" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="124" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="42" y="140">서비스 등록</text>
@@ -107,7 +107,7 @@
     <circle cx="688" cy="620" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="624">keyring list / install / use / remove</text>
     <circle cx="688" cy="642" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="646">snapshot save / restore 바이너리 스냅샷</text>
     <circle cx="688" cy="664" r="2.5" fill="#9BA3FF"/><text class="cl" x="700" y="668">datacenters / nodes 네트워크 좌표</text>
-    <rect x="24" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="24" y="688" width="310" height="200" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="24" y="712" width="4" height="20" rx="2" fill="#8B8FE8"/>
     <text class="ct" x="42" y="728">프레임워크 통합</text>
     <text class="capi" x="42" y="746">src/Integration</text>
@@ -115,9 +115,10 @@
     <circle cx="46" cy="794" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="798">Hyperf: ConfigProvider + 코루틴 클라이언트</text>
     <circle cx="46" cy="816" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="820">webman: 플러그인 설치 + onWorkerStart</text>
     <circle cx="46" cy="838" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="842">ThinkPHP: ConsulService + app(&apos;consul&apos;)</text>
-    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864" style="font-size:10.4px">API는 완전히 동일하고 $client를 얻는 방식만 다릅니다</text>
+    <circle cx="46" cy="860" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="864">Yii2 / Yii3: Bootstrap · config-plugin</text>
+    <circle cx="46" cy="882" r="2.5" fill="#8B8FE8"/><text class="cl" x="58" y="886" style="font-size:10.4px">API는 완전히 동일하고 $client를 얻는 방식만 다릅니다</text>
 
-    <rect x="345" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="345" y="688" width="310" height="200" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="345" y="712" width="4" height="20" rx="2" fill="#35D07F"/>
     <text class="ct" x="363" y="728">신뢰성 설계</text>
     <text class="capi" x="363" y="746">Exception · Logger · Cache · Event · Promise</text>
@@ -127,7 +128,7 @@
     <circle cx="367" cy="838" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="842">ConsulAsyncClient + Promise 지연 실행</text>
     <circle cx="367" cy="860" r="2.5" fill="#35D07F"/><text class="cl" x="379" y="864" style="font-size:11.8px">연결/디코딩 오류를 ClientException으로 정규화</text>
 
-    <rect x="666" y="688" width="310" height="178" rx="16" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="666" y="688" width="310" height="200" rx="16" fill="url(#card)" stroke="#2B3145"/>
     <rect x="666" y="712" width="4" height="20" rx="2" fill="#4CC9F0"/>
     <text class="ct" x="684" y="728">핵심 특성</text>
     <text class="capi" x="684" y="746">composer require erikwang2013/consul-php</text>
@@ -136,9 +137,9 @@
     <circle cx="688" cy="816" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="820">18개 API 모듈 + 3개 고수준 래퍼</text>
     <circle cx="688" cy="838" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="842" style="font-size:10.5px">PSR 인터페이스에만 의존, HTTP 클라이언트 교체 가능</text>
     <circle cx="688" cy="860" r="2.5" fill="#4CC9F0"/><text class="cl" x="700" y="864">309개 단위 테스트 · PHPStan L5</text>
-    <rect x="24" y="886" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
-    <text class="ct" x="44" y="920" style="font-size:10px">하나의 API, 네 가지 프레임워크</text>
-    <text class="cl" x="200" y="920" style="font-size:10.5px">Laravel · Hyperf · webman · ThinkPHP —— 코어 패키지는 의존성 제로, 프레임워크 어댑터 내장, composer require 한 번이면 사용 가능</text>
-    <text class="capi" x="956" y="920" text-anchor="end">PHP 8.0 – 8.4</text>
+    <rect x="24" y="908" width="952" height="56" rx="16" fill="#131722" stroke="#262B3A"/>
+    <text class="ct" x="44" y="942" style="font-size:11.4px">하나의 API, 6개 프레임워크</text>
+    <text class="cl" x="200" y="942" style="font-size:10.7px">Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— 코어 패키지 의존성 제로, 어댑터 내장, composer require 한 번이면 사용 가능</text>
+    <text class="capi" x="956" y="942" text-anchor="end">PHP 8.0 – 8.4</text>
   </g>
 </svg>

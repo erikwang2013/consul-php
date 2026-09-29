@@ -4,7 +4,7 @@
 
 <img src="./images/pet.svg" alt="consul-php परियोजना का पालतू Consu" width="320">
 
-PHP Consul क्लाइंट, जो Consul HTTP API v1 को पूरी तरह कवर करता है और मुख्य रूप से सेवा पंजीकरण-खोज तथा कॉन्फ़िगरेशन केंद्र पर केंद्रित है। मुख्य पैकेज पर किसी फ़्रेमवर्क की निर्भरता नहीं है, Laravel / Hyperf / webman / ThinkPHP के अडैप्टर अंतर्निहित हैं — एक `composer require` और किसी भी फ़्रेमवर्क में उपयोग करें।
+PHP Consul क्लाइंट, जो Consul HTTP API v1 को पूरी तरह कवर करता है और मुख्य रूप से सेवा पंजीकरण-खोज तथा कॉन्फ़िगरेशन केंद्र पर केंद्रित है। मुख्य पैकेज पर किसी फ़्रेमवर्क की निर्भरता नहीं है, Laravel / Hyperf / webman / ThinkPHP / Yii2 / Yii3 के अडैप्टर अंतर्निहित हैं — एक `composer require` और किसी भी फ़्रेमवर्क में उपयोग करें।
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · शून्य फ़्रेमवर्क निर्भरता
 
@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · शून्य फ़्रेमव�
 | **यह क्या है** | शुद्ध PHP में लिखा Consul HTTP API v1 क्लाइंट: सिंक + Promise, दो एंट्री; 18 API मॉड्यूल; 3 उच्च-स्तरीय रैपर |
 | **क्या समस्या हल करता है** | PHP अनुप्रयोगों को Consul से जोड़कर सेवा पंजीकरण-खोज और कॉन्फ़िगरेशन का हॉट अपडेट देना — हर फ़्रेमवर्क के लिए अलग क्लाइंट लिखने की ज़रूरत नहीं |
 | **कैसे उपयोग करें** | `composer require erikwang2013/consul-php` — मुख्य पैकेज में शून्य फ़्रेमवर्क निर्भरता, फ़्रेमवर्क अडैप्टर अंतर्निहित और स्वतः खोजे जाते हैं |
-| **समर्थित फ़्रेमवर्क** | Laravel · Hyperf · webman · ThinkPHP —— API पूरी तरह एक जैसा, अंतर केवल `$client` पाने के तरीके का |
+| **समर्थित फ़्रेमवर्क** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— API पूरी तरह एक जैसा, अंतर केवल `$client` पाने के तरीके का |
 | **निर्भरता नीति** | केवल PSR इंटरफ़ेस पर निर्भर (PSR-18/17/16/14/3); HTTP क्लाइंट, कैश, लॉग और इवेंट डिस्पैचर सभी बदले जा सकते हैं |
 | **गुणवत्ता आश्वासन** | PHP 8.0 – 8.4 · 594 यूनिट टेस्ट · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · शून्य फ़्रेमव�
 | **Hyperf एकीकरण** | नीचे देखें Hyperf |
 | **webman एकीकरण** | नीचे देखें webman |
 | **ThinkPHP एकीकरण** | नीचे देखें ThinkPHP |
+| **Yii2 एकीकरण** | नीचे देखें [Yii2](#yii2) |
+| **Yii3 एकीकरण** | नीचे देखें [Yii3](#yii3) |
 | **डिज़ाइन दस्तावेज़** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](../../superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + कोरूटीन क्लाइंट फ़ैक्टरी + config
 │       ├── Webman/                  # प्लगइन इंस्टॉलेशन (Install) + config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Component + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin (di.php + params.php) + क्लाइंट फ़ैक्टरी
 │       └── Native/                  # नेटिव PHP: पंजीकरण / heartbeat / स्वतः डीरजिस्टर एक पंक्ति में
 ├── tests/                           # PHPUnit केस (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
@@ -123,17 +127,17 @@ consul-php/
 
 ## फ़्रेमवर्क एकीकरण एक नज़र में
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **एक्सटेंशन पैकेज** | अंतर्निहित | अंतर्निहित | अंतर्निहित | अंतर्निहित |
-| **इंजेक्शन विधि** | स्वतः खोज + `ServiceProvider` | स्वतः खोज + `ConfigProvider` | मैन्युअल `new` / प्लगइन | कंटेनर में मैन्युअल `bind` |
-| **सुविधाजनक पहुँच** | `Consul` Facade | `#[Inject]` एनोटेशन | — | `app('consul')` हेल्पर |
-| **कॉन्फ़िगरेशन स्थान** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **HTTP क्लाइंट** | Guzzle (PSR-18) | Swoole कोरूटीन क्लाइंट | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **कैश** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | स्वयं इंजेक्ट करें | स्वयं इंजेक्ट करें |
-| **हॉट अपडेट चलाना** | Artisan कमांड | `AbstractProcess` कोरूटीन | `Worker` प्रोसेस | Timer / Swoole प्रोसेस |
-| **इवेंट श्रोता** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **दस्तावेज़** | [सोर्स कोड](../../../src/Integration/Laravel/) | [सोर्स कोड](../../../src/Integration/Hyperf/) | [सोर्स कोड](../../../src/Integration/Webman/) | [सोर्स कोड](../../../src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **एक्सटेंशन पैकेज** | अंतर्निहित | अंतर्निहित | अंतर्निहित | अंतर्निहित | अंतर्निहित | अंतर्निहित |
+| **इंजेक्शन विधि** | स्वतः खोज + `ServiceProvider` | स्वतः खोज + `ConfigProvider` | मैन्युअल `new` / प्लगइन | कंटेनर में मैन्युअल `bind` | `bootstrap` में एक पंक्ति / `components` रजिस्ट्रेशन | `config-plugin` से `di` + `params` स्वतः मर्ज |
+| **सुविधाजनक पहुँच** | `Consul` Facade | `#[Inject]` एनोटेशन | — | `app('consul')` हेल्पर | `Yii::$app->consul->client` | कंस्ट्रक्टर में `ConsulClient` इंजेक्शन (कंटेनर ऑटो-वायरिंग) |
+| **कॉन्फ़िगरेशन स्थान** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `config/web.php` का `components.consul` | `config/params.php` का `erikwang2013/consul-php` |
+| **HTTP क्लाइंट** | Guzzle (PSR-18) | Swoole कोरूटीन क्लाइंट | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / अंतर्निहित cURL | कंटेनर का PSR-18 / अंतर्निहित cURL |
+| **कैश** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | स्वयं इंजेक्ट करें | स्वयं इंजेक्ट करें | स्वयं इंजेक्ट करें (PSR-16) | कंटेनर का PSR-16 स्वतः इंजेक्ट |
+| **हॉट अपडेट चलाना** | Artisan कमांड | `AbstractProcess` कोरूटीन | `Worker` प्रोसेस | Timer / Swoole प्रोसेस | स्थायी प्रोसेस / क्यू Worker | स्थायी प्रोसेस / क्यू Worker |
+| **इवेंट श्रोता** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | कंटेनर का PSR-14 स्वतः इंजेक्ट |
+| **दस्तावेज़** | [सोर्स कोड](../../../src/Integration/Laravel/) | [सोर्स कोड](../../../src/Integration/Hyperf/) | [सोर्स कोड](../../../src/Integration/Webman/) | [सोर्स कोड](../../../src/Integration/Thinkphp/) | [सोर्स कोड](../../../src/Integration/Yii2/) | [सोर्स कोड](../../../src/Integration/Yii3/) |
 
 ### एक ही कार्य, अलग-अलग लिखने का तरीका
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;` (कंट्रोलर में सीधे `ConsulClient` इंजेक्ट कर सकते हैं) |
+| Yii3 | कंस्ट्रक्टर में `ConsulClient` इंजेक्शन (कंटेनर ऑटो-वायरिंग) |
 
 **सेवा पंजीकरण:**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (स्वतः शुरू) | Swoole कोरूटीन |
 | webman | `onWorkerStart` में fork करें | Worker प्रोसेस |
 | ThinkPHP | Timer::setInterval / Swoole Process | स्वतंत्र प्रोसेस |
+| Yii2 | स्थायी प्रोसेस / क्यू Worker में `configCenter()->watch()` | स्वतंत्र PHP प्रोसेस |
+| Yii3 | स्थायी प्रोसेस / क्यू Worker में `configCenter()->watch()` | स्वतंत्र PHP प्रोसेस |
 
 ---
 
@@ -194,6 +202,8 @@ composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 - **Hyperf** — `ConfigProvider` स्वतः खोजा जाता है, कोरूटीन क्लाइंट फ़ैक्टरी और `#[Inject]` इंजेक्शन देता है
 - **webman** — प्लगइन स्वतः खोजा जाता है, `composer install` के समय कॉन्फ़िगरेशन फ़ाइल स्वतः कॉपी हो जाती है
 - **ThinkPHP** — `app/service` डायरेक्टरी में `ConsulService` बनाकर ऐप में रजिस्टर करें
+- **Yii2** — ऐप कॉन्फ़िग के `bootstrap` array में `Bootstrap` क्लास की एक पंक्ति जोड़ें (Yii में composer ऑटो-डिस्कवरी नहीं होती; `bootstrap` Yii की ओर से एक्सटेंशन के लिए दिया गया आधिकारिक बूटस्ट्रैप तंत्र है)
+- **Yii3** — इस पैकेज में `config-plugin` पहले से घोषित है, इसलिए इंस्टॉल के बाद `yiisoft/config` स्वतः `di` + `params` मर्ज कर देता है और कंस्ट्रक्टर इंजेक्शन से सीधे काम चल जाता है
 
 ---
 
@@ -524,6 +534,84 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+Yii में composer ऑटो-डिस्कवरी तंत्र नहीं होता, इसलिए Yii की ओर से एक्सटेंशन के लिए दिए गए आधिकारिक बूटस्ट्रैप तंत्र से जोड़ें: ऐप कॉन्फ़िग के `bootstrap` array में एक पंक्ति जोड़ते ही `Yii::$app->consul` मिल जाता है (क्लाइंट लेज़ी-लोड होता है, केवल एक बार बनता है)।
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// कॉन्फ़िगरेशन बदलना हो तो कंपोनेंट सीधे रजिस्टर करें —— Bootstrap पहले से मौजूद consul कंपोनेंट को ओवरराइड नहीं करता
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+Bootstrap का उपयोग न करना चाहें तो एकीकरण पैकेज का कॉन्फ़िग स्निपेट सीधे ऐप कॉन्फ़िग में मर्ज कर सकते हैं (`components` और `container` दोनों एक साथ दें, ताकि कंटेनर का `ConsulClient` भी उसी स्रोत से बने):
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+उपयोग अन्य फ़्रेमवर्क जैसा ही है, और कंट्रोलर में सीधे इंजेक्ट भी किया जा सकता है:
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **कॉन्फ़िगरेशन विकल्प**: `baseUri` / `token` / `cache` (स्विच और TTL) / `options` (timeout, retry आदि; एक ही नाम की key हो तो `options` ही मान्य होगा); क्लाइंट का पूरा नियंत्रण लेना हो तो `Yii::$app->consul->client = $client` (यानी `setClient()`)
+- **कैश**: PSR-16 कार्यान्वयन (`psrCache`) स्वयं इंजेक्ट करना होगा। Yii का अंतर्निहित `cache` कंपोनेंट PSR-16 नहीं है —— कैश मिस पर वह डिफ़ॉल्ट मान के बजाय `false` लौटाता है, इसलिए सीधे देने पर "मिस" को "हिट" मान लिया जाएगा
+- **सेवा पंजीकरण**: इसे web request में न रखें (हर request पर दोबारा रजिस्टर हो जाएगा), बल्कि कस्टम console कमांड या स्थायी प्रोसेस में रखें; स्थायी प्रोसेस में [NativeService](../../../src/Integration/Native/NativeService.php) से एक ही पंक्ति में "रजिस्टर → TTL heartbeat → बाहर निकलते ही ऑटो डीरजिस्टर" मिल जाता है
+
+### Yii3
+
+Yii3 पूरी तरह PSR पर चलता है (PSR-11 कंटेनर + `yiisoft/config` कॉन्फ़िगरेशन प्लगइन)। इस पैकेज में `config-plugin` पहले से घोषित है, इसलिए इंस्टॉल करते ही `di.php` और `params.php` स्वतः ऐप कॉन्फ़िग में मर्ज हो जाते हैं — मैन्युअल रजिस्ट्रेशन की ज़रूरत नहीं:
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// कंस्ट्रक्टर इंजेक्शन ही काफ़ी है —— कंटेनर का PSR-18/17 HTTP क्लाइंट, PSR-3 लॉग, PSR-16 कैश और
+// PSR-14 इवेंट डिस्पैचर स्वतः इंजेक्ट हो जाते हैं; जो बाइंड न हों वहाँ लाइब्रेरी का डिफ़ॉल्ट चलता है (discovery → अंतर्निहित cURL, NullLogger)
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+कॉन्फ़िगरेशन ऐप के अपने `config/params.php` में लिखें (शीर्ष-स्तरीय key इस पैकेज का नाम है, जैसा अन्य Yii3 पैकेजों में होता है), जो इस पैकेज के डिफ़ॉल्ट मानों को पुनरावर्ती रूप से ओवरराइड करता है:
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **कैश**: Yii3 का `yiisoft/cache` खुद PSR-16 है, इसलिए `Psr\SimpleCache\CacheInterface` बाइंड होते ही कैश स्वतः काम करता है (Yii2 का cache कंपोनेंट PSR-16 नहीं है, दोनों का व्यवहार अलग है)
+- **ग़लत टाइप बाइंड होने पर सीधे त्रुटि**: कंटेनर में `Psr\SimpleCache\CacheInterface` जैसा कार्यान्वयन इंटरफ़ेस पूरा न करे तो `RuntimeException` फेंका जाता है, त्रुटि ट्रांसपोर्ट परत तक टाली नहीं जाती
+- **कार्यान्वयन बदलना**: क्लाइंट का पूरा नियंत्रण लेना हो (मल्टी-क्लस्टर, कस्टम HTTP क्लाइंट), तो ऐप के `config/di.php` में `ConsulClient::class` फिर से परिभाषित करके इस पैकेज की परिभाषा ओवरराइड कर सकते हैं
+
 ---
 
 ## कस्टम HTTP क्लाइंट
@@ -620,7 +708,7 @@ try {
 
 निर्भरता की दिशा ऊपर से नीचे है, हर परत केवल नीचे की परत के एब्स्ट्रैक्शन पर निर्भर करती है:
 
-- **अनुप्रयोग परत / एकीकरण परत** —— 4 फ़्रेमवर्क अडैप्टर मुख्य पैकेज की `src/Integration/` में अंतर्निहित हैं और composer द्वारा स्वतः खोजे-रजिस्टर होते हैं; अनुप्रयोग परत को हमेशा केवल एक ही एंट्री `ConsulClient` दिखती है।
+- **अनुप्रयोग परत / एकीकरण परत** —— 6 फ़्रेमवर्क अडैप्टर मुख्य पैकेज की `src/Integration/` में अंतर्निहित हैं और composer द्वारा स्वतः खोजे-रजिस्टर होते हैं; अनुप्रयोग परत को हमेशा केवल एक ही एंट्री `ConsulClient` दिखती है।
 - **क्लाइंट** —— `ConsulClient` `__get` के ज़रिए 18 API मॉड्यूल (`$client->kv`, `$client->health` …) और 3 उच्च-स्तरीय रैपर (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) एक समान रूप से उजागर करता है; `ConsulAsyncClient` Promise आधारित डेफ़र्ड-एक्ज़ीक्यूशन देता है।
 - **उच्च-स्तरीय रैपर** —— `Registry` / `Discovery` / `ConfigCenter` API मॉड्यूल को संयोजित करते हैं; `Watcher` लॉन्ग पोलिंग के लिए `getWithHeaders()` से मिले `X-Consul-Index` पर निर्भर करता है।
 - **API मॉड्यूल** —— एक मॉड्यूल Consul v1 के एक एंडपॉइंट समूह से मेल खाता है, और सब एक ही `TransportInterface` से होकर आते-जाते हैं।
@@ -633,7 +721,7 @@ try {
 
 ![consul-php फ़ीचर डिज़ाइन](./images/features.svg)
 
-क्षमता मानचित्र: सेवा पंजीकरण-खोज, कॉन्फ़िगरेशन केंद्र और हॉट अपडेट, KV / health check / सत्र लॉक / ACL / क्लस्टर संचालन, 4 फ़्रेमवर्क अडैप्टर और विश्वसनीयता डिज़ाइन। हर क्षमता कार्ड पर संबंधित एंट्री क्लास अंकित है; कॉल करने का विस्तृत तरीका ऊपर "त्वरित शुरुआत (सामान्य)" और "API मॉड्यूल त्वरित संदर्भ" में देखें।
+क्षमता मानचित्र: सेवा पंजीकरण-खोज, कॉन्फ़िगरेशन केंद्र और हॉट अपडेट, KV / health check / सत्र लॉक / ACL / क्लस्टर संचालन, 6 फ़्रेमवर्क अडैप्टर और विश्वसनीयता डिज़ाइन। हर क्षमता कार्ड पर संबंधित एंट्री क्लास अंकित है; कॉल करने का विस्तृत तरीका ऊपर "त्वरित शुरुआत (सामान्य)" और "API मॉड्यूल त्वरित संदर्भ" में देखें।
 
 ---
 
@@ -659,7 +747,7 @@ composer pet
 
 ```text
 ╭───────────────────────────────────────────────────────────────────────────╮
-│ consul-php · PHP Consul क्लाइंट — एक composer require, चारों फ़्रेमवर्क में heartbeat │
+│ consul-php · PHP Consul क्लाइंट — एक composer require, छहों फ़्रेमवर्क में heartbeat │
 ╰──────┬────────────────────────────────────────────────────────────────────╯
        │
        ●

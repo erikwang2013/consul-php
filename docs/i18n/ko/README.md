@@ -4,7 +4,7 @@
 
 <img src="./images/pet.svg" alt="consul-php 프로젝트 펫 Consu" width="320">
 
-PHP Consul 클라이언트로, Consul HTTP API v1을 완전히 지원하며 서비스 등록·디스커버리와 구성 센터를 중점적으로 다룹니다. 코어 패키지는 프레임워크 의존성이 없고 Laravel / Hyperf / webman / ThinkPHP 어댑터가 내장되어 있어, composer require 한 번이면 어떤 프레임워크에서든 사용할 수 있습니다.
+PHP Consul 클라이언트로, Consul HTTP API v1을 완전히 지원하며 서비스 등록·디스커버리와 구성 센터를 중점적으로 다룹니다. 코어 패키지는 프레임워크 의존성이 없고 Laravel / Hyperf / webman / ThinkPHP / Yii2 / Yii3 어댑터가 내장되어 있어, composer require 한 번이면 어떤 프레임워크에서든 사용할 수 있습니다.
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 프레임워크 의존성 제로
 
@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 프레임워크 의존성 제로
 | **무엇인가** | 순수 PHP로 구현한 Consul HTTP API v1 클라이언트: 동기 + Promise 이중 진입점, 18개 API 모듈, 3개 고수준 래퍼 |
 | **무엇을 해결하나** | PHP 애플리케이션이 Consul에 연결해 서비스 등록·디스커버리와 구성 핫 리로드를 구현할 수 있게 해 주며, 프레임워크마다 클라이언트를 새로 작성할 필요가 없습니다 |
 | **사용 방법** | `composer require erikwang2013/consul-php`, 코어 패키지는 프레임워크 의존성이 없고 프레임워크 어댑터는 내장되어 자동으로 발견됩니다 |
-| **지원 프레임워크** | Laravel · Hyperf · webman · ThinkPHP —— API는 완전히 동일하고 `$client`를 얻는 방식만 다릅니다 |
+| **지원 프레임워크** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— API는 완전히 동일하고 `$client`를 얻는 방식만 다릅니다 |
 | **의존성 규약** | PSR 인터페이스(PSR-18/17/16/14/3)에만 의존하며, HTTP 클라이언트·캐시·로그·이벤트 디스패처를 모두 교체할 수 있습니다 |
 | **품질 보증** | PHP 8.0 – 8.4 · 594개 단위 테스트 · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · 프레임워크 의존성 제로
 | **Hyperf 통합** | 아래 Hyperf 섹션 참고 |
 | **webman 통합** | 아래 webman 섹션 참고 |
 | **ThinkPHP 통합** | 아래 ThinkPHP 섹션 참고 |
+| **Yii2 통합** | 아래 [Yii2](#yii2) 섹션 참고 |
+| **Yii3 통합** | 아래 [Yii3](#yii3) 섹션 참고 |
 | **설계 문서** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](../../superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + 코루틴 클라이언트 팩토리 + config
 │       ├── Webman/                  # 플러그인 설치 (Install) + config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Component + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin (di.php + params.php) + 클라이언트 팩토리
 │       └── Native/                  # 네이티브 PHP: 등록 / 하트비트 / 자동 등록 해제를 한 줄로
 ├── tests/                           # PHPUnit 케이스 (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
@@ -123,17 +127,17 @@ consul-php/
 
 ## 프레임워크 통합 개요
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **확장 패키지** | 내장 | 내장 | 내장 | 내장 |
-| **주입 방식** | 자동 발견 + `ServiceProvider` | 자동 발견 + `ConfigProvider` | 수동 `new` / 플러그인 | 컨테이너에 수동 `bind` |
-| **편의 접근** | `Consul` Facade | `#[Inject]` 애노테이션 | — | `app('consul')` 헬퍼 |
-| **설정 위치** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **HTTP 클라이언트** | Guzzle (PSR-18) | Swoole 코루틴 클라이언트 | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **캐시** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 직접 주입 | 직접 주입 |
-| **핫 리로드 실행** | Artisan 명령 | `AbstractProcess` 코루틴 | `Worker` 프로세스 | Timer / Swoole 프로세스 |
-| **이벤트 리스닝** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **문서** | [소스](../../../src/Integration/Laravel/) | [소스](../../../src/Integration/Hyperf/) | [소스](../../../src/Integration/Webman/) | [소스](../../../src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **확장 패키지** | 내장 | 내장 | 내장 | 내장 | 내장 | 내장 |
+| **주입 방식** | 자동 발견 + `ServiceProvider` | 자동 발견 + `ConfigProvider` | 수동 `new` / 플러그인 | 컨테이너에 수동 `bind` | `bootstrap` 한 줄로 부트스트랩 / `components` 등록 | `config-plugin` 이 `di` + `params` 자동 병합 |
+| **편의 접근** | `Consul` Facade | `#[Inject]` 애노테이션 | — | `app('consul')` 헬퍼 | `Yii::$app->consul->client` | 생성자 주입 `ConsulClient` |
+| **설정 위치** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `config/web.php` 의 `components.consul` | `config/params.php` 의 `erikwang2013/consul-php` |
+| **HTTP 클라이언트** | Guzzle (PSR-18) | Swoole 코루틴 클라이언트 | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / 내장 cURL | 컨테이너의 PSR-18 / 내장 cURL |
+| **캐시** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | 직접 주입 | 직접 주입 | 직접 주입 (PSR-16) | 컨테이너의 PSR-16 자동 주입 |
+| **핫 리로드 실행** | Artisan 명령 | `AbstractProcess` 코루틴 | `Worker` 프로세스 | Timer / Swoole 프로세스 | 상주 프로세스 / 큐 Worker | 상주 프로세스 / 큐 Worker |
+| **이벤트 리스닝** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | 컨테이너의 PSR-14 자동 주입 |
+| **문서** | [소스](../../../src/Integration/Laravel/) | [소스](../../../src/Integration/Hyperf/) | [소스](../../../src/Integration/Webman/) | [소스](../../../src/Integration/Thinkphp/) | [소스](../../../src/Integration/Yii2/) | [소스](../../../src/Integration/Yii3/) |
 
 ### 같은 작업, 다른 작성법
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;` (컨트롤러에서 `ConsulClient` 를 직접 주입할 수 있습니다) |
+| Yii3 | 생성자 주입 `ConsulClient` (컨테이너 자동 조립) |
 
 **서비스 등록:**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (자동 시작) | Swoole 코루틴 |
 | webman | `onWorkerStart` 에서 fork | Worker 프로세스 |
 | ThinkPHP | Timer::setInterval / Swoole Process | 독립 프로세스 |
+| Yii2 | 상주 프로세스 / 큐 Worker 에서 `configCenter()->watch()` | 독립 PHP 프로세스 |
+| Yii3 | 상주 프로세스 / 큐 Worker 에서 `configCenter()->watch()` | 독립 PHP 프로세스 |
 
 ---
 
@@ -194,6 +202,8 @@ composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 - **Hyperf** — `ConfigProvider` 를 자동 발견하고 코루틴 클라이언트 팩토리와 `#[Inject]` 주입을 제공합니다
 - **webman** — 플러그인을 자동 발견하고 `composer install` 시 설정 파일을 자동으로 복사합니다
 - **ThinkPHP** — `app/service` 디렉터리에 `ConsulService` 를 생성해 애플리케이션에 등록합니다
+- **Yii2** — 애플리케이션 설정의 `bootstrap` 배열에 `Bootstrap` 클래스를 한 줄 추가합니다 (Yii에는 composer 자동 발견이 없어서, bootstrap은 Yii가 확장을 위해 공식 제공하는 부트스트랩 메커니즘입니다)
+- **Yii3** — 이 패키지는 `config-plugin` 을 선언하고 있어서, 설치하면 `yiisoft/config` 가 `di` + `params` 를 자동으로 병합하므로 생성자 주입만 하면 됩니다
 
 ---
 
@@ -524,6 +534,84 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+Yii에는 composer 자동 발견 메커니즘이 없으므로, Yii가 확장을 위해 공식 제공하는 부트스트랩 메커니즘으로 연결합니다: 애플리케이션 설정의 `bootstrap` 배열에 한 줄만 추가하면 `Yii::$app->consul` 이 생깁니다 (클라이언트는 지연 로딩되며 한 번만 생성됩니다).
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// 설정을 바꾸고 싶다면 컴포넌트를 직접 등록하면 됩니다 —— Bootstrap은 이미 있는 consul 컴포넌트를 덮어쓰지 않습니다
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+Bootstrap을 쓰고 싶지 않다면, 통합 패키지의 설정 조각을 애플리케이션 설정에 병합해도 됩니다 (`components` 와 `container` 를 함께 제공하면 컨테이너의 `ConsulClient` 가 컴포넌트와 같은 출처를 갖습니다):
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+사용법은 다른 프레임워크와 완전히 동일하며, 컨트롤러에서도 직접 주입할 수 있습니다:
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **설정 항목**: `baseUri` / `token` / `cache` (사용 여부와 TTL) / `options` (timeout, retry 등, 같은 이름의 키는 `options` 가 우선); 클라이언트를 완전히 넘겨받으려면 `Yii::$app->consul->client = $client` (즉 `setClient()`)
+- **캐시**: PSR-16 구현을 직접 주입해야 합니다 (`psrCache`). Yii에 내장된 `cache` 컴포넌트는 PSR-16이 아닙니다 —— 미스 시 기본값이 아니라 `false` 를 반환하므로, 그대로 넘기면 "미스"가 "히트"로 취급됩니다
+- **서비스 등록**: web 요청에 두지 마세요 (요청마다 매번 등록됩니다). 사용자 정의 console 명령이나 상주 프로세스에 두고, 상주 프로세스에서는 [NativeService](../../../src/Integration/Native/NativeService.php) 로 "등록 → TTL 하트비트 → 종료 시 자동 등록 해제"를 한 줄로 얻을 수 있습니다
+
+### Yii3
+
+Yii3는 전부 PSR을 따릅니다 (PSR-11 컨테이너 + `yiisoft/config` 설정 플러그인). 이 패키지는 `config-plugin` 을 선언하고 있어서, 설치하면 `di.php` 와 `params.php` 가 애플리케이션 설정에 자동으로 병합되므로 수동 등록이 필요 없습니다:
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// 생성자 주입만 하면 됩니다 —— 컨테이너의 PSR-18/17 HTTP 클라이언트, PSR-3 로그, PSR-16 캐시,
+// PSR-14 이벤트 디스패처가 자동으로 주입되고, 바인딩되지 않은 것은 비워 두면 라이브러리 기본값(discovery → 내장 cURL, NullLogger)을 사용합니다
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+설정은 애플리케이션 자신의 `config/params.php` 에 작성하며 (최상위 키는 이 패키지 이름으로, 다른 Yii3 패키지와 동일합니다), 이 패키지의 기본값을 재귀적으로 덮어씁니다:
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **캐시**: Yii3의 `yiisoft/cache` 는 그 자체가 PSR-16이므로 `Psr\SimpleCache\CacheInterface` 를 바인딩하면 자동으로 캐시를 사용합니다 (Yii2의 cache 컴포넌트는 PSR-16이 아니라 양쪽 동작이 다릅니다)
+- **타입을 잘못 바인딩하면 바로 오류가 납니다**: 컨테이너에서 `Psr\SimpleCache\CacheInterface` 같은 구현이 인터페이스를 만족하지 않으면 `RuntimeException` 을 던지며, 전송 계층까지 끌고 가서 영문 모를 TypeError로 터지지 않습니다
+- **구현 교체**: 클라이언트를 완전히 넘겨받으려면 (다중 클러스터, 사용자 정의 HTTP 클라이언트) 애플리케이션의 `config/di.php` 에서 `ConsulClient::class` 를 다시 정의해 이 패키지의 정의를 덮어쓰면 됩니다
+
 ---
 
 ## 사용자 정의 HTTP 클라이언트
@@ -620,7 +708,7 @@ try {
 
 의존성 방향은 위에서 아래이며, 각 계층은 바로 아래 계층의 추상화에만 의존합니다:
 
-- **애플리케이션 계층 / 통합 계층** —— 4개 프레임워크 어댑터가 코어 패키지 `src/Integration/` 에 내장되어 composer가 자동으로 발견해 등록합니다. 애플리케이션 계층은 항상 `ConsulClient` 하나만 마주합니다.
+- **애플리케이션 계층 / 통합 계층** —— 6개 프레임워크 어댑터가 코어 패키지 `src/Integration/` 에 내장되어 composer가 자동으로 발견해 등록합니다. 애플리케이션 계층은 항상 `ConsulClient` 하나만 마주합니다.
 - **클라이언트** —— `ConsulClient` 는 `__get` 으로 18개 API 모듈(`$client->kv`, `$client->health` …)과 3개 고수준 래퍼(`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`)를 일관되게 노출합니다. `ConsulAsyncClient` 는 Promise 지연 실행을 제공합니다.
 - **고수준 래퍼** —— `Registry` / `Discovery` / `ConfigCenter` 가 API 모듈을 조합합니다. `Watcher` 는 `getWithHeaders()` 가 반환하는 `X-Consul-Index` 에 의존해 롱 폴링을 구현합니다.
 - **API 모듈** —— 모듈 하나가 Consul v1 엔드포인트 한 묶음에 대응하며, 모두 동일한 `TransportInterface` 를 거쳐 드나듭니다.
@@ -633,7 +721,7 @@ try {
 
 ![consul-php 기능 설계](./images/features.svg)
 
-기능 맵: 서비스 등록·디스커버리, 구성 센터와 핫 리로드, KV / 헬스 체크 / 세션 잠금 / ACL / 클러스터 운영, 4개 프레임워크 어댑터와 신뢰성 설계. 각 기능 카드에는 대응하는 진입 클래스가 표시되어 있으며, 구체적인 호출 방법은 위의 빠른 시작과 API 모듈 빠른 참조를 확인하세요.
+기능 맵: 서비스 등록·디스커버리, 구성 센터와 핫 리로드, KV / 헬스 체크 / 세션 잠금 / ACL / 클러스터 운영, 6개 프레임워크 어댑터와 신뢰성 설계. 각 기능 카드에는 대응하는 진입 클래스가 표시되어 있으며, 구체적인 호출 방법은 위의 빠른 시작과 API 모듈 빠른 참조를 확인하세요.
 
 ---
 

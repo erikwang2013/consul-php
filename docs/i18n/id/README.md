@@ -4,7 +4,7 @@
 
 <img src="./images/pet.svg" alt="Consu, maskot proyek consul-php" width="320">
 
-Klien Consul untuk PHP, mencakup penuh Consul HTTP API v1, dengan fokus pada registrasi/penemuan layanan dan pusat konfigurasi. Paket inti tanpa dependensi framework, sudah menyertakan adaptasi Laravel / Hyperf / webman / ThinkPHP — cukup satu `composer require` untuk memakainya di framework apa pun.
+Klien Consul untuk PHP, mencakup penuh Consul HTTP API v1, dengan fokus pada registrasi/penemuan layanan dan pusat konfigurasi. Paket inti tanpa dependensi framework, sudah menyertakan adaptasi Laravel / Hyperf / webman / ThinkPHP / Yii2 / Yii3 — cukup satu `composer require` untuk memakainya di framework apa pun.
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Tanpa dependensi framework
 
@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Tanpa dependensi framework
 | **Apa ini** | Klien Consul HTTP API v1 yang ditulis murni dengan PHP: pintu masuk sinkron + Promise, 18 modul API, 3 wrapper |
 | **Masalah yang dipecahkan** | Membuat aplikasi PHP bisa memakai Consul untuk registrasi/penemuan layanan dan hot reload konfigurasi, tanpa perlu menulis ulang klien untuk setiap framework |
 | **Cara pakai** | `composer require erikwang2013/consul-php`; paket inti tanpa dependensi framework, adaptasi framework sudah menyatu dan ditemukan otomatis |
-| **Framework yang didukung** | Laravel · Hyperf · webman · ThinkPHP —— API-nya identik, bedanya hanya cara memperoleh `$client` |
+| **Framework yang didukung** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— API-nya identik, bedanya hanya cara memperoleh `$client` |
 | **Konvensi dependensi** | Hanya bergantung pada antarmuka PSR (PSR-18/17/16/14/3); klien HTTP, cache, log, dan event dispatcher semuanya bisa diganti |
 | **Jaminan kualitas** | PHP 8.0 – 8.4 · 594 unit test · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · Tanpa dependensi framework
 | **Integrasi Hyperf** | lihat **Hyperf** di bawah |
 | **Integrasi webman** | lihat **webman** di bawah |
 | **Integrasi ThinkPHP** | lihat **ThinkPHP** di bawah |
+| **Integrasi Yii2** | lihat **Yii2** di bawah |
+| **Integrasi Yii3** | lihat **Yii3** di bawah |
 | **Dokumen Desain** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](../../superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + factory klien coroutine + config
 │       ├── Webman/                  # Instalasi plugin (Install) + config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Component + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin (di.php + params.php) + factory klien
 │       └── Native/                  # PHP Native: registrasi / heartbeat / deregistrasi otomatis dalam satu baris
 ├── tests/                           # Kasus uji PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
@@ -123,17 +127,17 @@ consul-php/
 
 ## Ringkasan Integrasi Framework
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **Paket ekstensi** | Menyatu | Menyatu | Menyatu | Menyatu |
-| **Cara injeksi** | Auto-discovery + `ServiceProvider` | Auto-discovery + `ConfigProvider` | `new` manual / plugin | `bind` manual ke container |
-| **Akses praktis** | Facade `Consul` | Anotasi `#[Inject]` | — | Helper `app('consul')` |
-| **Lokasi konfigurasi** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **Klien HTTP** | Guzzle (PSR-18) | Klien coroutine Swoole | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **Cache** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | Disuntikkan sendiri | Disuntikkan sendiri |
-| **Menjalankan hot reload** | Perintah Artisan | Coroutine `AbstractProcess` | Proses `Worker` | Timer / proses Swoole |
-| **Listener event** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **Dokumentasi** | [Kode sumber](../../../src/Integration/Laravel/) | [Kode sumber](../../../src/Integration/Hyperf/) | [Kode sumber](../../../src/Integration/Webman/) | [Kode sumber](../../../src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **Paket ekstensi** | Menyatu | Menyatu | Menyatu | Menyatu | Menyatu | Menyatu |
+| **Cara injeksi** | Auto-discovery + `ServiceProvider` | Auto-discovery + `ConfigProvider` | `new` manual / plugin | `bind` manual ke container | Panduan satu baris `bootstrap` / registrasi `components` | `config-plugin` otomatis menggabungkan `di` + `params` |
+| **Akses praktis** | Facade `Consul` | Anotasi `#[Inject]` | — | Helper `app('consul')` | `Yii::$app->consul->client` | Injeksi konstruktor `ConsulClient` |
+| **Lokasi konfigurasi** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `components.consul` di `config/web.php` | `erikwang2013/consul-php` di `config/params.php` |
+| **Klien HTTP** | Guzzle (PSR-18) | Klien coroutine Swoole | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / cURL bawaan | PSR-18 di container / cURL bawaan |
+| **Cache** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | Disuntikkan sendiri | Disuntikkan sendiri | Disuntikkan sendiri (PSR-16) | PSR-16 di container, disuntikkan otomatis |
+| **Menjalankan hot reload** | Perintah Artisan | Coroutine `AbstractProcess` | Proses `Worker` | Timer / proses Swoole | Proses long-running / Worker antrean | Proses long-running / Worker antrean |
+| **Listener event** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | PSR-14 di container, disuntikkan otomatis |
+| **Dokumentasi** | [Kode sumber](../../../src/Integration/Laravel/) | [Kode sumber](../../../src/Integration/Hyperf/) | [Kode sumber](../../../src/Integration/Webman/) | [Kode sumber](../../../src/Integration/Thinkphp/) | [Kode sumber](../../../src/Integration/Yii2/) | [Kode sumber](../../../src/Integration/Yii3/) |
 
 ### Operasi Sama, Cara Berbeda
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;` (di controller bisa langsung disuntikkan `ConsulClient`) |
+| Yii3 | injeksi konstruktor `ConsulClient` (container merakit otomatis) |
 
 **Registrasi layanan:**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (mulai otomatis) | Coroutine Swoole |
 | webman | fork di dalam `onWorkerStart` | Proses Worker |
 | ThinkPHP | Timer::setInterval / Swoole Process | Proses terpisah |
+| Yii2 | `configCenter()->watch()` di proses long-running / Worker antrean | Proses PHP terpisah |
+| Yii3 | `configCenter()->watch()` di proses long-running / Worker antrean | Proses PHP terpisah |
 
 ---
 
@@ -194,6 +202,8 @@ Adaptasi framework sudah menyatu di paket inti, tidak perlu instalasi tambahan. 
 - **Hyperf** — otomatis menemukan `ConfigProvider`, menyediakan factory klien coroutine dan injeksi `#[Inject]`
 - **webman** — otomatis menemukan plugin, menyalin file konfigurasi saat `composer install`
 - **ThinkPHP** — membuat `ConsulService` di direktori `app/service` lalu mendaftarkannya ke aplikasi
+- **Yii2** — tambahkan satu baris kelas `Bootstrap` ke array `bootstrap` di konfigurasi aplikasi (Yii tidak punya auto-discovery composer; `bootstrap` adalah mekanisme panduan resmi Yii untuk ekstensi)
+- **Yii3** — paket ini sudah mendeklarasikan `config-plugin`; setelah terpasang, `yiisoft/config` otomatis menggabungkan `di` + `params`, cukup injeksi lewat konstruktor
 
 ---
 
@@ -524,6 +534,85 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+Yii tidak punya mekanisme auto-discovery composer, jadi pakai mekanisme panduan yang disediakan resmi oleh Yii untuk ekstensi: tambahkan satu baris ke array `bootstrap` di konfigurasi aplikasi, dan `Yii::$app->consul` pun tersedia (klien dimuat malas, hanya dikonstruksi sekali).
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// Bila perlu mengubah konfigurasi, cukup daftarkan komponennya — Bootstrap tidak menimpa komponen consul yang sudah ada
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+Bila tidak ingin memakai Bootstrap, potongan konfigurasi di paket integrasi juga bisa digabungkan ke konfigurasi aplikasi (`components` dan `container` diberikan sekaligus; `ConsulClient` di container berasal dari sumber yang sama dengan komponen):
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+Pemakaiannya sama persis dengan framework lain; di controller juga bisa langsung disuntikkan:
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **Item konfigurasi**: `baseUri` / `token` / `cache` (sakelar dan TTL) / `options` (timeout, retry, dll.; untuk kunci bernama sama, `options` yang berlaku); untuk mengambil alih klien sepenuhnya, `Yii::$app->consul->client = $client` (yaitu `setClient()`)
+- **Cache**: perlu menyuntikkan implementasi PSR-16 sendiri (`psrCache`). Komponen `cache` bawaan Yii bukan PSR-16 — saat tidak kena ia mengembalikan `false` dan bukan nilai default, jadi menyerahkannya langsung membuat "tidak kena" dianggap "kena"
+- **Registrasi layanan**: jangan diletakkan di dalam permintaan web (setiap permintaan akan registrasi sekali); letakkan di perintah console khusus atau proses long-running; untuk proses long-running, [NativeService](../../../src/Integration/Native/NativeService.php) memberi "registrasi → heartbeat TTL → deregistrasi otomatis saat keluar" dalam satu baris
+
+### Yii3
+
+Yii3 sepenuhnya mengikuti PSR (container PSR-11 + plugin konfigurasi `yiisoft/config`). Paket ini sudah mendeklarasikan `config-plugin`, jadi setelah terpasang `di.php` dan `params.php` otomatis digabungkan ke konfigurasi aplikasi, tanpa registrasi manual:
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// Cukup injeksi lewat konstruktor — klien HTTP PSR-18/17, log PSR-3, cache PSR-16, dan
+// event dispatcher PSR-14 di container akan disuntikkan otomatis; yang tidak di-bind dibiarkan
+// kosong dan memakai default bawaan pustaka (discovery → cURL bawaan, NullLogger)
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+Konfigurasinya ditulis di `config/params.php` milik aplikasi (kunci tingkat atas adalah nama paket ini, sama seperti paket Yii3 lainnya), dan menimpa nilai default paket ini secara rekursif:
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **Cache**: `yiisoft/cache` di Yii3 sendiri sudah PSR-16; begitu `Psr\SimpleCache\CacheInterface` di-bind, cache otomatis dipakai (komponen cache Yii2 bukan PSR-16, jadi perilaku keduanya berbeda)
+- **Salah bind tipe akan langsung error**: bila implementasi seperti `Psr\SimpleCache\CacheInterface` di container tidak memenuhi antarmukanya, `RuntimeException` langsung dilempar — tidak menunggu sampai lapisan transport lalu meledak menjadi TypeError yang membingungkan
+- **Ganti implementasi**: untuk mengambil alih klien sepenuhnya (multi-klaster, klien HTTP kustom), cukup definisikan ulang `ConsulClient::class` di `config/di.php` aplikasi untuk menimpa definisi paket ini
+
 ---
 
 ## Klien HTTP Kustom
@@ -620,7 +709,7 @@ try {
 
 Arah dependensi dari atas ke bawah; setiap lapisan hanya bergantung pada abstraksi lapisan di bawahnya:
 
-- **Lapisan aplikasi / integrasi** —— 4 adaptasi framework menyatu di paket inti `src/Integration/` dan didaftarkan lewat auto-discovery composer; lapisan aplikasi selalu hanya berhadapan dengan satu pintu masuk, `ConsulClient`.
+- **Lapisan aplikasi / integrasi** —— 6 adaptasi framework menyatu di paket inti `src/Integration/` dan didaftarkan lewat auto-discovery composer; lapisan aplikasi selalu hanya berhadapan dengan satu pintu masuk, `ConsulClient`.
 - **Klien** —— `ConsulClient` mengekspos 18 modul API (`$client->kv`, `$client->health` …) dan 3 wrapper (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) secara seragam melalui `__get`; `ConsulAsyncClient` menyediakan eksekusi tertunda berbasis Promise.
 - **Wrapper** —— `Registry` / `Discovery` / `ConfigCenter` menggabungkan modul API; `Watcher` bergantung pada `X-Consul-Index` yang dikembalikan `getWithHeaders()` untuk menjalankan long polling.
 - **Modul API** —— satu modul mewakili satu kelompok endpoint Consul v1, semuanya keluar-masuk lewat `TransportInterface` yang sama.
@@ -633,7 +722,7 @@ Arah dependensi dari atas ke bawah; setiap lapisan hanya bergantung pada abstrak
 
 ![Desain fitur consul-php](./images/features.svg)
 
-Peta kemampuan: registrasi dan penemuan layanan, pusat konfigurasi dan hot reload, KV / health check / session lock / ACL / operasional klaster, adaptasi 4 framework, serta desain keandalan. Setiap kartu kemampuan mencantumkan kelas pintu masuknya; cara pemanggilan detailnya lihat **Mulai Cepat (Umum)** dan **Referensi Cepat Modul API** di atas.
+Peta kemampuan: registrasi dan penemuan layanan, pusat konfigurasi dan hot reload, KV / health check / session lock / ACL / operasional klaster, adaptasi 6 framework, serta desain keandalan. Setiap kartu kemampuan mencantumkan kelas pintu masuknya; cara pemanggilan detailnya lihat **Mulai Cepat (Umum)** dan **Referensi Cepat Modul API** di atas.
 
 ---
 
@@ -659,7 +748,7 @@ composer pet
 
 ```text
 ╭───────────────────────────────────────────────────────────────────────────╮
-│ consul-php · Klien Consul PHP — sekali composer require, empat framework  │
+│ consul-php · Klien Consul PHP — sekali composer require, enam framework   │
 ╰──────┬────────────────────────────────────────────────────────────────────╯
        │
        ●

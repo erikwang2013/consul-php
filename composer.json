@@ -1,6 +1,6 @@
 {
     "name": "erikwang2013/consul-php",
-    "description": "PHP Consul client with full API v1 coverage, service discovery, and config center. Auto-integrates with Laravel, Hyperf, webman, and ThinkPHP.",
+    "description": "PHP Consul client with full API v1 coverage, service discovery, and config center. Auto-integrates with Laravel, Hyperf, webman, ThinkPHP, Yii2, and Yii3.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -26,7 +26,9 @@
         "laravel/framework": "For Laravel auto-integration (ServiceProvider + Facade)",
         "php-http/guzzle7-adapter": "PSR-18 adapter for Guzzle 7",
         "topthink/framework": "For ThinkPHP integration (Service binding)",
-        "workerman/webman-framework": "For webman auto-integration (plugin auto-install)"
+        "workerman/webman-framework": "For webman auto-integration (plugin auto-install)",
+        "yiisoft/config": "For Yii3 auto-merge of di + params (config-plugin)",
+        "yiisoft/yii2": "For Yii2 integration (Component + Bootstrap)"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6|^10.5",
@@ -49,6 +51,13 @@
         "pet": "@php scripts/pet.php"
     },
     "extra": {
+        "config-plugin-options": {
+            "source-directory": "src/Integration/Yii3/config"
+        },
+        "config-plugin": {
+            "di": "di.php",
+            "params": "params.php"
+        },
         "laravel": {
             "providers": [
                 "Erikwang2013\\Consul\\Integration\\Laravel\\ConsulServiceProvider"

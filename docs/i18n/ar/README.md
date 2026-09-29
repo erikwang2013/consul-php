@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · بلا اعتماد على أطر ال
 | **ما هو** | عميل Consul HTTP API v1 مكتوب بلغة PHP خالصة: مدخلان متزامن و Promise، و18 وحدة API، و3 تغليفات عالية المستوى |
 | **ما الذي يحلّه** | يُمكّن تطبيقات PHP من الاتصال بـ Consul لتسجيل الخدمات واكتشافها وتحديث الإعدادات لحظيًا، دون إعادة كتابة عميل لكل إطار عمل |
 | **كيف يُستخدم** | `composer require erikwang2013/consul-php`، الحزمة الأساسية بلا اعتماد على أطر العمل، ودعم الأطر مدمج ويُكتشف تلقائيًا |
-| **الأطر المدعومة** | Laravel · Hyperf · webman · ThinkPHP —— واجهة API متطابقة تمامًا، والفرق فقط في طريقة الحصول على `$client` |
+| **الأطر المدعومة** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— واجهة API متطابقة تمامًا، والفرق فقط في طريقة الحصول على `$client` |
 | **اصطلاح الاعتماديات** | يعتمد على واجهات PSR فقط (PSR-18/17/16/14/3)، ويمكن استبدال عميل HTTP والتخزين المؤقت والسجلات وموزّع الأحداث |
 | **ضمان الجودة** | PHP 8.0 – 8.4 · 594 اختبار وحدة · PHPStan level 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · بلا اعتماد على أطر ال
 | **دمج Hyperf** | انظر قسم Hyperf أدناه |
 | **دمج webman** | انظر قسم webman أدناه |
 | **دمج ThinkPHP** | انظر قسم ThinkPHP أدناه |
+| **دمج Yii2** | انظر قسم Yii2 أدناه |
+| **دمج Yii3** | انظر قسم Yii3 أدناه |
 | **وثائق التصميم** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](../../superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + مصنع عميل coroutine + config
 │       ├── Webman/                  # تثبيت الإضافة (Install) + config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Component + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin (di.php + params.php) + مصنع العميل
 │       └── Native/                  # PHP الأصلي: التسجيل / نبضة / إلغاء تلقائي بسطر واحد
 ├── tests/                           # حالات PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
@@ -123,17 +127,17 @@ consul-php/
 
 ## نظرة على دمج الأطر
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **حزمة الإضافة** | مدمجة | مدمجة | مدمجة | مدمجة |
-| **طريقة الحقن** | اكتشاف تلقائي + `ServiceProvider` | اكتشاف تلقائي + `ConfigProvider` | `new` يدوي / إضافة | `bind` يدوي إلى الحاوية |
-| **وصول سريع** | واجهة `Consul` Facade | تعليق `#[Inject]` | — | مساعد `app('consul')` |
-| **موضع الإعدادات** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **عميل HTTP** | Guzzle (PSR-18) | عميل Swoole coroutine | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **التخزين المؤقت** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | حقن يدوي | حقن يدوي |
-| **تشغيل التحديث اللحظي** | أمر Artisan | `AbstractProcess` coroutine | عملية `Worker` | Timer / عملية Swoole |
-| **مراقبة الأحداث** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **التوثيق** | [كود المصدر](../../../src/Integration/Laravel/) | [كود المصدر](../../../src/Integration/Hyperf/) | [كود المصدر](../../../src/Integration/Webman/) | [كود المصدر](../../../src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **حزمة الإضافة** | مدمجة | مدمجة | مدمجة | مدمجة | مدمج | مدمج |
+| **طريقة الحقن** | اكتشاف تلقائي + `ServiceProvider` | اكتشاف تلقائي + `ConfigProvider` | `new` يدوي / إضافة | `bind` يدوي إلى الحاوية | سطر `bootstrap` واحد / تسجيل في `components` | `config-plugin` يدمج `di` + `params` تلقائيًا |
+| **وصول سريع** | واجهة `Consul` Facade | تعليق `#[Inject]` | — | مساعد `app('consul')` | `Yii::$app->consul->client` | حقن `ConsulClient` في الباني |
+| **موضع الإعدادات** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `components.consul` في `config/web.php` | `erikwang2013/consul-php` في `config/params.php` |
+| **عميل HTTP** | Guzzle (PSR-18) | عميل Swoole coroutine | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / cURL المدمج | PSR-18 من الحاوية / cURL المدمج |
+| **التخزين المؤقت** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | حقن يدوي | حقن يدوي | حقن يدوي (PSR-16) | PSR-16 من الحاوية تلقائيًا |
+| **تشغيل التحديث اللحظي** | أمر Artisan | `AbstractProcess` coroutine | عملية `Worker` | Timer / عملية Swoole | عملية دائمة / عامل طابور | عملية دائمة / عامل طابور |
+| **مراقبة الأحداث** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | PSR-14 من الحاوية تلقائيًا |
+| **التوثيق** | [كود المصدر](../../../src/Integration/Laravel/) | [كود المصدر](../../../src/Integration/Hyperf/) | [كود المصدر](../../../src/Integration/Webman/) | [كود المصدر](../../../src/Integration/Thinkphp/) | [المصدر](../../../src/Integration/Yii2/) | [المصدر](../../../src/Integration/Yii3/) |
 
 ### العملية نفسها، بصيغ مختلفة
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;` (يمكن حقن `ConsulClient` في المتحكم) |
+| Yii3 | حقن `ConsulClient` في الباني (الحاوية تتولى التركيب) |
 
 **تسجيل الخدمة:**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (يبدأ تلقائيًا) | Swoole coroutine |
 | webman | `fork` داخل `onWorkerStart` | عملية Worker |
 | ThinkPHP | Timer::setInterval / Swoole Process | عملية مستقلة |
+| Yii2 | `configCenter()->watch()` في عملية دائمة / عامل طابور | عملية PHP مستقلة |
+| Yii3 | `configCenter()->watch()` في عملية دائمة / عامل طابور | عملية PHP مستقلة |
 
 ---
 
@@ -194,6 +202,8 @@ composer require guzzlehttp/guzzle php-http/guzzle7-adapter php-http/discovery
 - **Hyperf** — يكتشف `ConfigProvider` تلقائيًا، ويوفّر مصنع عميل coroutine وحقن `#[Inject]`
 - **webman** — يكتشف الإضافة تلقائيًا، وينسخ ملف الإعدادات تلقائيًا عند `composer install`
 - **ThinkPHP** — ينشئ `ConsulService` في مجلد `app/service` ويسجّله في التطبيق
+- **Yii2** — سطر واحد مع الفئة `Bootstrap` في مصفوفة `bootstrap` (لا يملك Yii اكتشافًا تلقائيًا عبر composer، و`bootstrap` هي الآلية الرسمية للإضافات)
+- **Yii3** — الحزمة تعلن `config-plugin` مسبقًا: يدمج `yiisoft/config` الملفين `di` + `params` عند التثبيت، فيكفي الحقن في الباني
 
 ---
 
@@ -524,6 +534,85 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+لا يملك Yii آلية اكتشاف تلقائي عبر composer، لذا يعتمد الدمج على الآلية الرسمية التي يوفرها Yii للإضافات: سطر واحد في مصفوفة `bootstrap` داخل إعدادات التطبيق يكفي لتحصل على `Yii::$app->consul` (يُبنى العميل عند أول استخدام، مرة واحدة فقط).
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// لتغيير الإعدادات سجّل المكوّن مباشرة — Bootstrap لا يستبدل مكوّن consul الموجود
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+وإن لم ترغب في استخدام Bootstrap، يمكنك دمج مقتطف الإعدادات من الحزمة في إعدادات التطبيق (`components` و`container` معًا، فيكون `ConsulClient` في الحاوية نفس نسخة المكوّن):
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+الاستخدام مطابق تمامًا لبقية الأطر، ويمكن الحقن مباشرة في المتحكم:
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **الإعدادات**: `baseUri` / `token` / `cache` (التشغيل و TTL) / `options` (timeout و retry وغيرها؛ عند التعارض يفوز `options`)؛ وللتحكم الكامل بالعميل: `Yii::$app->consul->client = $client` (أي `setClient()`)
+- **التخزين المؤقت**: عليك حقن تنفيذ PSR-16 بنفسك (`psrCache`). مكوّن `cache` المدمج في Yii ليس PSR-16 — فعند غياب المفتاح يُرجع `false` بدلًا من القيمة الافتراضية، وتمريره مباشرة يجعل "عدم الإصابة" تُفهم على أنها "إصابة"
+- **تسجيل الخدمة**: لا تضعه داخل طلب ويب (كل طلب سيسجّل من جديد)، بل في أمر console أو عملية دائمة؛ وفي العملية الدائمة يمنحك [NativeService](../../../src/Integration/Native/NativeService.php) سطرًا واحدًا لـ«التسجيل → نبض TTL → إلغاء التسجيل عند الخروج»
+
+### Yii3
+
+Yii3 مبني بالكامل على معايير PSR (حاوية PSR-11 + إضافة الإعدادات `yiisoft/config`). الحزمة تعلن `config-plugin` مسبقًا: بعد التثبيت يُدمج `di.php` و`params.php` في إعدادات التطبيق دون تسجيل يدوي:
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// يكفي الحقن في الباني — عميل HTTP من نوع PSR-18/17 وسجل PSR-3 وتخزين PSR-16 وموزّع
+// الأحداث PSR-14 تُحقن تلقائيًا من الحاوية؛ وما لم يكن مربوطًا يبقى على الافتراضي
+// (discovery → cURL المدمج، NullLogger)
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+تُكتب الإعدادات في `config/params.php` الخاص بالتطبيق (المفتاح الجذري هو اسم الحزمة، كما في بقية حزم Yii3)، وتستبدل الافتراضيات بشكل متداخل:
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **التخزين المؤقت**: `yiisoft/cache` في Yii3 هو نفسه PSR-16 — يكفي ربط `Psr\SimpleCache\CacheInterface` في الحاوية ليعمل التخزين تلقائيًا (أما في Yii2 فمكوّن `cache` ليس PSR-16، والسلوك مختلف)
+- **النوع الخاطئ يفشل فورًا**: إذا لم يحقّق التنفيذ المربوط بـ`Psr\SimpleCache\CacheInterface` الواجهة، ترمي الحزمة `RuntimeException` بدل أن ينفجر لاحقًا بخطأ TypeError غامض في طبقة النقل
+- **تبديل التنفيذ**: للتحكم الكامل بالعميل (عدة عناقيد، عميل HTTP خاص) أعد تعريف `ConsulClient::class` في `config/di.php` للتطبيق — بذلك تستبدل تعريف الحزمة
+
 ---
 
 ## تخصيص عميل HTTP
@@ -620,7 +709,7 @@ try {
 
 اتجاه الاعتماديات من الأعلى إلى الأسفل، وكل طبقة تعتمد فقط على تجريدات الطبقة الأدنى منها:
 
-- **طبقة التطبيق / طبقة الدمج** —— دعم الأطر الأربعة مدمج في الحزمة الأساسية `src/Integration/` ويُكتشف ويُسجَّل تلقائيًا عبر composer؛ وطبقة التطبيق تتعامل دائمًا مع مدخل واحد فقط هو `ConsulClient`.
+- **طبقة التطبيق / طبقة الدمج** —— دعم الأطر الستة مدمج في الحزمة الأساسية `src/Integration/` ويُكتشف ويُسجَّل تلقائيًا عبر composer؛ وطبقة التطبيق تتعامل دائمًا مع مدخل واحد فقط هو `ConsulClient`.
 - **العميل** —— `ConsulClient` يكشف عبر `__get` ثماني عشرة وحدة API (`$client->kv`، `$client->health` …) و3 تغليفات عالية المستوى (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`)؛ و`ConsulAsyncClient` يوفّر التنفيذ المؤجَّل عبر Promise.
 - **التغليفات عالية المستوى** —— `Registry` / `Discovery` / `ConfigCenter` تجمع وحدات API؛ و`Watcher` يعتمد على `X-Consul-Index` الذي يعيده `getWithHeaders()` لتنفيذ الاستقصاء الطويل.
 - **وحدات API** —— كل وحدة تقابل مجموعة من نقاط نهاية Consul v1، وكلها تمر عبر `TransportInterface` نفسه.
@@ -633,7 +722,7 @@ try {
 
 ![تصميم وظائف consul-php](./images/features.svg)
 
-خريطة القدرات: تسجيل الخدمات واكتشافها، ومركز الإعدادات والتحديث اللحظي، و KV / فحص السلامة / أقفال الجلسات / ACL / تشغيل العنقود، ودعم الأطر الأربعة وتصميم الموثوقية. كل بطاقة قدرة تحمل فئة المدخل المقابلة لها، وللاطلاع على طريقة الاستدعاء راجع قسمي البدء السريع ومرجع وحدات API أعلاه.
+خريطة القدرات: تسجيل الخدمات واكتشافها، ومركز الإعدادات والتحديث اللحظي، و KV / فحص السلامة / أقفال الجلسات / ACL / تشغيل العنقود، ودعم الأطر الستة وتصميم الموثوقية. كل بطاقة قدرة تحمل فئة المدخل المقابلة لها، وللاطلاع على طريقة الاستدعاء راجع قسمي البدء السريع ومرجع وحدات API أعلاه.
 
 ---
 
@@ -659,7 +748,7 @@ composer pet
 
 ```text
 ╭───────────────────────────────────────────────────────────────────────────╮
-│ consul-php · عميل Consul بلغة PHP —— أمر composer require واحد، وأربعة أطر تنبض جميعًا │
+│ consul-php · عميل Consul بلغة PHP —— أمر composer require واحد، وستة أطر تنبض جميعًا │
 ╰──────┬────────────────────────────────────────────────────────────────────╯
        │
        ●

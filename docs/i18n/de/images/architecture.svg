@@ -29,39 +29,45 @@
     <text class="h1" x="44" y="48">consul-php Architektur</text>
     <text class="sub" x="44" y="74">Schichtenabhängigkeit: Anwendung → Integration → Client → Wrapper → API-Module → Transport → PSR → Consul Agent</text>
     <text class="gutter" x="32" y="140">Anwendung</text>
-    <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="122" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="128">Laravel</text>
-    <text class="cs" x="138" y="150" style="font-size:10.7px">Auto-Discovery + Facade</text>
-    <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="128">Hyperf</text>
-    <text class="cs" x="307" y="150" style="font-size:8.3px">Coroutine + Annotation-Injection</text>
-    <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="128">webman</text>
-    <text class="cs" x="476" y="150" style="font-size:8px">Plugin wird automatisch installiert</text>
-    <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="128">ThinkPHP</text>
-    <text class="cs" x="645" y="150">Service-Bindung</text>
-    <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="128">Pures PHP</text>
-    <text class="cs" x="814" y="150">new ConsulClient()</text>
+    <text class="cs" x="138" y="150" style="font-size:8.2px">Auto-Discovery + Facade</text>
+    <rect x="261" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="277" y="128">Hyperf</text>
+    <text class="cs" x="277" y="150" style="font-size:8px">Coroutine + Annotationen</text>
+    <rect x="400" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="416" y="128">webman</text>
+    <text class="cs" x="416" y="150" style="font-size:9.4px">Plugin-Autoinstallation</text>
+    <rect x="539" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="555" y="128">ThinkPHP</text>
+    <text class="cs" x="555" y="150">Service-Bindung</text>
+    <rect x="678" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="694" y="128">Yii2 / Yii3</text>
+    <text class="cs" x="694" y="150" style="font-size:8.4px">Bootstrap · Konfig-Merge</text>
+    <rect x="817" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="833" y="128">Pures PHP</text>
+    <text class="cs" x="833" y="150" style="font-size:11.2px">new ConsulClient()</text>
 
     <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="32" y="234">Integration</text>
-    <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="222">ServiceProvider</text>
-    <text class="cs" x="138" y="244">Facade · consul:watch</text>
-    <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="222">ConfigProvider</text>
-    <text class="cs" x="307" y="244" style="font-size:11.2px">Coroutine-Client-Factory</text>
-    <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="222">Webman Install</text>
-    <text class="cs" x="476" y="244">Konfig-Kopie + Worker</text>
-    <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="222">ConsulService</text>
-    <text class="cs" x="645" y="244">app(&apos;consul&apos;)</text>
-    <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="222">ClientFactory</text>
-    <text class="cs" x="814" y="244" style="font-size:8.6px">Automatische PSR-Verdrahtung</text>
+    <rect x="122" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="222" style="font-size:13.4px">ServiceProvider</text>
+    <text class="cs" x="138" y="244">Facade · Artisan</text>
+    <rect x="261" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="277" y="222">ConfigProvider</text>
+    <text class="cs" x="277" y="244" style="font-size:8.6px">Coroutine-Client-Factory</text>
+    <rect x="400" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="416" y="222" style="font-size:13.5px">Webman Install</text>
+    <text class="cs" x="416" y="244" style="font-size:9.2px">Konfig-Kopie + Worker</text>
+    <rect x="539" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="555" y="222">ConsulService</text>
+    <text class="cs" x="555" y="244">app(&apos;consul&apos;)</text>
+    <rect x="678" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="694" y="222">Yii Bootstrap</text>
+    <text class="cs" x="694" y="244" style="font-size:10.4px">di.php Konfig-Merge</text>
+    <rect x="817" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="833" y="222">ClientFactory</text>
+    <text class="cs" x="833" y="244" style="font-size:7.1px">Automatische PSR-Verdrahtung</text>
 
     <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="32" y="328">Client</text>

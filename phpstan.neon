@@ -2,10 +2,13 @@ parameters:
     level: 5
     paths:
         - src/
-    # 只排除真正依赖框架（Laravel/Hyperf/webman/ThinkPHP）的胶水代码，
-    # ClientFactory 与 Native 是零框架依赖的，要照常分析
+    # 只排除真正依赖框架（Laravel/Hyperf/webman/ThinkPHP/Yii2）的胶水代码，
+    # ClientFactory 与 Native 是零框架依赖的，要照常分析；
+    # Yii3 只排除 config/（di.php 的 $params 由 yiisoft/config 注入），工厂只依赖 PSR-11 要照常分析
     excludePaths:
         - src/Integration/Laravel
         - src/Integration/Hyperf
         - src/Integration/Webman
         - src/Integration/Thinkphp
+        - src/Integration/Yii2
+        - src/Integration/Yii3/config

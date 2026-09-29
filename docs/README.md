@@ -13,6 +13,8 @@
 | [Hyperf 集成](../README.md#hyperf) | Hyperf 框架集成指南 |
 | [webman 集成](../README.md#webman) | webman 框架集成指南 |
 | [ThinkPHP 集成](../README.md#thinkphp) | ThinkPHP 框架集成指南 |
+| [Yii2 集成](../README.md#yii2) | Yii2 框架集成指南 |
+| [Yii3 集成](../README.md#yii3) | Yii3 框架集成指南 |
 | [设计文档](superpowers/specs/2026-05-14-consul-php-design.md) | 架构设计 |
 | [实现计划](superpowers/plans/2026-05-14-consul-php.md) | 实现任务拆解 |
 

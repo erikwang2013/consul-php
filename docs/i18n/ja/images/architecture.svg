@@ -29,39 +29,45 @@
     <text class="h1" x="44" y="48">consul-php アーキテクチャ設計</text>
     <text class="sub" x="44" y="74">層構造の依存：アプリケーション層 → 連携層 → クライアント → 高レベルラッパー → API モジュール → トランスポート層 → PSR 抽象 → Consul Agent</text>
     <text class="gutter" x="32" y="140" style="font-size:8.5px">アプリケーション層</text>
-    <rect x="122" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="122" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="138" y="128">Laravel</text>
-    <text class="cs" x="138" y="150">自動検出 + Facade</text>
-    <rect x="291" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="128">Hyperf</text>
-    <text class="cs" x="307" y="150" style="font-size:8.3px">コルーチン + アノテーション注入</text>
-    <rect x="460" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="128">webman</text>
-    <text class="cs" x="476" y="150" style="font-size:9.2px">プラグインの自動インストール</text>
-    <rect x="629" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="128">ThinkPHP</text>
-    <text class="cs" x="645" y="150">Service のバインド</text>
-    <rect x="798" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="128">素の PHP</text>
-    <text class="cs" x="814" y="150">new ConsulClient()</text>
+    <text class="cs" x="138" y="150" style="font-size:11.2px">自動検出 + Facade</text>
+    <rect x="261" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="277" y="128">Hyperf</text>
+    <text class="cs" x="277" y="150">コルーチン + 注入</text>
+    <rect x="400" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="416" y="128">webman</text>
+    <text class="cs" x="416" y="150" style="font-size:7.1px">プラグインの自動インストール</text>
+    <rect x="539" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="555" y="128">ThinkPHP</text>
+    <text class="cs" x="555" y="150" style="font-size:11.2px">Service のバインド</text>
+    <rect x="678" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="694" y="128">Yii2 / Yii3</text>
+    <text class="cs" x="694" y="150" style="font-size:9.4px">Bootstrap · 設定マージ</text>
+    <rect x="817" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="833" y="128">素の PHP</text>
+    <text class="cs" x="833" y="150" style="font-size:11.2px">new ConsulClient()</text>
 
     <path d="M534 176 L540 187 L546 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="32" y="234">連携層</text>
-    <rect x="122" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="138" y="222">ServiceProvider</text>
-    <text class="cs" x="138" y="244">Facade · consul:watch</text>
-    <rect x="291" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="307" y="222">ConfigProvider</text>
-    <text class="cs" x="307" y="244" style="font-size:8px">コルーチンクライアントファクトリ</text>
-    <rect x="460" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="476" y="222">Webman Install</text>
-    <text class="cs" x="476" y="244">設定のコピー + Worker</text>
-    <rect x="629" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="645" y="222">ConsulService</text>
-    <text class="cs" x="645" y="244">app(&apos;consul&apos;)</text>
-    <rect x="798" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="814" y="222">ClientFactory</text>
-    <text class="cs" x="814" y="244">PSR 依存の自動組み立て</text>
+    <rect x="122" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="138" y="222" style="font-size:13.4px">ServiceProvider</text>
+    <text class="cs" x="138" y="244">Facade · Artisan</text>
+    <rect x="261" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="277" y="222">ConfigProvider</text>
+    <text class="cs" x="277" y="244" style="font-size:9px">コルーチンクライアント</text>
+    <rect x="400" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="416" y="222" style="font-size:13.5px">Webman Install</text>
+    <text class="cs" x="416" y="244" style="font-size:9.1px">設定のコピー + Worker</text>
+    <rect x="539" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="555" y="222">ConsulService</text>
+    <text class="cs" x="555" y="244">app(&apos;consul&apos;)</text>
+    <rect x="678" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="694" y="222">Yii Bootstrap</text>
+    <text class="cs" x="694" y="244">di.php 設定マージ</text>
+    <rect x="817" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="833" y="222">ClientFactory</text>
+    <text class="cs" x="833" y="244" style="font-size:8.9px">PSR 依存の自動組み立て</text>
 
     <path d="M534 270 L540 281 L546 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="32" y="328" style="font-size:12.8px">クライアント</text>

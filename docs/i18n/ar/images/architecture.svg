@@ -29,39 +29,45 @@
     <text class="h1" x="956" y="48" text-anchor="end">تصميم معمارية consul-php</text>
     <text class="sub" x="956" y="74" text-anchor="end">اعتماديات طبقية: طبقة التطبيق → طبقة الدمج → العميل → التغليفات العليا → وحدات API → طبقة النقل → تجريدات PSR → Consul Agent</text>
     <text class="gutter" x="968" y="140" style="font-size:9.4px" text-anchor="end">طبقة التطبيق</text>
-    <rect x="718" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <rect x="749" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
     <text class="ct" x="862" y="128" text-anchor="end">Laravel</text>
-    <text class="cs" x="862" y="150" style="font-size:9.6px" text-anchor="end">اكتشاف تلقائي + Facade</text>
-    <rect x="549" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="693" y="128" text-anchor="end">Hyperf</text>
-    <text class="cs" x="693" y="150" style="font-size:8.7px" text-anchor="end">coroutine + حقن بالتعليقات</text>
-    <rect x="380" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="524" y="128" text-anchor="end">webman</text>
-    <text class="cs" x="524" y="150" style="font-size:9.7px" text-anchor="end">تثبيت الإضافة تلقائيًا</text>
-    <rect x="211" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="355" y="128" text-anchor="end">ThinkPHP</text>
-    <text class="cs" x="355" y="150" text-anchor="end">ربط Service</text>
-    <rect x="42" y="96" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="186" y="128" text-anchor="end">PHP خالص</text>
-    <text class="cs" x="186" y="150" text-anchor="end">new ConsulClient()</text>
+    <text class="cs" x="862" y="150" style="font-size:7.3px" text-anchor="end">اكتشاف تلقائي + Facade</text>
+    <rect x="610" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="723" y="128" text-anchor="end">Hyperf</text>
+    <text class="cs" x="723" y="150" style="font-size:7.1px" text-anchor="end">coroutine + حقن بالتعليقات</text>
+    <rect x="471" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="584" y="128" text-anchor="end">webman</text>
+    <text class="cs" x="584" y="150" style="font-size:7.4px" text-anchor="end">تثبيت الإضافة تلقائيًا</text>
+    <rect x="332" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="445" y="128" text-anchor="end">ThinkPHP</text>
+    <text class="cs" x="445" y="150" text-anchor="end">ربط Service</text>
+    <rect x="193" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="306" y="128" text-anchor="end">Yii2 / Yii3</text>
+    <text class="cs" x="306" y="150" style="font-size:8.8px" text-anchor="end">Bootstrap · دمج الإعدادات</text>
+    <rect x="54" y="96" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="167" y="128" text-anchor="end">PHP خالص</text>
+    <text class="cs" x="167" y="150" style="font-size:11.2px" text-anchor="end">new ConsulClient()</text>
 
     <path d="M 466 176L 460 187L 454 176" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="968" y="234" text-anchor="end">طبقة الدمج</text>
-    <rect x="718" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="862" y="222" text-anchor="end">ServiceProvider</text>
-    <text class="cs" x="862" y="244" text-anchor="end">Facade · consul:watch</text>
-    <rect x="549" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="693" y="222" text-anchor="end">ConfigProvider</text>
-    <text class="cs" x="693" y="244" text-anchor="end">مصنع عميل coroutine</text>
-    <rect x="380" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="524" y="222" text-anchor="end">Webman Install</text>
-    <text class="cs" x="524" y="244" style="font-size:11.2px" text-anchor="end">نسخ الإعدادات + Worker</text>
-    <rect x="211" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="355" y="222" text-anchor="end">ConsulService</text>
-    <text class="cs" x="355" y="244" text-anchor="end">app(&apos;consul&apos;)</text>
-    <rect x="42" y="190" width="160" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
-    <text class="ct" x="186" y="222" text-anchor="end">ClientFactory</text>
-    <text class="cs" x="186" y="244" style="font-size:8.6px" text-anchor="end">تجميع اعتماديات PSR تلقائيًا</text>
+    <rect x="749" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="862" y="222" style="font-size:13.4px" text-anchor="end">ServiceProvider</text>
+    <text class="cs" x="862" y="244" text-anchor="end">Facade · Artisan</text>
+    <rect x="610" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="723" y="222" text-anchor="end">ConfigProvider</text>
+    <text class="cs" x="723" y="244" style="font-size:9.6px" text-anchor="end">مصنع عميل coroutine</text>
+    <rect x="471" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="584" y="222" style="font-size:13.5px" text-anchor="end">Webman Install</text>
+    <text class="cs" x="584" y="244" style="font-size:8.6px" text-anchor="end">نسخ الإعدادات + Worker</text>
+    <rect x="332" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="445" y="222" text-anchor="end">ConsulService</text>
+    <text class="cs" x="445" y="244" text-anchor="end">app(&apos;consul&apos;)</text>
+    <rect x="193" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="306" y="222" text-anchor="end">Yii Bootstrap</text>
+    <text class="cs" x="306" y="244" style="font-size:11px" text-anchor="end">di.php دمج الإعدادات</text>
+    <rect x="54" y="190" width="129" height="76" rx="14" fill="url(#card)" stroke="#2B3145"/>
+    <text class="ct" x="167" y="222" text-anchor="end">ClientFactory</text>
+    <text class="cs" x="167" y="244" style="font-size:7.1px" text-anchor="end">تجميع اعتماديات PSR تلقائيًا</text>
 
     <path d="M 466 270L 460 281L 454 270" fill="none" stroke="#5A6288" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     <text class="gutter" x="968" y="328" text-anchor="end">العميل</text>

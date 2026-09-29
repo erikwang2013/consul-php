@@ -4,7 +4,7 @@
 
 <img src="./images/pet.svg" alt="Consu, la mascotte du projet consul-php" width="320">
 
-Client Consul pour PHP, couvrant intégralement l'API HTTP v1 de Consul, avec un accent sur l'enregistrement et la découverte de services ainsi que sur le centre de configuration. Le paquet cœur ne dépend d'aucun framework et embarque les adaptateurs Laravel / Hyperf / webman / ThinkPHP : un seul `composer require` suffit pour l'utiliser avec n'importe quel framework.
+Client Consul pour PHP, couvrant intégralement l'API HTTP v1 de Consul, avec un accent sur l'enregistrement et la découverte de services ainsi que sur le centre de configuration. Le paquet cœur ne dépend d'aucun framework et embarque les adaptateurs Laravel / Hyperf / webman / ThinkPHP / Yii2 / Yii3 : un seul `composer require` suffit pour l'utiliser avec n'importe quel framework.
 
 PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · aucune dépendance à un framework
 
@@ -19,7 +19,7 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · aucune dépendance à un framework
 | **Quoi** | Un client de l'API HTTP v1 de Consul écrit en pur PHP : double point d'entrée synchrone + Promise, 18 modules API, 3 surcouches de haut niveau |
 | **Quel problème** | Permettre à une application PHP d'utiliser Consul pour l'enregistrement et la découverte de services ainsi que la mise à jour à chaud de la configuration, sans réécrire un client pour chaque framework |
 | **Comment l'utiliser** | `composer require erikwang2013/consul-php` : le paquet cœur ne dépend d'aucun framework, les adaptateurs sont intégrés et découverts automatiquement |
-| **Frameworks pris en charge** | Laravel · Hyperf · webman · ThinkPHP —— API strictement identique, seule change la façon d'obtenir `$client` |
+| **Frameworks pris en charge** | Laravel · Hyperf · webman · ThinkPHP · Yii2 · Yii3 —— API strictement identique, seule change la façon d'obtenir `$client` |
 | **Contrat de dépendances** | Uniquement des interfaces PSR (PSR-18/17/16/14/3) : client HTTP, cache, journalisation et distributeur d'événements sont interchangeables |
 | **Assurance qualité** | PHP 8.0 – 8.4 · 594 tests unitaires · PHPStan niveau 5 · PHP CS Fixer (PSR-12) |
 
@@ -47,6 +47,8 @@ PHP 8.0+ · PSR-18/PSR-3/PSR-14/PSR-16 · aucune dépendance à un framework
 | **Intégration Hyperf** | voir ci-dessous « Hyperf » |
 | **Intégration webman** | voir ci-dessous « webman » |
 | **Intégration ThinkPHP** | voir ci-dessous « ThinkPHP » |
+| **Intégration Yii2** | voir ci-dessous « Yii2 » |
+| **Intégration Yii3** | voir ci-dessous « Yii3 » |
 | **Document de conception** | [docs/superpowers/specs/2026-05-14-consul-php-design.md](../../superpowers/specs/2026-05-14-consul-php-design.md) |
 
 ---
@@ -99,6 +101,8 @@ consul-php/
 │       ├── Hyperf/                  # ConfigProvider + fabrique de clients coroutine + config
 │       ├── Webman/                  # Installation du plugin (Install) + config/app.php
 │       ├── Thinkphp/                # ConsulService + config/consul.php
+│       ├── Yii2/                    # Composant + Bootstrap + config/consul.php
+│       ├── Yii3/                    # config-plugin (di.php + params.php) + fabrique de clients
 │       └── Native/                  # PHP natif : enregistrement / heartbeat / désenregistrement en une ligne
 ├── tests/                           # Cas PHPUnit (Api / Client / Config / Exception /
 │                                    #   Integration / Service / Support / Transport)
@@ -123,17 +127,17 @@ consul-php/
 
 ## Aperçu des intégrations par framework
 
-| | Laravel | Hyperf | webman | ThinkPHP |
-|---|---|---|---|---|
-| **Paquet d'extension** | intégré | intégré | intégré | intégré |
-| **Mode d'injection** | découverte automatique + `ServiceProvider` | découverte automatique + `ConfigProvider` | `new` manuel / plugin | `bind` manuel sur le conteneur |
-| **Accès rapide** | Facade `Consul` | annotation `#[Inject]` | — | helper `app('consul')` |
-| **Emplacement de la configuration** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` |
-| **Client HTTP** | Guzzle (PSR-18) | client coroutine Swoole | Guzzle (PSR-18) | Guzzle (PSR-18) |
-| **Cache** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | à injecter soi-même | à injecter soi-même |
-| **Exécution de la mise à jour à chaud** | commande Artisan | coroutine `AbstractProcess` | processus `Worker` | Timer / processus Swoole |
-| **Écoute d'événements** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener |
-| **Documentation** | [Code source](../../../src/Integration/Laravel/) | [Code source](../../../src/Integration/Hyperf/) | [Code source](../../../src/Integration/Webman/) | [Code source](../../../src/Integration/Thinkphp/) |
+| | Laravel | Hyperf | webman | ThinkPHP | Yii2 | Yii3 |
+|---|---|---|---|---|---|---|
+| **Paquet d'extension** | intégré | intégré | intégré | intégré | intégré | intégré |
+| **Mode d'injection** | découverte automatique + `ServiceProvider` | découverte automatique + `ConfigProvider` | `new` manuel / plugin | `bind` manuel sur le conteneur | `bootstrap` en une ligne / enregistrement `components` | `config-plugin` fusionne automatiquement `di` + `params` |
+| **Accès rapide** | Facade `Consul` | annotation `#[Inject]` | — | helper `app('consul')` | `Yii::$app->consul->client` | injection de `ConsulClient` par constructeur (assemblage automatique) |
+| **Emplacement de la configuration** | `config/consul.php` | `config/autoload/consul.php` | `config/plugin/erikwang2013/consul-php/app.php` | `config/consul.php` | `components.consul` de `config/web.php` | `erikwang2013/consul-php` de `config/params.php` |
+| **Client HTTP** | Guzzle (PSR-18) | client coroutine Swoole | Guzzle (PSR-18) | Guzzle (PSR-18) | Guzzle / cURL intégré | PSR-18 du conteneur / cURL intégré |
+| **Cache** | Laravel Cache (PSR-16) | Hyperf Cache (PSR-16) | à injecter soi-même | à injecter soi-même | à injecter soi-même (PSR-16) | PSR-16 du conteneur injecté automatiquement |
+| **Exécution de la mise à jour à chaud** | commande Artisan | coroutine `AbstractProcess` | processus `Worker` | Timer / processus Swoole | processus résident / worker de file d'attente | processus résident / worker de file d'attente |
+| **Écoute d'événements** | `EventServiceProvider` | Hyperf Event | — | ThinkPHP Listener | — | PSR-14 du conteneur injecté automatiquement |
+| **Documentation** | [Code source](../../../src/Integration/Laravel/) | [Code source](../../../src/Integration/Hyperf/) | [Code source](../../../src/Integration/Webman/) | [Code source](../../../src/Integration/Thinkphp/) | [Code source](../../../src/Integration/Yii2/) | [Code source](../../../src/Integration/Yii3/) |
 
 ### Une même opération, plusieurs écritures
 
@@ -146,6 +150,8 @@ consul-php/
 | Hyperf | `#[Inject] private ConsulClient $consul;` |
 | webman | `$client = new ConsulClient(['base_uri' => '...']);` |
 | ThinkPHP | `$client = app('consul');` |
+| Yii2 | `$client = Yii::$app->consul->client;` (le contrôleur peut recevoir `ConsulClient` directement par injection) |
+| Yii3 | injection de `ConsulClient` par constructeur (assemblage automatique du conteneur) |
 
 **Enregistrement de service :**
 
@@ -173,6 +179,8 @@ $dbHost = $client->configCenter()->get('app/db_host', 'default');
 | Hyperf | `ConsulWatchProcess` (démarrage automatique) | coroutine Swoole |
 | webman | fork dans `onWorkerStart` | processus `Worker` |
 | ThinkPHP | Timer::setInterval / Swoole Process | processus autonome |
+| Yii2 | `configCenter()->watch()` dans un processus résident / un worker de file d'attente | processus PHP autonome |
+| Yii3 | `configCenter()->watch()` dans un processus résident / un worker de file d'attente | processus PHP autonome |
 
 ---
 
@@ -194,6 +202,8 @@ Les adaptateurs de framework sont déjà intégrés au paquet cœur, aucune inst
 - **Hyperf** — découverte automatique de `ConfigProvider`, fournit la fabrique de clients coroutine et l'injection `#[Inject]`
 - **webman** — découverte automatique du plugin, copie automatique du fichier de configuration lors de `composer install`
 - **ThinkPHP** — création de `ConsulService` dans le répertoire `app/service` et enregistrement auprès de l'application
+- **Yii2** — une ligne à ajouter au tableau `bootstrap` de la configuration d'application (classe `Bootstrap`) : Yii n'a pas de découverte automatique par composer, `bootstrap` est le mécanisme d'amorçage que Yii réserve officiellement aux extensions
+- **Yii3** — le paquet déclare `config-plugin` : après installation, `yiisoft/config` fusionne automatiquement `di` + `params`, et l'injection par constructeur est immédiatement utilisable
 
 ---
 
@@ -526,6 +536,86 @@ $services = app('consul')->catalog->services();
 function consul() { return app('consul'); }
 ```
 
+### Yii2
+
+Yii ne dispose d'aucun mécanisme de découverte automatique par composer : on passe par le mécanisme d'amorçage que Yii réserve officiellement aux extensions — une ligne dans le tableau `bootstrap` de la configuration d'application, et `Yii::$app->consul` existe (le client est chargé à la demande, et construit une seule fois).
+
+```php
+// config/web.php
+'bootstrap' => [\Erikwang2013\Consul\Integration\Yii2\Bootstrap::class],
+
+// Pour changer la configuration, il suffit d'enregistrer le composant —— Bootstrap n'écrase pas un composant consul déjà présent
+'components' => [
+    'consul' => [
+        'class'   => \Erikwang2013\Consul\Integration\Yii2\ConsulComponent::class,
+        'baseUri' => getenv('CONSUL_BASE_URI') ?: 'http://127.0.0.1:8500',
+        'token'   => getenv('CONSUL_TOKEN') ?: '',
+    ],
+],
+```
+
+Si vous préférez ne pas passer par Bootstrap, vous pouvez aussi fusionner le fragment de configuration de l'intégration dans la configuration de l'application (`components` et `container` sont fournis ensemble, le `ConsulClient` du conteneur et le composant ont la même source) :
+
+```php
+$config = ArrayHelper::merge($config, require __DIR__ . '/../vendor/erikwang2013/consul-php/src/Integration/Yii2/config/consul.php');
+```
+
+L'usage est strictement identique aux autres frameworks ; dans un contrôleur, l'injection directe fonctionne aussi :
+
+```php
+$client = Yii::$app->consul->client;
+$client->serviceRegistry()->register('yii-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+
+public function actionIndex(\Erikwang2013\Consul\Client\ConsulClient $consul) { ... }
+```
+
+- **Clés de configuration** : `baseUri` / `token` / `cache` (activation et TTL) / `options` (timeout, retry, etc. ; à clé identique, c'est `options` qui l'emporte) ; pour reprendre complètement le client : `Yii::$app->consul->client = $client` (soit `setClient()`)
+- **Cache** : il faut injecter soi-même une implémentation PSR-16 (`psrCache`). Le composant `cache` livré avec Yii n'est pas PSR-16 —— en cas d'absence il renvoie `false` au lieu de la valeur par défaut, et le transmettre tel quel ferait passer un « absent » pour un « trouvé »
+- **Enregistrement de service** : ne le placez pas dans une requête web (il s'enregistrerait à chaque requête), mais dans une commande console personnalisée ou un processus résident ; dans un processus résident, [NativeService](../../../src/Integration/Native/NativeService.php) fournit en une ligne « enregistrement → heartbeat TTL → désenregistrement automatique à la sortie »
+
+### Yii3
+
+Yii3 s'appuie de bout en bout sur PSR (conteneur PSR-11 + greffon de configuration `yiisoft/config`). Le paquet déclare `config-plugin` : dès l'installation, `di.php` et `params.php` sont fusionnés automatiquement dans la configuration de l'application, sans enregistrement manuel :
+
+```bash
+composer require erikwang2013/consul-php
+```
+
+```php
+// L'injection par constructeur suffit —— le client HTTP PSR-18/17, la journalisation PSR-3,
+// le cache PSR-16 et le distributeur d'événements PSR-14 du conteneur sont injectés
+// automatiquement ; ce qui n'est pas lié reste vide et retombe sur les valeurs par défaut
+// du paquet (discovery → cURL intégré, NullLogger)
+final class ServiceController
+{
+    public function __construct(private ConsulClient $consul) {}
+
+    public function register(): void
+    {
+        $this->consul->serviceRegistry()->register('yii3-app', '10.0.0.1', 8080, ['check' => ['ttl' => '30s']]);
+    }
+}
+```
+
+La configuration s'écrit dans le `config/params.php` de l'application (la clé de premier niveau est le nom du paquet, comme pour les autres paquets Yii3) et écrase récursivement les valeurs par défaut du paquet :
+
+```php
+// config/params.php
+return [
+    'erikwang2013/consul-php' => [
+        'consul' => [
+            'base_uri' => 'http://127.0.0.1:8500',
+            'token'    => 'acl-token',
+            'cache'    => ['enable' => true, 'ttl' => 300],
+        ],
+    ],
+];
+```
+
+- **Cache** : `yiisoft/cache` de Yii3 est lui-même PSR-16 ; dès que `Psr\SimpleCache\CacheInterface` est lié, le cache est utilisé automatiquement (le composant `cache` de Yii2 n'est pas PSR-16, les deux comportements diffèrent)
+- **Un type mal lié échoue immédiatement** : si une implémentation présente dans le conteneur —— `Psr\SimpleCache\CacheInterface` par exemple —— ne satisfait pas l'interface, une `RuntimeException` est levée, au lieu d'exploser seulement au niveau de la couche de transport sur un TypeError incompréhensible
+- **Changer d'implémentation** : pour reprendre complètement le client (multi-cluster, client HTTP personnalisé), redéfinissez `ConsulClient::class` dans le `config/di.php` de l'application pour écraser la définition du paquet
+
 ---
 
 ## Client HTTP personnalisé
@@ -622,7 +712,7 @@ try {
 
 Les dépendances vont du haut vers le bas : chaque couche ne dépend que de l'abstraction de la couche inférieure.
 
-- **Couche applicative / couche d'intégration** —— les adaptateurs des 4 frameworks sont intégrés au paquet cœur `src/Integration/` et découverts automatiquement par composer ; la couche applicative ne s'adresse jamais qu'à un seul point d'entrée, `ConsulClient`.
+- **Couche applicative / couche d'intégration** —— les adaptateurs des 6 frameworks sont intégrés au paquet cœur `src/Integration/` et découverts automatiquement par composer ; la couche applicative ne s'adresse jamais qu'à un seul point d'entrée, `ConsulClient`.
 - **Client** —— `ConsulClient` expose uniformément, via `__get`, 18 modules API (`$client->kv`, `$client->health`…) et 3 surcouches de haut niveau (`serviceRegistry()` / `serviceDiscovery()` / `configCenter()`) ; `ConsulAsyncClient` fournit l'exécution différée par Promise.
 - **Surcouches de haut niveau** —— `Registry` / `Discovery` / `ConfigCenter` combinent les modules API ; `Watcher` s'appuie sur le `X-Consul-Index` renvoyé par `getWithHeaders()` pour implémenter le long polling.
 - **Modules API** —— un module correspond à un ensemble de points d'API Consul v1, et tout passe par le même `TransportInterface`.
@@ -635,7 +725,7 @@ Les dépendances vont du haut vers le bas : chaque couche ne dépend que de l'ab
 
 ![Conception fonctionnelle de consul-php](./images/features.svg)
 
-Cartographie des capacités : enregistrement et découverte de services, centre de configuration et mise à jour à chaud, KV / contrôle de santé / verrous de session / ACL / exploitation du cluster, adaptateurs pour 4 frameworks et conception de la fiabilité. Chaque carte de capacité indique la classe d'entrée correspondante ; pour le détail des appels, voir plus haut « Démarrage rapide (générique) » et « Aide-mémoire des modules API ».
+Cartographie des capacités : enregistrement et découverte de services, centre de configuration et mise à jour à chaud, KV / contrôle de santé / verrous de session / ACL / exploitation du cluster, adaptateurs pour 6 frameworks et conception de la fiabilité. Chaque carte de capacité indique la classe d'entrée correspondante ; pour le détail des appels, voir plus haut « Démarrage rapide (générique) » et « Aide-mémoire des modules API ».
 
 ---
 
