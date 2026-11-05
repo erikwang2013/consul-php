@@ -633,15 +633,16 @@ function verify(string $lang): void
             continue;
         }
 
-        // 残留判定不能只看 \p{Han}：日文译文里的汉字也会被匹配。
-        // build() 对未翻译的键原样输出中文，所以“与中文键完全一致且该键含汉字”才是真残留；
-        // Laravel / Acl 这类故意保留原文的专有名词不会命中（键里没有汉字）。
+        // 残留判定不能用 \p{Han}：PCRE 的 Script_Extensions 会把 U+00B7 中点、`「」` 也算成汉字，
+        // 且不同 PCRE 版本结果不同（CI 上英文图的 "Facade · Artisan" 会被误判）。
+        // build() 对未翻译的键原样输出中文，所以“与中文键完全一致且含 CJK 表意文字”才是真残留；
+        // Laravel / Acl 这类故意保留原文的专有名词不会命中。
         preg_match_all('/<text[^>]*>(.*?)<\/text>/s', $svg, $texts);
         $leftover = array_values(array_filter(
             $texts[1],
             fn (string $text): bool => ($decoded = html_entity_decode($text, ENT_XML1 | ENT_QUOTES, 'UTF-8')) !== ''
                 && isset($template[$decoded])
-                && preg_match('/\p{Han}/u', $decoded) === 1
+                && preg_match('/[\x{3400}-\x{4DBF}\x{4E00}-\x{9FFF}\x{F900}-\x{FAFF}]/u', $decoded) === 1
         ));
         // 日文与中文共用汉字，「PSR 抽象」「通知」这类词译文与原文一致属正常，
         // 只有大面积未译才算失败，零星几条降级为告警。
