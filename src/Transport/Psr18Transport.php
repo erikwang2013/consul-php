@@ -41,7 +41,8 @@ class Psr18Transport implements TransportInterface
         ?string $token = null,
         ?LoggerInterface $logger = null,
         int $retries = 0,
-        int $retryDelayMs = 50
+        int $retryDelayMs = 50,
+        bool $allowInsecure = false
     ) {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
@@ -51,6 +52,25 @@ class Psr18Transport implements TransportInterface
         $this->logger = $logger ?? new NullLogger();
         $this->retries = max(0, $retries);
         $this->retryDelayMs = max(0, $retryDelayMs);
+
+        // Token 是等价于密码的凭据：远程明文 HTTP 上会整段暴露，默认拒绝，确需时显式放行
+        if ($token !== null && $token !== '' && !$allowInsecure && !self::isSecureTokenUri($this->baseUri)) {
+            throw new InvalidArgumentException(
+                "X-Consul-Token 不能通过明文 HTTP 发往 {$this->baseUri}；请改用 https://，或显式设置 allow_insecure => true"
+            );
+        }
+    }
+
+    /** 本机回环地址不经过网络，明文没有泄露面。 */
+    private static function isSecureTokenUri(string $baseUri): bool
+    {
+        if (strtolower((string) parse_url($baseUri, PHP_URL_SCHEME)) === 'https') {
+            return true;
+        }
+
+        $host = strtolower((string) parse_url($baseUri, PHP_URL_HOST));
+
+        return in_array($host, ['127.0.0.1', '[::1]', 'localhost'], true);
     }
 
     /**
@@ -139,6 +159,11 @@ class Psr18Transport implements TransportInterface
         string $contentType,
         array $query = []
     ): ResponseInterface {
+        // HTTP 客户端（cURL 默认行为）会归一化点段，KV key 里的 ../ 因此能跳出 /v1/ 前缀
+        if (preg_match('#(?:^|/)\.{1,2}(?:/|$)#', $path) === 1) {
+            throw new InvalidArgumentException("Consul 路径不能包含 . 或 .. 段：{$path}");
+        }
+
         $uri = $this->baseUri . $path;
         $queryString = $query === [] ? '' : self::buildQueryString($query);
         if ($queryString !== '') {

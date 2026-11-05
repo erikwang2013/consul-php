@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="990" viewBox="0 0 1000 990" role="img" aria-label="consul-php 架构设计图">
   <title>consul-php 架构设计</title>
   <style>
-    .t { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "DejaVu Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .t { font-family: "Noto Sans SC", "Noto Sans CJK SC", "Noto Sans", "DejaVu Sans", "Liberation Sans", sans-serif; }
     .h1 { font-size: 24px; font-weight: 700; fill: #EDF0F7; }
     .sub { font-size: 13px; fill: #8B93A7; }
     .gutter { font-size: 13px; font-weight: 600; fill: #9BA3FF; }

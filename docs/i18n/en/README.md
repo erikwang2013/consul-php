@@ -222,7 +222,7 @@ $client = new ConsulClient([
 ]);
 ```
 
-The token is attached to every request automatically through the `X-Consul-Token` header.
+The token is attached to every request automatically through the `X-Consul-Token` header. A token is a credential: for any non-loopback host `base_uri` must use `https://`, otherwise construction throws; set `'allow_insecure' => true` only for a trusted plaintext network.
 
 ### Service registration
 
@@ -635,6 +635,7 @@ Keys supported by `config`:
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | `http://` is prepended automatically when the scheme is missing (so a value copied out of an environment variable, such as `127.0.0.1:8500`, works as is) |
 | `token` | — | ACL Token, injected as `X-Consul-Token` |
+| `allow_insecure` | `false` | Allow the token over plaintext HTTP to a non-loopback host (refused by default; trusted networks only) |
 | `cache.enable` / `cache.ttl` | `false` / none | Works together with the injected PSR-16 cache and applies to `Discovery::healthyInstances()` and `ConfigCenter::get()` (`cache.enable` is only read by the framework adapters; with manual construction, injecting a cache is enough) |
 | `timeout.connect` / `timeout.total` | `3.0` / `0` (unlimited) | Only used by the built-in cURL client. **Do not set `total` lower than `blockingWait`**, otherwise long polling is guaranteed to time out and fall back to polling |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | Number of retries on transport failure and the first backoff (growing exponentially); only applies to idempotent methods (GET/PUT/DELETE) |

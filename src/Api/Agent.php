@@ -291,22 +291,4 @@ class Agent
     {
         return $this->transport->put('/v1/agent/check/update/' . rawurlencode($checkId), $options);
     }
-
-    /** @deprecated Use checkPass() instead. */
-    public function ttlCheckPass(string $checkId, string $note = ''): void
-    {
-        $this->checkPass($checkId, $note);
-    }
-
-    /** @deprecated Use checkFail() instead. */
-    public function ttlCheckFail(string $checkId, string $note = ''): void
-    {
-        $this->checkFail($checkId, $note);
-    }
-
-    /** @deprecated Use checkWarn() instead. */
-    public function ttlCheckWarn(string $checkId, string $note = ''): void
-    {
-        $this->checkWarn($checkId, $note);
-    }
 }

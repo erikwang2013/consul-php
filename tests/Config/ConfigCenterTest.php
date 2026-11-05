@@ -68,7 +68,7 @@ class ConfigCenterTest extends TestCase
         );
 
         $this->assertSame('fallback', $config->get('app/new', 'fallback'));
-        $this->assertNull($cache->get('consul:config:app/new')); // 默认值不写入缓存
+        $this->assertNull($cache->get('consul.config.app%2Fnew')); // 默认值不写入缓存
         $this->assertSame('created', $config->get('app/new'));   // 键出现后立刻可见
     }
 
@@ -128,7 +128,7 @@ class ConfigCenterTest extends TestCase
 
         $this->assertSame('old', $config->get('app/key')); // primed from kv, cached
         $this->assertTrue($config->set('app/key', 'new'));
-        $this->assertNull($cache->get('consul:config:app/key')); // invalidated
+        $this->assertNull($cache->get('consul.config.app%2Fkey')); // invalidated
         $this->assertSame('new', $config->get('app/key')); // refetched from kv, not stale cache
     }
 
@@ -145,7 +145,7 @@ class ConfigCenterTest extends TestCase
 
         $this->assertSame('old', $config->get('app/key')); // primed from kv, cached
         $this->assertTrue($config->delete('app/key'));
-        $this->assertNull($cache->get('consul:config:app/key')); // invalidated
+        $this->assertNull($cache->get('consul.config.app%2Fkey')); // invalidated
         $this->assertSame('fallback', $config->get('app/key', 'fallback')); // cache miss -> kv -> default
     }
 
@@ -218,7 +218,7 @@ class ConfigCenterTest extends TestCase
 
         $this->assertSame('old', $config->get('app/key')); // cached
         $this->assertFalse($config->set('app/key', 'new'));
-        $this->assertSame('old', $cache->get('consul:config:app/key')); // still cached
+        $this->assertSame('old', $cache->get('consul.config.app%2Fkey')); // still cached
     }
 
     public function testDeleteFailureDoesNotInvalidateCache(): void
@@ -231,7 +231,7 @@ class ConfigCenterTest extends TestCase
 
         $this->assertSame('old', $config->get('app/key')); // cached
         $this->assertFalse($config->delete('app/key'));
-        $this->assertSame('old', $cache->get('consul:config:app/key')); // still cached
+        $this->assertSame('old', $cache->get('consul.config.app%2Fkey')); // still cached
     }
 
     public function testDeleteInvalidatesAllNamespacePrefixLevels(): void
@@ -243,14 +243,14 @@ class ConfigCenterTest extends TestCase
         $this->kv->method('delete')->with('app/foo/bar')->willReturn(true);
         $this->kv->method('all')->willReturn([]);
 
-        $config->get('app/foo/bar');               // caches consul:config:app/foo/bar
-        $config->namespace('app/');                // caches consul:config:ns:app
-        $config->namespace('app/foo');             // caches consul:config:ns:app/foo
+        $config->get('app/foo/bar');               // caches consul.config.app%2Ffoo%2Fbar
+        $config->namespace('app/');                // caches consul.config.ns.app%2F
+        $config->namespace('app/foo');             // caches consul.config.ns.app%2Ffoo
         $config->delete('app/foo/bar');
 
-        $this->assertNull($cache->get('consul:config:app/foo/bar'));
-        $this->assertNull($cache->get('consul:config:ns:app'));
-        $this->assertNull($cache->get('consul:config:ns:app/foo'));
+        $this->assertNull($cache->get('consul.config.app%2Ffoo%2Fbar'));
+        $this->assertNull($cache->get('consul.config.ns.app%2F'));
+        $this->assertNull($cache->get('consul.config.ns.app%2Ffoo'));
     }
 
     public function testWatchPassesDispatcherToWatcher(): void

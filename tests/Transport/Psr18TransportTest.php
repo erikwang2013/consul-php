@@ -8,6 +8,7 @@ use Erikwang2013\Consul\Exception\ConsulRequestException;
 use Erikwang2013\Consul\Exception\NotFoundException;
 use Erikwang2013\Consul\Exception\ServerException;
 use Erikwang2013\Consul\Transport\Psr18Transport;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -59,6 +60,14 @@ class Psr18TransportTest extends TestCase
         $result = $this->transport->get('/v1/kv/test');
 
         $this->assertSame(['key' => 'value'], $result);
+    }
+
+    public function testRejectsDotSegmentsInPath(): void
+    {
+        $this->requestFactory->expects($this->never())->method('createRequest');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->transport->get('/v1/kv/../../v1/acl/token/x');
     }
 
     public function test404ThrowsNotFoundException(): void
@@ -262,6 +271,49 @@ class Psr18TransportTest extends TestCase
         $result = $transport->get('/v1/kv/test');
 
         $this->assertSame([], $result);
+    }
+
+    public function testTokenOverPlainHttpToRemoteHostIsRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Psr18Transport(
+            $this->httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            'http://consul.example.com:8500',
+            'test-token'
+        );
+    }
+
+    public function testTokenOverPlainHttpIsAllowedWhenExplicitlyOptedIn(): void
+    {
+        $transport = new Psr18Transport(
+            $this->httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            'http://consul.example.com:8500',
+            'test-token',
+            null,
+            0,
+            50,
+            true
+        );
+
+        $this->assertInstanceOf(Psr18Transport::class, $transport);
+    }
+
+    public function testTokenOverHttpsIsAllowed(): void
+    {
+        $transport = new Psr18Transport(
+            $this->httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            'https://consul.example.com:8501',
+            'test-token'
+        );
+
+        $this->assertInstanceOf(Psr18Transport::class, $transport);
     }
 
     public function testEmptyTokenDoesNotSetHeader(): void

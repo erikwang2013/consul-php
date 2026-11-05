@@ -352,33 +352,6 @@ class AgentTest extends TestCase
         $this->agent->checkDeregister('chk1');
     }
 
-    public function testTtlCheckPassDelegates(): void
-    {
-        $this->transport->expects($this->once())
-            ->method('putRaw')
-            ->with('/v1/agent/check/pass/chk1', '', ['note' => 'n']);
-
-        $this->agent->ttlCheckPass('chk1', 'n');
-    }
-
-    public function testTtlCheckFailDelegates(): void
-    {
-        $this->transport->expects($this->once())
-            ->method('putRaw')
-            ->with('/v1/agent/check/fail/chk1', '', []);
-
-        $this->agent->ttlCheckFail('chk1');
-    }
-
-    public function testTtlCheckWarnDelegates(): void
-    {
-        $this->transport->expects($this->once())
-            ->method('putRaw')
-            ->with('/v1/agent/check/warn/chk1', '', []);
-
-        $this->agent->ttlCheckWarn('chk1');
-    }
-
     public function testCheckUpdateSendsStatusAndOutputAsBody(): void
     {
         $this->transport->expects($this->once())

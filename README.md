@@ -116,8 +116,7 @@ consul-php/
 │   │   └── lifecycle.svg            # 生命周期
 │   ├── i18n/                        # 12 种语言 README 与本地化图（en · ja · ko · de · fr · es · pt · ru · ar · hi · bn · id）
 │   ├── superpowers/specs/           # 设计文档
-│   ├── superpowers/plans/           # 实现计划
-│   └── reports/                     # 覆盖率报告与测试报告
+│   └── superpowers/plans/           # 实现计划
 ├── scripts/i18n-svg.php             # 多语言资源生成器（extract / build / verify）
 ├── scripts/pet.php                  # composer pet 入口：终端里召唤项目宠物
 ├── composer.json                    # 依赖与框架自动发现声明
@@ -224,7 +223,7 @@ $client = new ConsulClient([
 ]);
 ```
 
-Token 会自动通过 `X-Consul-Token` 请求头附加到所有请求中。
+Token 会自动通过 `X-Consul-Token` 请求头附加到所有请求中。Token 等同密码：发往非本机地址时 `base_uri` 必须是 `https://`，明文 HTTP 会直接抛异常；确需在可信内网使用明文时，显式设置 `'allow_insecure' => true`。
 
 ### 服务注册
 
@@ -636,6 +635,7 @@ $client = new ConsulClient(
 |---|---|---|
 | `base_uri` | `http://127.0.0.1:8500` | 缺 scheme 时自动补 `http://`（`127.0.0.1:8500` 这种从环境变量抄来的写法可直接用）|
 | `token` | — | ACL Token，注入为 `X-Consul-Token` |
+| `allow_insecure` | `false` | 允许 Token 通过明文 HTTP 发往非本机地址（默认拒绝，可信内网才开） |
 | `cache.enable` / `cache.ttl` | `false` / 无 | 配合注入的 PSR-16 缓存，作用于 `Discovery::healthyInstances()` 与 `ConfigCenter::get()`。`cache.enable` 只由框架适配（`ClientFactory`）读取；手动构造时注入缓存即生效，不看该键 |
 | `timeout.connect` / `timeout.total` | `3.0` / `0`（不限）| 仅内置 cURL 客户端使用。**`total` 别设得比 `blockingWait` 小**，否则长轮询必然被判超时并降级 |
 | `retry.times` / `retry.delay_ms` | `0` / `50` | 传输失败时的重试次数与首次退避（指数增长）；只对幂等方法（GET/PUT/DELETE）生效 |

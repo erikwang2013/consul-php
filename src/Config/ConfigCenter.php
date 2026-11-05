@@ -30,7 +30,7 @@ class ConfigCenter
 
     public function get(string $key, $default = null): mixed
     {
-        $cacheKey = "consul:config:{$key}";
+        $cacheKey = self::cacheKey($key);
 
         if ($this->cache) {
             $cached = $this->cache->get($cacheKey);
@@ -66,7 +66,7 @@ class ConfigCenter
 
     public function namespace(string $prefix): array
     {
-        $cacheKey = "consul:config:ns:{$prefix}";
+        $cacheKey = self::namespaceCacheKey($prefix);
 
         if ($this->cache) {
             $cached = $this->cache->get($cacheKey);
@@ -119,13 +119,26 @@ class ConfigCenter
             return;
         }
 
-        $this->cache->delete("consul:config:{$key}");
+        $this->cache->delete(self::cacheKey($key));
 
         $prefix = '';
         foreach (explode('/', $key) as $part) {
             $prefix = $prefix === '' ? $part : $prefix . '/' . $part;
-            $this->cache->delete("consul:config:ns:{$prefix}");
+            // "app" 与 "app/" 是不同的前缀（后者不会命中 apple），两种键都要清
+            $this->cache->delete(self::namespaceCacheKey($prefix));
+            $this->cache->delete(self::namespaceCacheKey($prefix . '/'));
         }
+    }
+
+    /** PSR-16 保留 `{}()/\@:`，原样拼进缓存键会被严格实现拒绝，变量部分统一编码。 */
+    private static function cacheKey(string $key): string
+    {
+        return 'consul.config.' . rawurlencode($key);
+    }
+
+    private static function namespaceCacheKey(string $prefix): string
+    {
+        return 'consul.config.ns.' . rawurlencode($prefix);
     }
 
     public function watch(string $prefix): Watcher

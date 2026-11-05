@@ -28,7 +28,7 @@ use stdClass;
 class Yii3ConsulClientFactoryTest extends TestCase
 {
     private const CONFIG = [
-        'base_uri' => 'http://consul.test:8500',
+        'base_uri' => 'https://consul.test:8500',
         'token'    => 'acl-token',
         'cache'    => ['enable' => true, 'ttl' => 60],
     ];
@@ -52,7 +52,7 @@ class Yii3ConsulClientFactoryTest extends TestCase
         $client = $this->build([]);
         $transport = $this->propertyOf($client, 'transport');
 
-        $this->assertSame('http://consul.test:8500', $this->propertyOf($transport, 'baseUri'));
+        $this->assertSame('https://consul.test:8500', $this->propertyOf($transport, 'baseUri'));
         $this->assertSame('acl-token', $this->propertyOf($transport, 'token'));
         $this->assertInstanceOf(NullLogger::class, $this->propertyOf($transport, 'logger'));
         $this->assertNull($this->propertyOf($client, 'cache'));

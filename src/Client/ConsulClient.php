@@ -122,7 +122,8 @@ class ConsulClient
             $token,
             $logger,
             (int) ($config['retry']['times'] ?? 0),
-            (int) ($config['retry']['delay_ms'] ?? 50)
+            (int) ($config['retry']['delay_ms'] ?? 50),
+            (bool) ($config['allow_insecure'] ?? false)
         );
 
         $this->cache = $cache;
